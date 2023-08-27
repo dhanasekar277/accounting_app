@@ -1,0 +1,321 @@
+{% extends "_base.html" %} {% load static %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Net Sales</h5>
+            <div class="card border-0 shadow p-3">
+                <!-- Calander Form -->
+                <div class="row mb-4">
+                    <div class="col-md-8 ms-auto">
+                        <form id="calendersearch" method="get" action="" novalidate>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="calander_from" class="form-label mb-0">From</label>
+                                    <input required type="date" class="form-control" name="calander_from">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="calander_to" class="form-label mb-0">To</label>
+                                    <input required type="date" class="form-control" name="calander_to">
+                                </div>
+                                <div class="col-md-4 mt-auto mb-1">
+                                    <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                            class="fa fa-search me-2"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    {% if salesinvoices %}
+                    <table class="table table-bordered w-100 table-striped netsalestable">
+                        <thead class="table-dark">
+                            <tr class="d-flex">
+                                <th class="col-2" scope="col" width="11%">Invoice Date</th>
+                                <th class="col-2" scope="col">Customer Name</th>
+                                <th class="col-2" scope="col" width="12%">Invoice Number</th>
+                                <th class="col-2" scope="col">Total W/O Gst</th>
+                                <th class="col-2" scope="col">Total Incl Gst</th>
+                                <th class="col-2" scope="col">Total Incl Gst (Round off)</th>
+                                <th class="col-2" scope="col">SGST</th>
+                                <th class="col-2" scope="col">SGST (Roundoff)</th>
+                                <th class="col-2" scope="col">CGST</th>
+                                <th class="col-2" scope="col">CGST (Roundoff)</th>
+                                <th class="col-2" scope="col">SGST %</th>
+                                <th class="col-2" scope="col">CGST %</th>
+                                <!-- <th class="col-2" scope="col">Gst Amount Balance</th> -->
+                                <th class="col-2" scope="col">Net Amount Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salesinvoice in salesinvoices %}
+                            <tr class="d-flex">
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                    {{i.customer.customerid.Company_Name}}
+                                    {% endfor %}
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% with sgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{sgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"2"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% with sgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{sgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"2"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    <ul>
+                                        {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td class="col-2">
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td class="col-2">
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <!-- <td class="col-2"></td> -->
+                                <td class="col-2">
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.Balance|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr class="d-flex">
+                                <td class="col-2">Grand Total</td>
+                                <td class="col-2"></td>
+                                <td class="col-2"></td>
+                                <td class="col-2">
+                                    Rs.{{totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"2"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"0"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                                </td>
+                                <td class="col-2">
+                                    Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                                </td>
+                                <td class="col-2"></td>
+                                <td class="col-2"></td>
+                                <!-- <td class="col-2"></td> -->
+                                <td class="col-2">
+                                    {{totalnetamount.saleid__sales__netAmount__Balance__sum|floatformat:"2"}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="p-5 mt-4 border-0 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96"
+                            viewBox="0 0 172 172" style=" fill:#000000;">
+                            <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                                stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                                font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                                style="mix-blend-mode: normal">
+                                <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                                <g>
+                                    <path
+                                        d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                        fill="#e74c3c" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                        fill="#f5f5f5" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                        fill="#f5f5f5" fill-rule="evenodd"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        <h5 class="fw-bold mt-3">No Details Available</h5>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- pagination -->
+                {% if salesinvoices.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if salesinvoices.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{salesinvoices.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in salesinvoices.paginator.page_range %} {% if salesinvoices.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if salesinvoices.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{salesinvoices.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+{% endblock content %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.netsalesMenu').addClass('active')
+        function addprices(classname) {
+            var table = document.getElementsByClassName('netsalestable')
+            for (var i = 1; i <= table[0].tBodies[0].rows.length; i++) {
+                var selct = `.${classname}${i} .counter`
+                var ttl_count = Number($(selct).text())
+                var add_total = 0
+                for (var j = 0; j < ttl_count; j++) {
+                    var index = `.${classname}${i} .subtotal_${j + 1}`
+                    var sub_amount = Number($(index).text())
+                    add_total += sub_amount
+                }
+                $(`.${classname}${i}`).text(add_total)
+            }
+        }
+        addprices('totalwgst_')
+        addprices('totalwgstro_')
+        addprices('totalwogst_')
+        addprices('sgstamount_')
+        addprices('cgstamount_')
+        addprices('sgstamountro_')
+        addprices('cgstamountro_')
+    })
+
+
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('#calendersearch')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+</script>
+
+{% endblock script %}

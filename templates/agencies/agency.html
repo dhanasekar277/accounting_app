@@ -1,0 +1,1137 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-3">
+        <!-- welcome section -->
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Agencies</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        {% if request.user.is_superuser %}
+                        <a class="btn btn-sm btn-primary float-end addagency" href="{% url 'add-agency' %}"><i
+                                class="fa fa-plus me-1"></i> Add</a>
+                        {% endif %}
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if obj.agency_obj %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Bank Account</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Status</th>
+                            {% if request.user.is_superuser %}
+                            <th scope="col">Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for i in obj.agency_obj %}
+                        <tr>
+                            <td width="30%">
+                                <div class="text-capitalize"><span>{{i.Name}}</span>
+                                    <a href="mailto:{{i.Email}}" class="text-decoration-none text-danger"><i
+                                            class="ms-2 fa fa-envelope"></i> </a>
+                                </div>
+
+                                {% if i.Phone.all %}
+                                {% for j in i.Phone.all %}
+                                <div class="small">
+                                    <a class="fa-14 text-reset" data-name="{{j.ph_name}}"><b>Name : </b> <span>{{j.ph_name}}</span></a>
+                                    <a href="tel:{{j}}" class="text-decoration-none text-success ms-2"><i
+                                            class="fa fa-phone"></i> : {{j}}</a>
+
+                                    {% if user.is_superuser %}
+                                    {% if forloop.counter == 1 %}
+                                    <a href="" class="fa-12 text-blue" data-bs-toggle="modal"
+                                        data-bs-target="#phoneModel" data-action="add_phone_no" data-agency="{{i.id}}"
+                                        data-bs-whatever="{{j.id}}"><i class="fa fa-12 fa-plus "></i></a>
+                                    {% endif %}
+                                    <a href="" class="fa-12 text-warning float-end" data-bs-toggle="modal"
+                                        data-bs-target="#phoneModel" data-name="{{j.ph_name}}" data-phone="{{j}}"
+                                        data-action="edit_phone_no" data-agency="{{i.id}}"
+                                        data-bs-whatever="{{j.id}}"><i class="fa fa-12 fa-edit "></i></a>
+                                    {% endif %}
+
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <a href="" class="fa-12 text-blue" data-bs-toggle="modal" data-bs-target="#phoneModel"
+                                    data-action="add_phone_no" data-agency="{{i.id}}" data-bs-whatever="{{j.id}}"><i
+                                        class="fa fa-12 fa-plus "></i></a>
+                                {% endif %}
+
+                                <div class="text-capitalize"><b>Gst</b> : {{i.GST_Number}}</div>
+                                <div class="text-capitalize"><b>Pan</b> : {{i.PAN_Number}}</div>
+                            </td>
+                            <td width="30%">
+                                {% if i.Bank_Account.all %}
+                                <div id="carouselExampleControls{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                    data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% for j in i.Bank_Account.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <div>
+                                                    <div class="text-capitalize">
+                                                        {{j.Account_Holder_Name}}
+                                                        <span class="text-primary">
+                                                            ( {{j.Account_Holder_Position}} )
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <b>AC No : </b>{{j.Account_Number}}
+                                                        {% if user.is_superuser %}
+                                                        <a href="{{j.id}}" class="text-warning " data-bs-toggle="modal"
+                                                            data-bs-target="#editbank" data-bs-whatever="{{j.id}}"><i
+                                                                class="fa ms-2 fa-14 fa-edit"></i></a>
+                                                        <a href="{{j.id}}" class="text-danger " data-bs-toggle="modal"
+                                                            data-bs-target="#deletebank" data-bs-whatever="{{j.id}}"><i
+                                                                class="fa ms-2 fa-14 fa-trash"></i></a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <a href="tel:{{j.Phone}}"
+                                                            class="text-decoration-none text-success"><i
+                                                                class="fa fa-phone"></i> : {{j.Register_Phone}}</a>
+                                                        <a href="mailto:{{j.Email}}" class="text-decoration-none"><i
+                                                                class="ms-2 fa fa-envelope"></i> :
+                                                            {{j.Register_Email}}</a>
+                                                    </div>
+                                                    <div class="text-capitalize"><b>IFSC : </b>{{j.IFSC_Code}} <b
+                                                            class="ms-2">Bank : </b>{{j.Bank_Name}} <br>
+                                                        <b>Branch : </b> {{j.Branch}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% if i.Bank_Account.all|length > 1 %}
+                                        <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#carouselExampleControls{{i.id}}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"
+                                                style="width: 1.2rem;height: 1.2rem;"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button"
+                                            data-bs-target="#carouselExampleControls{{i.id}}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"
+                                                style="width: 1.2rem;height: 1.2rem;"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                    <div>
+                                        <a href="" class="btn btn-primary btn-sm py-0 px-1 mt-1 fa-12"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                            data-bs-whatever="{{i.id}}"><i class="fa fa-plus me-2"></i>Bank</a>
+                                    </div>
+                                    {% endif %}
+                            </td>
+                            <td width="20%" class="text-capitalize">
+                                {% if i.Certificates.all %}
+                                <ul class="mb-1 ps-3">
+                                    {% for j in i.Certificates.all %}
+                                    <li>
+                                        
+                                        {{j.Certificate_Name}} 
+                                        {% if j.Certificate_Scan_Copy%}
+                                        <a href="/media/{{j.Certificate_Scan_Copy}}"
+                                            class="ms-1 text-blue" download><i class="fa fa-download"></i></a>
+                                            {% endif %}
+
+                                        {% if user.is_superuser %}
+                                        <a href="{{j.id}}" class="text-danger float-end" data-bs-toggle="modal"
+                                            data-bs-target="#deletecertificate" data-bs-whatever="{{j.id}}"><i
+                                                class="fa ms-2  fa-14 fa-trash"></i></a>
+                                        <a href="{{j.id}}" class="text-warning float-end" data-bs-toggle="modal"
+                                            data-bs-target="#editcertificates" data-bs-whatever="{{j.id}}"><i
+                                                class="fa ms-2 fa-14  fa-edit"></i></a>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                {% if user.is_superuser %}
+                                <div>
+                                    <a href="" class="btn btn-primary btn-sm py-0 px-1 mt-1 fa-12"
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal1"
+                                        data-bs-whatever="{{i.id}}"><i class="fa fa-plus me-2"></i>Certificate</a>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td width="10%">
+                                {% if i.Active == True %}
+                                <span class="badge bg-success agency_active" style="cursor: pointer;"
+                                    agency-id="{{i.id}}">Active</span>
+                                {% else%}
+                                <span class="badge bg-danger agency_active" style="cursor: pointer;"
+                                    agency-id="{{i.id}}">In Active</span>
+                                {% endif %}
+                            </td>
+
+                            {% if user.is_superuser %}
+                            <td>
+                                <a href="update-agency/{{i.id}}" class="me-2 text-warning"><i
+                                        class="fa fa-edit"></i></a>
+                                <a href="{{i.id}}" class="text-danger deleteagency"><i class="fa fa-trash"></i></a>
+                            </td>
+                            {% endif %}
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if obj.agency_obj.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if obj.agency_obj.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{obj.agency_obj.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in obj.agency_obj.paginator.page_range %}
+                        {% if obj.agency_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if obj.agency_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{obj.agency_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_superuser %}
+<!-- ADD BANK -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Agency Bank</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <form id="save_bank">
+                    <div class="mb-0">
+                        <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-success alert-dismissible d-none bankmessage fade show py-2 mb-0"
+                                role="alert">
+                                <strong>Bank Accounted Added. !!!</strong>
+                                <button type="button" class="btn-close py-2 mt-1" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Holder Name</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+"
+                                    title="Position contains alphabets only" class="form-control form-control-sm"
+                                    id="Account_Holder_Name" name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Holder Position</label>
+                                <input required type="text" class="form-control form-control-sm" pattern="^[A-Za-z_ ]+"
+                                    title="Position contains alphabets only" id="Account_Holder_Position"
+                                    name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Number</label>
+                                <input required type="number" class="form-control form-control-sm" id="Account_Number"
+                                    name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="IFSC_Code">IFSC Code</label>
+                                <input required type="text" pattern="^[a-zA-Z0-9_.-]*$"
+                                    title="IFSC Code does not contain special charecters and space"
+                                    class="form-control form-control-sm" id="IFSC_Code" name="IFSC_Code">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Bank">Bank</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+" title="Bank contains alphabets only"
+                                    class="form-control form-control-sm" id="Bank" name="Bank">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Branch">Branch</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+"
+                                    title="Branch contains alphabets only" class="form-control form-control-sm"
+                                    id="Branch" name="Branch">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Register_Email">Register Email</label>
+                                <input required type="text" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                    title="Please enter valid email address" class="form-control form-control-sm"
+                                    id="Register_Email" name="Register_Email">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Register_Phone">Register Phone</label>
+                                <input required type="text" pattern="^\d{10}$" title="Enter valid ten mobile numbers"
+                                    class="form-control form-control-sm" id="Register_Phone" name="Register_Phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3 border-0 float-end">
+                        <button type="button" class="btn btn-secondary btn-sm me-2"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="">Save Bank</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BANK -->
+
+<!-- EDIT BANK -->
+<div class="modal fade" id="editbank" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Agency Bank</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <form id="editBankAccount">
+                    <div class="mb-0">
+                        <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-success alert-dismissible d-none bankmessage fade show py-2 mb-0"
+                                role="alert">
+                                <strong>Bank Accounted Added. !!!</strong>
+                                <button type="button" class="btn-close py-2 mt-1" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Holder Name</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+"
+                                    title="Position contains alphabets only" class="form-control form-control-sm"
+                                    id="Account_Holder_Name" name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Holder Position</label>
+                                <input required type="text" class="form-control form-control-sm" pattern="^[A-Za-z_ ]+"
+                                    title="Position contains alphabets only" id="Account_Holder_Position"
+                                    name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Account_Number">Account Number</label>
+                                <input required type="number" class="form-control form-control-sm" id="Account_Number"
+                                    name="Account_Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="IFSC_Code">IFSC Code</label>
+                                <input required type="text" pattern="^[a-zA-Z0-9_.-]*$"
+                                    title="IFSC Code does not contain special charecters and space"
+                                    class="form-control form-control-sm" id="IFSC_Code" name="IFSC_Code">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Bank">Bank</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+" title="Bank contains alphabets only"
+                                    class="form-control form-control-sm" id="Bank" name="Bank">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Branch">Branch</label>
+                                <input required type="text" pattern="^[A-Za-z_ ]+"
+                                    title="Branch contains alphabets only" class="form-control form-control-sm"
+                                    id="Branch" name="Branch">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Register_Email">Register Email</label>
+                                <input required type="text" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                    title="Please enter valid email address" class="form-control form-control-sm"
+                                    id="Register_Email" name="Register_Email">
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div>
+                                <label for="Register_Phone">Register Phone</label>
+                                <input required type="text" pattern="^\d{10}$" title="Enter valid ten mobile numbers"
+                                    class="form-control form-control-sm" id="Register_Phone" name="Register_Phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3 border-0 float-end">
+                        <button type="button" class="btn btn-secondary btn-sm me-2"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="">Edit Bank</button>
+                    </div>
+                </form>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END EDIT BANK -->
+
+<!-- DELETE BANK -->
+<div class="modal fade" id="deletebank" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger py-2">
+                <h6 class="modal-title text-white" id="exampleModalLabel">Delete Bank</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="mb-0">
+                    <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                </div>
+                <h5 class="fw-bold mb-0 mt-2 ">Delete Bank Account ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i
+                        class="fa fa-close"></i></button>
+                <button type="button" class="btn btn-primary btn-sm deleteaccount">Delete Bank</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BANK -->
+
+<!-- ADD NEW CERTIFICATE -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Certificate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <form enctype="multipart/form-data" id="add_certificate_form" method="POST">
+                    <!-- {% csrf_token %} -->
+                    <div class="mb-0">
+                        <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                    </div>
+                    <div class="col-12">
+                        <div class="alert alert-success alert-dismissible d-none certificatemessage fade show py-2 mb-0"
+                            role="alert">
+                            <strong>Certificate Added. !!!</strong>
+                            <button type="button" class="btn-close py-2 mt-1" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 my-2">
+                        <div>
+                            <label for="Certificate_Name">Certificate Name</label>
+                            <input type="text" class="form-control form-control-sm" id="Certificate_Name"
+                                name="Certificate_Name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-12 my-2">
+                        <div>
+                            <label for="Certificate_Scan_Copy">Certificate Scan Copy</label>
+                            <input required type="file" class="form-control form-control-sm" id="Certificate_Scan_Copy"
+                                name="Certificate_Scan_Copy">
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm">Add Certificate</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END CERTIFICATE -->
+
+<!-- EDIT NEW CERTIFICATE -->
+<div class="modal fade" id="editcertificates" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Certificate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <form enctype="multipart/form-data" id="edit_certificate_form" method="POST" novalidate="">
+                    {% csrf_token %}
+                    <div class="mb-0">
+                        <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                    </div>
+                    <div class="col-12">
+                        <div class="alert alert-success alert-dismissible d-none certificateeditmessage fade show py-2 mb-0"
+                            role="alert">
+                            <strong>Certificate Edited. !!!</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-12 my-2">
+                        <div>
+                            <label for="Certificate_Name">Certificate Name</label>
+                            <input type="text" class="form-control form-control-sm" id="Certificate_Name"
+                                name="Certificate_Name">
+                        </div>
+                    </div>
+                    <div class="col-md-12 my-2">
+                        <div>
+                            <label for="Certificate_Scan_Copy">Certificate Scan Copy</label>
+                            <input type="file" class="form-control form-control-sm" id="Certificate_Scan_Copy"
+                                name="Certificate_Scan_Copy">
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm">Edit Certificate</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END CERTIFICATE -->
+
+<!-- DELETE CERTIFICATE -->
+<div class="modal fade" id="deletecertificate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger py-2">
+                <h6 class="modal-title text-white" id="exampleModalLabel">Delete Certificate</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="mb-0">
+                    <input type="hidden" name="agency_id" class="form-control" id="agency_id">
+                </div>
+                <h5 class="fw-bold mb-0 mt-2 ">Delete Certificate ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i
+                        class="fa fa-close"></i></button>
+                <button type="button" class="btn btn-primary btn-sm deleteaccount">Delete </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END CERTIFICATE -->
+
+<!-- start phone  -->
+<div class="modal fade" id="phoneModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="alert alert-success alert-dismissible d-none phonemessage fade show py-2 mb-0" role="alert">
+                    <strong>Phone No Editted Successfully. !!!</strong>
+                </div>
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" name="ph_name" id="ph_name">
+                        <label for="recipient-name" class="col-form-label">Phone:</label>
+                        <input type="text" class="form-control" id="ph_no">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-danger phone_delete btn-sm"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-primary phone_action btn-sm">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- {{request.user.username}} -->
+{% endif %}
+{% endblock %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        $('.agencyMenu').addClass('active')
+        var host = window.location.host;
+        var base = window.location.protocol + "//" + window.location.host + '/';
+        var url = host + 'api/'
+
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+        $('.agency_active').click(function (e) {
+            var id = $(this).attr('agency-id')
+            $.get(base + 'agencies/update-agencies/' + id, function (res) {
+                if (res.status == 200) {
+                    setTimeout(() => {
+                        location.reload()
+                    }, 100)
+                }
+            })
+        })
+
+        $('#example').DataTable()
+
+        var addbankModal = document.getElementById('exampleModal')
+        addbankModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            var modalBodyInput = addbankModal.querySelector('.modal-body input')
+            modalBodyInput.value = recipient
+
+            save_bank()
+        })
+
+        // add save bank
+        function save_bank() {
+            $('#save_bank').submit(function (e) {
+                e.preventDefault()
+                var params = {
+                    Account_Holder_Name: $('#exampleModal #Account_Holder_Name').val(),
+                    Account_Holder_Position: $('#exampleModal #Account_Holder_Position').val(),
+                    Account_Number: $('#exampleModal #Account_Number').val(),
+                    IFSC_Code: $('#exampleModal #IFSC_Code').val(),
+                    Bank_Name: $('#exampleModal #Bank').val(),
+                    Branch: $('#exampleModal #Branch').val(),
+                    Register_Email: $('#exampleModal #Register_Email').val(),
+                    Register_Phone: $('#exampleModal #Register_Phone').val(),
+                    'csrfmiddlewaretoken': csrftoken
+                }
+                var agency_id = $('#agency_id').val()
+                var dynamicurl = base + 'post-api/agency/' + agency_id + '/'
+                $.post(base + 'api/agency-bank/', params, function (res) {
+                    PATCHMethod('Bank_Account', res?.id, dynamicurl)
+                    $('.bankmessage').removeClass('d-none')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 400)
+                })
+            })
+
+        }
+
+
+        var phoneModel = document.getElementById('phoneModel')
+        phoneModel.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var agency_id = button.getAttribute('data-agency')
+            var phone_id = button.getAttribute('data-bs-whatever')
+            var phone_action = button.getAttribute('data-action')
+
+
+            if (phone_action == 'add_phone_no') {
+                $('#phoneModel .modal-title').text('Add Phone Number')
+                $('#phoneModel #ph_name').val('')
+                $('#phoneModel #ph_no').val('')
+                $('#phoneModel .phone_delete').addClass('d-none')
+                $('#phoneModel .phone_action').html('Add').attr('data-action', 'add').attr('data-agency-id', agency_id)
+            } else {
+                var phone_no = button.getAttribute('data-phone')
+                var ph_name = button.getAttribute('data-name')
+                $('#phoneModel .modal-title').text('Edit Phone Number')
+                $('#phoneModel #ph_name').val(ph_name)
+                $('#phoneModel #ph_no').val(phone_no)
+                $('#phoneModel .phone_delete').removeClass('d-none').attr('data-phone', phone_id)
+                $('#phoneModel .phone_action').html('Edit').attr('data-action', 'edit').attr('data-phone', phone_id).attr('data-name', phone_id)
+            }
+
+
+
+            CUD_Function()
+
+        })
+
+        function CUD_Function() {
+            // phone_delete
+            $('#phoneModel .phone_delete').click(function (e) {
+
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+
+                    var ph_id = $(this).attr('data-phone')
+                    $.ajax({
+                        type: "DELETE",
+                        url: base + 'api/agency-phone/' + ph_id + '/',
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({ 'id': ph_id }),
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success: function (response) {
+                            setTimeout(() => {
+                                location.reload()
+                            }, 400)
+                        },
+                    });
+
+                } else {
+                    alert('Invalid Username. !!!')
+                }
+            })
+
+            $('#phoneModel .phone_action').click(function (e) {
+
+                var _action = $(this).attr('data-action')
+                if (_action == 'add') {
+
+                    var phone_no = $('#phoneModel #ph_no').val()
+                    var ph_name = $('#phoneModel #ph_name').val()
+                    var agencyId = $(this).attr('data-agency-id')
+                    if (phone_no != '') {
+                        var dynamicurl = base + 'api/agency-phone/'
+                        $.post(dynamicurl, {
+                            'Phone': phone_no,
+                            'ph_name': ph_name,
+                            'csrfmiddlewaretoken': csrftoken
+                        }, function (res) {
+                            var dynamic = base + 'post-api/agency/' + agencyId + '/'
+                            updatePhone(res?.id, dynamic)
+                            $('#phoneModel .phonemessage').removeClass('d-none').html('Phone No Added Successfully. !!!')
+                            setTimeout(() => {
+                                location.reload()
+                            }, 500)
+                        })
+
+                        function updatePhone(id, url) {
+                            var d = $.get(url, function (res) {
+                                var phone = res?.Phone
+
+                                phone.push(id)
+                                // console.log(phone)
+                                var param = JSON.stringify({
+                                    'Phone': phone
+                                })
+                                PATCH1Method(param, url)
+                            })
+                        }
+                    } else {
+                        alert('Phone number is empty. !!!')
+                    }
+
+
+                } else {
+
+                    var ph_id = $(this).attr('data-phone')
+                    var params = JSON.stringify({
+                        'Phone': $('#phoneModel #ph_no').val(),
+                        'ph_name': $('#phoneModel #ph_name').val()
+
+
+                    })
+                    var dynamicurl = base + 'api/agency-phone/' + ph_id + '/'
+                    PATCH1Method(params, dynamicurl)
+                    $('.phonemessage').removeClass('d-none')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 400)
+
+                }
+
+            })
+        }
+
+
+        var editbank = document.getElementById('editbank')
+        editbank.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var bankid = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            var modalBodyInput = editbank.querySelector('.modal-body input')
+            $.get(base + 'api/agency-bank/' + bankid + '/', function (res) {
+                $('#editbank #Account_Holder_Name').val(res?.Account_Holder_Name)
+                $('#editbank #Account_Holder_Position').val(res?.Account_Holder_Position)
+                $('#editbank #Account_Number').val(res?.Account_Number)
+                $('#editbank #IFSC_Code').val(res?.IFSC_Code)
+                $('#editbank #Bank').val(res?.Bank_Name)
+                $('#editbank #Branch').val(res?.Branch)
+                $('#editbank #Register_Email').val(res?.Register_Email)
+                $('#editbank #Register_Phone').val(res?.Register_Phone)
+            })
+            modalBodyInput.value = bankid
+            editBank()
+
+        })
+
+
+        function editBank() {
+            $('#editBankAccount').submit(function (e) {
+                e.preventDefault()
+                var agency_id = $('#editbank #agency_id').val()
+                var params = {
+                    Account_Holder_Name: $('#editbank #Account_Holder_Name').val(),
+                    Account_Holder_Position: $('#editbank #Account_Holder_Position').val(),
+                    Account_Number: $('#editbank #Account_Number').val(),
+                    IFSC_Code: $('#editbank #IFSC_Code').val(),
+                    Bank: $('#editbank #Bank').val(),
+                    Branch: $('#editbank #Branch').val(),
+                    Register_Email: $('#editbank #Register_Email').val(),
+                    Register_Phone: $('#editbank #Register_Phone').val(),
+                }
+                dynamicurl = base + 'api/agency-bank/' + agency_id + '/'
+                PATCH1Method(JSON.stringify(params), dynamicurl)
+                $('#editbankmessage').removeClass('d-none')
+                setTimeout(() => {
+                    location.reload()
+                }, 400)
+            })
+        }
+
+
+        var deletebank = document.getElementById('deletebank')
+        deletebank.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            var modalBodyInput = deletebank.querySelector('.modal-body input')
+            modalBodyInput.value = recipient
+
+            var bank_id = $('#deletebank #agency_id').val()
+            var dynamicURL = base + 'api/agency-bank/' + bank_id + '/'
+
+            deleteDetail(dynamicURL, '#deletebank')
+
+        })
+
+
+        var addCertificates = document.getElementById('exampleModal1')
+        addCertificates.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            // Update the modal's content.
+            var modalBodyInput = addCertificates.querySelector('.modal-body input')
+            modalBodyInput.value = recipient
+            addCertificate()
+        })
+
+        function addCertificate() {
+            $('#add_certificate_form').submit(function (e) {
+                e.preventDefault()
+                var formData = new FormData(this);
+                formData.append("csrfmiddlewaretoken", csrftoken)
+                $.ajax({
+                    url: base + 'api/agency-certificate/',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        var agency_id = $('#add_certificate_form #agency_id').val()
+                        var dynamicurl = base + 'post-api/agency/' + agency_id + '/'
+                        PATCHMethod('Certificates', response?.id, dynamicurl)
+                        $('.certificatemessage').removeClass('d-none')
+                        setTimeout(() => {
+                            location.reload()
+                        }, 400)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+           
+            });
+        }
+
+
+        var editcertificates = document.getElementById('editcertificates')
+        editcertificates.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var bankid = button.getAttribute('data-bs-whatever')
+            // console.log(bankid)
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            var modalBodyInput = editcertificates.querySelector('#agency_id')
+            modalBodyInput.value = bankid
+            $.get(base + 'api/agency-certificate/' + bankid + '/', function (res) {
+
+                $('#editcertificates #Certificate_Name').val(res?.Certificate_Name)
+                $('#editcertificates #Certificate_Scan_Copy').val(res?.Certificate_Scan_Copy)
+            })
+            modalBodyInput.value = bankid
+            EditCertificate()
+        })
+
+
+        function EditCertificate() {
+            $('#edit_certificate_form').submit(function (e) {
+                e.preventDefault()
+
+                var object = {};
+                var formData = new FormData(this);
+                formData.forEach(function (value, key) {
+                    object[key] = value;
+                });
+                var certificate_id = $('#edit_certificate_form #agency_id').val()
+                var dynamicurl = base + 'api/agency-certificate/' + certificate_id + '/'
+
+                if (object?.Certificate_Scan_Copy?.name == '') {
+                    var patch = JSON.stringify({ Certificate_Name: object['Certificate_Name'] })
+                    PATCH1Method(patch, dynamicurl)
+                } else {
+                    formData.append("csrfmiddlewaretoken", csrftoken)
+                    $.ajax({
+                        url: dynamicurl,
+                        type: 'PATCH',
+                        data: formData,
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success: function (response) {
+                            $('.certificateeditmessage').removeClass('d-none')
+                            setTimeout(() => {
+                                location.reload()
+                            }, 400)
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                }
+
+
+            });
+        }
+
+        var deletecertificate = document.getElementById('deletecertificate')
+        deletecertificate.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            var modalBodyInput = deletecertificate.querySelector('.modal-body input')
+            modalBodyInput.value = recipient
+
+            var cert_id = $('#deletecertificate #agency_id').val()
+            var dynamicURL = base + 'api/agency-certificate/' + cert_id + '/'
+            deleteDetail(dynamicURL, '#deletecertificate')
+
+        })
+
+
+        function deleteDetail(dynamicurl, methods) {
+
+            // delete agency onclick
+            $('.deleteaccount').click(function (e) {
+
+                e.preventDefault()
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+                    var id = $(this).attr('href')
+                    var params = {
+                        'id': $(methods + ' #agency_id').val()
+                    }
+                    $.ajax({
+                        type: "DELETE",
+                        url: dynamicurl,
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify(params),
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success: function (response) {
+                            setTimeout(() => {
+                                location.reload()
+                            }, 400)
+                        },
+                    });
+                } else {
+                    alert('Invalid Username. !!!')
+                }
+            })
+        }
+
+        // delete agency onclick
+        $('.deleteagency').click(function (e) {
+            e.preventDefault()
+            var id = $(this).attr('href')
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                // Save it!
+                var params = {
+                    'id': id
+                }
+
+                $.ajax({
+                    type: "DELETE",
+                    url: base + 'api/agency/' + id + '/',
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (response) {
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000)
+                    },
+                });
+            } else {
+                alert('Invalid Username. !!!')
+            }
+
+        })
+
+
+        // patch method
+        function PATCHMethod(key, value, dynamicurl) {
+            // console.log(dynamicurl)
+            baseurl = dynamicurl
+            // console.log(baseurl)
+            $.get(baseurl, function (res) {
+                var BA = res[key]
+                BA.push(value)
+                patch = { [key]: BA };
+                PATCH1Method(JSON.stringify(patch), dynamicurl)
+            })
+        }
+
+        // patch methods
+        function PATCH1Method(patch, dynamicurl) {
+
+            $.ajax({
+                type: 'PATCH',
+                url: dynamicurl,
+                data: patch,
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    // console.log(response)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+
+        }
+
+    })
+</script>
+<style>
+    .fa-edit,
+    .fa-trash {
+        font-size: 18px;
+    }
+</style>
+{% endblock %}

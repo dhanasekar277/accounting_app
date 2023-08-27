@@ -1,0 +1,496 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="row mx-2 mb-4">
+    <div class="col-12">
+        <a href="{% url 'orders' %}" class="btn btn-sm my-2 ps-0"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+            Back</a>
+    </div>
+
+    <div class="col-12 h-100">
+        <!-- Sales info -->
+        <div class="card p-3">
+            <h6>Sales Company Info</h6>
+            <hr class="mt-0 mb-1">
+
+            <div class="row">
+                <div class="col-3">
+                    <label for="salescompany" class="form-label small mb-1 fw-bold ">PO Type :</label>
+                    <select class="form-control form-control-sm po_type" name="PO_Type" id="Order_PO_Type">
+                        <option value="">-------------</option>
+                        <option value="PA">PO Applicable</option>
+                        <option value="NA">Not Applicable</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">PO Number :</label>
+                    <input type="text" class="form-control po_number form-control-sm" id="">
+                </div>
+                <div class="col-3">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">PO Reciver Name :</label>
+                    <input type="text" class="form-control po_name form-control-sm" id="">
+                </div>
+                <div class="col-3">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">PO Reciver Mail :</label>
+                    <input type="text" class="form-control po_email form-control-sm" id="">
+                </div>
+                <div class="col-3 mt-2">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">PO Approved By :</label>
+                    <input type="text" class="form-control po_approved form-control-sm" id="">
+                </div>
+                <div class="col-3 mt-2">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">PO Date :</label>
+                    <input type="date" class="form-control po_date form-control-sm" id="">
+                </div>
+                <div class="col-3 mt-2">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">Order Recieved Date :</label>
+                    <input type="date" class="form-control rec_date form-control-sm" id="">
+                </div>
+                <div class="col-3 mt-2">
+                    <label for="salescompany" class="form-label small fw-bold mb-1">Order Expected Date :</label>
+                    <input type="date" class="form-control exp_date form-control-sm" id="">
+                </div>
+                <div class="col-4 mt-2">
+                    <label for="remarks" class="form-label mb-1 small fw-bold ">Remarks :</label>
+                    <textarea rows="2" class="form-control form-control-sm" id="remarks"
+                        placeholder="Remarks."></textarea>
+                </div>
+                <div class="col-4 mt-2">
+                    <label for="billingaddress" class="form-label mb-1 small fw-bold ">Billing Address :</label>
+                    <textarea rows="2" class="form-control billingaddress form-control-sm" id="billingaddress"
+                        placeholder="Billing Address."></textarea>
+                </div>
+                <div class="col-4 mt-2">
+                    <label for="deliveryaddress" class="form-label mb-1 small fw-bold ">Delivery Address :</label>
+                    <textarea rows="2" class="form-control deliveryaddress form-control-sm" id="deliveryaddress"
+                        placeholder="Delivery Address."></textarea>
+                </div>
+            </div>
+
+            <!-- po info -->
+
+            <div class="mt-3">
+                <button class="btn btn-danger btn-sm update_po" type="submit">Update PO</button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <h6 class="mt-3 fw-bold">PO Materials</h6>
+    <div class="col-12 pomaterials"></div>
+
+    <h6 class="mt-3 fw-bold">Materials</h6>
+    <div class="col-12 materials"></div>
+
+
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const order_id = urlParams.get('order-id')
+
+    // get order data
+    var od = GetData(`${url}orders/${order_id}/`)
+
+    $('#billingaddress').val(od?.Billing_Address)
+    $('#deliveryaddress').val(od?.Sales_Delivery_Address)
+    $('#remarks').val(od?.PO_Number?.Remarks)
+    $('.exp_date').val(od?.PO_Number?.Order_Expected_Date)
+    $('.rec_date').val(od?.PO_Number?.Order_Recieved_Date)
+    $('.po_date').val(od?.PO_Number?.PO_Date)
+    $('.po_approved').val(od?.PO_Number?.PO_Approved_By)
+    $('.po_email').val(od?.PO_Number?.PO_Reciver_Mail)
+    $('.po_name').val(od?.PO_Number?.PO_Reciver_Name)
+    $('.po_number').val(od?.PO_Number?.PO_Number)
+
+
+    let po_material = od?.PO_Number?.PO_Material_Info
+    let material = od?.Materials
+
+
+    if (material.length != 0) {
+        for (var i = 0; i < material.length; i++) {
+            $('.materials').append(`
+                <div class="card p-3">
+                    <div class="row mat${material[i]?.id}">
+                        <div class="col-3">
+                            <label for="" class="mb-1">Material Name</label>
+                            <input type="text" class="form-control mn" value="${material[i]?.Material_Name}">
+                        </div>
+                        <div class="col-3">
+                            <label for="" class="mb-1">Vendor Name</label>
+                            <input type="text" class="form-control vn" value="${material[i]?.Vendor?.Vendor_Name}">
+                        </div>
+                        <div class="col-3">
+                            <label for="" class="mb-1">Payment Capability</label>
+                            <input type="text" class="form-control pc" value="${material[i]?.Payment_Capability}">
+                        </div>
+                        <div class="col-3">
+                            <label for="" class="mb-1">Vendor Type</label>
+                            <input type="text" class="form-control vt" value="${material[i]?.Vendor?.Vendor_Type}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">PO Price</label>
+                            <input type="text" class="form-control cp" value="${material[i]?.Current_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Sale Price</label>
+                            <input type="text" class="form-control sp" value="${material[i]?.Sale_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Purchase Price</label>
+                            <input type="text" class="form-control pp" value="${material[i]?.Purchase_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Final PO Price</label>
+                            <input type="text" class="form-control fpp" value="${material[i]?.Fianl_PO_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Final Offer Price</label>
+                            <input type="text" class="form-control fsp" value="${material[i]?.Final_Offer_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Final Purchase Price</label>
+                            <input type="text" class="form-control fop" value="${material[i]?.Final_Purchase_Price}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Quantity</label>
+                            <input type="text" class="form-control qu" value="${material[i]?.Quantity}">
+                        </div> 
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Load</label>
+                            <input type="text" class="form-control lo" value="${material[i]?.Load}">
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Expected Date</label>
+                            <input type="date" class="form-control exd" value="${material[i]?.Expected_Date}">
+                        </div> 
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Material Type</label>
+                            <select  class="form-control mat">
+                                <option value="M">Manufactured</option>
+                                <option value="N">Natural</option>
+                            </select>
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">HSNC</label>
+                            <input type="text" class="form-control hsc" value="${material[i]?.HSNCode}">
+                        </div> 
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1 ">Moisture</label>
+                            <select  class="form-control moi">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Moisture Number</label>
+                            <input type="text" class="form-control mon" value="${material[i]?.Moisture_Number}">
+                        </div>  
+                        <div class="col-2 mt-2">
+                            <label for="" class="mb-1">Material Term</label>
+                            <input type="text" class="form-control mterm" value="${material[i]?.Material_Term}">
+                        </div>  
+                        <div class="col-4 mt-2">
+                            <label for="" class="mb-1">Location Supply</label>
+                            <input type="text" class="form-control loc_sup" value="${material[i]?.Location_Supply}">
+                        </div>  
+                        <div class="col-4 mt-2">
+                            <label for="" class="mb-1">Others</label>
+                            <input type="text" class="form-control oth" value="${material[i]?.Others}">
+                        </div> 
+                        <div class="col-6 mt-3">
+                            <input type="button" class="btn btn-sm btn-warning me-2 edit_material" data-id="${material[i]?.id}" value="Edit">
+                            <input type="button" class="btn btn-sm btn-danger del_material" data-id="${material[i]?.id}" value="Delete">
+                        </div>    
+                    </div>
+                </div>
+
+                <hr>
+            `)
+        }
+        EditMaterial()
+        DeleteMaterial()
+    } else {
+        $('.materials').html(`<div class="card text-center p-3">
+            <h5 class="">No Materials. !!!</h5>
+        </div>`)
+    }
+
+
+    if (po_material.length != 0) {
+        for (var i = 0; i < po_material.length; i++) {
+            $('.pomaterials').append(`
+                <div class="card p-3">
+                    <div class="row pmat${po_material[i]?.id}">
+                        <div class="col-3">
+                            <label for="" class="mb-1">Material Name</label>
+                            <input type="text" class="form-control mn" value="${po_material[i]?.Material_Name}">
+                        </div>
+                        <div class="col-1">
+                            <label for="" class="mb-1">Quantity</label>
+                            <input type="text" class="form-control qu" value="${po_material[i]?.Quantity}">
+                        </div>
+                        <div class="col-1">
+                            <label for="" class="mb-1">Type</label>
+                            <select name="" class="form-control qt" id="quantity_type">
+                                <option value="">---</option>
+                                <option value="NO">NO</option>
+                                <option value="MT">MT</option>
+                                <option value="CFT">CFT</option>
+                                <option value="QF">QF</option>
+                                <option value="M3">M3</option>
+                                <option value="QM">QM</option>
+                                <option value="Cage">Cage</option>
+                                <option value="KG">KG</option>
+                            </select>    
+                        </div>
+                        <div class="col-1">
+                            <label for="" class="mb-1">Load</label>
+                            <input type="text" class="form-control lo" value="${po_material[i]?.Load}">
+                        </div>
+                        <div class="col-2">
+                            <label for="" class="mb-1">PO Rate</label>
+                            <input type="text" class="form-control pr" value="${po_material[i]?.PO_Rate}">
+                        </div>
+                        <div class="col-1 ">
+                            <label for="" class="mb-1 ">Moisture</label>
+                            <select  class="form-control moi">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="col-1">
+                            <label for="" class="mb-1">Per %</label>
+                            <input type="text" class="form-control per" value="${po_material[i]?.Moisture_No}">
+                        </div>  
+                        <div class="col-2">
+                            <label for="" class="mb-1">PO Terms</label>
+                            <input type="text" class="form-control term" value="${po_material[i]?.PO_Terms}">
+                        </div>   
+                        <div class="col-6 mt-3">
+                            <input type="button" class="btn btn-sm btn-warning me-2 po_edit_material" data-id="${po_material[i]?.id}" value="Edit">
+                            <input type="button" class="btn btn-sm btn-danger po_del_material" data-id="${po_material[i]?.id}" value="Delete">
+                        </div> 
+                    </div>
+                </div>
+
+                <hr>
+            `)
+        }
+        POEditMaterial()
+        PODeleteMaterial()
+    } else {
+        $('.materials').html(`<div class="card text-center p-3">
+            <h5 class="">No Materials. !!!</h5>
+        </div>`)
+    }
+
+
+    // Material edit section
+    function POEditMaterial() {
+        $('.po_edit_material').click(function (e) {
+            var id = $(this).attr('data-id')
+            // console.log(id)
+            let user_perm = $('#permission').attr('admin')
+            if (user_perm == 'True') {
+
+                var qt = $(`.pmat${id} .qt`).val()
+
+                if (qt == '') {
+                    alert('Quantity Type is empty. !!!')
+                } else {
+                    var params = {
+                        "Quantity_Type": qt,
+                        "Material_Name": $(`.pmat${id} .mn`).val(),
+                        "Quantity": $(`.pmat${id} .qu`).val(),
+                        "Load": $(`.pmat${id} .lo`).val(),
+                        "PO_Rate": $(`.pmat${id} .pr`).val(),
+                        "Moisture": $(`.pmat${id} .moi`).val(),
+                        "Moisture_No": $(`.pmat${id} .per`).val(),
+                        "PO_Terms": $(`.pmat${id} .term`).val(),
+                    }
+                    material_url = `${url}po-material-info/${id}/`
+                    PatchMethod(params, material_url)
+                    alert('PO Material Updated. !!!')
+                }
+
+
+
+
+
+            } else {
+                alert('You dont have access to edit. !!!')
+            }
+
+        })
+    }
+
+    // material delete action
+    function PODeleteMaterial() {
+        $('.po_del_material').click(function (e) {
+            var id = $(this).attr('data-id')
+
+            let user_perm = $('#permission').attr('admin')
+            if (user_perm == 'True') {
+                let action_url = `${url}po-material-info/${id}/`
+                var params = {
+                    'id': id
+                }
+                DeleteMethod(params, action_url)
+
+            } else {
+                alert('You dont have access to edit. !!!')
+            }
+        })
+    }
+
+
+
+
+    // Material edit section
+    function EditMaterial() {
+        $('.edit_material').click(function (e) {
+            var id = $(this).attr('data-id')
+            // console.log(id)
+            let user_perm = $('#permission').attr('admin')
+            if (user_perm == 'True') {
+
+
+                var params = {
+                    "Vendor_Type": $(`.mat${id} .vt`).val(),
+                    "Location_Supply": $(`.mat${id} .loc_sup`).val(),
+                    "Payment_Capability": $(`.mat${id} .pc`).val(),
+                    "Material_Name": $(`.mat${id} .mn`).val(),
+                    "Expected_Date": $(`.mat${id} .exd`).val(),
+                    "Quantity": $(`.mat${id} .qu`).val(),
+                    "Load": $(`.mat${id} .lo`).val(),
+                    "Current_Price": $(`.mat${id} .cp`).val(),
+                    "Sale_Price": $(`.mat${id} .sp`).val(),
+                    "Purchase_Price": $(`.mat${id} .pp`).val(),
+                    "Fianl_PO_Price": $(`.mat${id} .fpp`).val(),
+                    "Final_Purchase_Price": $(`.mat${id} .fsp`).val(),
+                    "Final_Offer_Price": $(`.mat${id} .fop`).val(),
+                    "HSNCode": $(`.mat${id} .hsc`).val(),
+                    "Quality_Material_Type": $(`.mat${id} .mat`).val(),
+                    "Moisture": $(`.mat${id} .moi`).val(),
+                    "Moisture_Number": $(`.mat${id} .mon`).val(),
+                    "Material_Term": $(`.mat${id} .mterm`).val(),
+                    "Others": $(`.mat${id} .oth`).val(),
+                }
+                // console.log(params)
+
+                material_url = `${base}post-api/material-info/${id}/`
+                PatchMethod(params, material_url)
+                alert('Material Updated. !!!')
+
+            } else {
+                alert('You dont have access to edit. !!!')
+            }
+
+        })
+    }
+
+    // material delete action
+    function DeleteMaterial() {
+        $('.del_material').click(function (e) {
+            var id = $(this).attr('data-id')
+
+            let user_perm = $('#permission').attr('admin')
+            if (user_perm == 'True') {
+                let action_url = `${base}post-api/material-info/${id}/`
+                var params = {
+                    'id': id
+                }
+                DeleteMethod(params, action_url)
+
+            } else {
+                alert('You dont have access to edit. !!!')
+            }
+        })
+    }
+
+
+    function UpdatePO() {
+        $('.update_po').click(function (e) {
+
+            let po_type = $('.po_type').val()
+
+            if (po_type == '') {
+                alert('PO Type is empty. !!!')
+            } else {
+                var params = {
+                    'Sales_Delivery_Address': $('.deliveryaddress').val(),
+                    'Billing_Address': $('.billingaddress').val(),
+                }
+                let order_id = od?.id
+                order_url = `${base}post-api/orders/${order_id}/`
+                PatchMethod(params, order_url)
+
+                var po_detil_params = {
+                    "PO_Type": po_type,
+                    "PO_Number": $('.po_number').val(),
+                    "PO_Reciver_Name": $('.po_name').val(),
+                    "PO_Reciver_Mail": $('.po_email').val(),
+                    "PO_Approved_By": $('.po_approved').val(),
+                    "PO_Date": $('.po_date').val(),
+                    "Order_Recieved_Date": $('.rec_date').val(),
+                    "Order_Expected_Date": $('.exp_date').val(),
+                    "Remarks": $('#remarks').val(),
+                }
+                po_url = `${url}po-number/${od?.PO_Number?.id}/`
+                PatchMethod(po_detil_params, po_url)
+
+                alert('PO Details Updated. !!!')
+
+            }
+
+
+        })
+    }
+
+    UpdatePO()
+
+</script>
+
+<style>
+    .addPriceMaterial {
+        background: #009587;
+        padding: 5px 4px;
+        position: relative;
+        top: 8px;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .deleteMaterials {
+        background: #dc3545;
+        padding: 5px 5px;
+        border-radius: 5px;
+        position: relative;
+        top: -10px;
+        left: 14px;
+        color: white;
+    }
+
+    .deleteMaterials:hover {
+        color: #dc3545;
+        background: white;
+    }
+
+    .addPriceMaterial:hover {
+        color: #009587;
+        background: white;
+    }
+</style>
+{% endblock %}

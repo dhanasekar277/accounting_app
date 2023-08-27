@@ -1,0 +1,262 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold"><a href="{% url 'purchase-voucher' %}" class="btn fa-12 "><i class="fa fa-chevron-left"></i> Back
+                </a>Add Purchase Voucher</h5>
+        </div>
+        <div class="col-md-6">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <h6>Sales Order</h6>
+                <hr class="mt-0 mb-1">
+                <div>
+                    <label for="sale" class="fw-bold">Sales</label>
+                    <select name="" id="sale" class="form-control">
+                        <option value="">Select Order</option>
+                        {% for i in context.order_obj %}
+                        <option value="{{i.id}}">{{i.Sales_Company.Company_Name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <h6 class="mt-2">Agency : </h6>
+                <hr class="mt-0 mb-1">
+                <ul id="bank_account" class="ps-3 mb-0">
+
+                </ul>
+                <div class="row">
+                    <div class="col-6 mt-1 pe-2">
+                        <label for="" class="fw-bold">A/C No</label>
+                        <input type="text" class="form-control" id="acc_no">
+                    </div>
+                    <div class="col-6 mt-1 ps-2">
+                        <label for="" class="fw-bold">Bank</label>
+                        <input type="text" class="form-control" id="acc_bank">
+                    </div>
+                    <div class="col-4 mt-1 pe-1">
+                        <label for="" class="fw-bold">Branch</label>
+                        <input type="text" class="form-control" id="acc_branch">
+                    </div>
+                    <div class="col-4 mt-1 ">
+                        <label for="" class="fw-bold">IFSC Code</label>
+                        <input type="text" class="form-control" id="acc_ifsc">
+                    </div>
+                    <div class="col-4 mt-1 ps-1">
+                        <label for="" class="fw-bold">Cell</label>
+                        <input type="text" class="form-control" id="acc_cell">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <h6>Voucher Info</h6>
+                <hr class="mt-0 mb-1">
+                <div class="row">
+                    <div class="col-12 ">
+                        <label for="" class="fw-bold">Voucher Date</label>
+                        <input type="date" class="form-control" id="vou_date">
+                    </div>
+                    <div class="col-6 mt-2 ">
+                        <label for="" class="fw-bold">Voucher Number</label>
+                        <input type="text" class="form-control" id="vou_num">
+                    </div>
+                    <div class="col-6 mt-2">
+                        <label for="" class="fw-bold">Voucher SL Number</label>
+                        <input type="text" class="form-control" id="vou_sl_num">
+                    </div>
+                    <div class="col-12 mt-2 ">
+                        <label for="" class="fw-bold">Debit Voucher Number</label>
+                        <input type="text" class="form-control" id="vou_debit">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 d-none" id="material_details">
+
+            <div class="box-1 rounded bg-white p-3 mb-4">
+                <h6>Material Info</h6>
+                <hr class="mt-0 mb-2">
+                <table class="table table-bordered mb-0 table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 8%;">Date</th>
+                            <th style=" width: 15%;">Comp Name</th>
+                            <th>Site</th>
+                            <th style="width: 15%;">Material</th>
+                            <th>C.DC</th>
+                            <th>Vehicle No</th>
+                            <th style="width: 8%;">MT</th>
+                            <th style="width: 10%;">Rate</th>
+                            <th style="width: 10%;">Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="material_detail">
+
+                    </tbody>
+                </table>
+
+                <button id="add_voucher" class="btn mt-3 btn-primary"><i class="fa fa-plus me-1"></i> Add
+                    Voucher</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+
+<script>
+    $('.purchaseMenu').addClass('active')
+    var doc = new jsPDF();
+
+    var baseUrl = 'http://127.0.0.1:8000/'
+    var url = baseUrl + 'api/'
+
+    $('#sale').change(function () {
+        var order_id = $(this).val()
+        $.get(url + 'orders/' + order_id, function (res) {
+
+            var materials = res?.Materials
+            $('#bank_account').html('')
+            var age_acc = res?.Agency?.Bank_Account
+            if (age_acc.length == 0) {
+                alert('No Bank Accounts. !!!')
+            } else {
+                for (var i = 0; i < age_acc.length; i++) {
+                    var an = String(age_acc[i]?.Account_Number)
+                    var branch = String(age_acc[i]?.Branch)
+                    var ifsc = String(age_acc[i]?.IFSC_Code)
+                    var phone = String(age_acc[i]?.Register_Phone)
+                    var bank = String(age_acc[i]?.Bank)
+                    $('#bank_account').append('<li ><span class="text-capitalize">' + age_acc[i]?.Branch + '</span><span class="ms-1">(' + age_acc[i]?.Account_Number + ')</span><a href="#" id="" class="ms-2 addbranch" an="' + an + '" branch="' + branch + '" ifsc="' + ifsc + '" ph="' + phone + '" bank="' + bank + '"><i class="fa fa-plus text-blue"></a></li>')
+                }
+            }
+
+
+            $('.material_detail').html('')
+            if (materials.length == 0) {
+                alert('No Materials')
+            } else {
+                for (var i = 0; i < materials.length; i++) {
+                    $('.material_detail').append('<tr><td>' + materials[i]?.Expected_Date + '</td><td>' + res?.Sales_Company?.Company_Name + '</td><td>' + materials[i]?.Location_Supply + '</td><td>' + materials[i]?.Material_Name + '</td><td><input type="text" class="form-control cdc' + materials[i]?.id + '" value="' + materials[i]?.CDC + '"></td><td><input type="text" class="form-control v' + materials[i]?.id + '" value="' + materials[i]?.Vehicle_No + '"></td><td><input type="text" class="form-control q' + materials[i]?.id + '" value="' + materials[i]?.Quantity + '"></td><td><input type="text" class="form-control pp' + materials[i]?.id + '" value="' + materials[i]?.Fianl_PO_Price + '"></td><td><input type="text" class="form-control op' + materials[i]?.id + '" value="' + materials[i]?.Final_Offer_Price + '"></td><td><a href="' + materials[i]?.id + '" class="material_check"><i class="fa fa-check text-success"></i></a><a href="' + materials[i]?.id + '" class="ms-2 material_close"><i class="fa fa-close text-danger"></i></a></td></tr>')
+                }
+            }
+
+            $('#material_details').removeClass('d-none')
+            setTimeout(() => {
+                addbranch()
+                material_check()
+            }, 200)
+
+        })
+    })
+
+
+    function addbranch() {
+        $('.addbranch').click(function () {
+            var branch = $(this).attr('branch')
+            var an = $(this).attr('an')
+            var ifsc = $(this).attr('ifsc')
+            var ph = $(this).attr('ph')
+            var bank = $(this).attr('bank')
+            $('#acc_no').val(an).attr('disabled', true)
+            $('#acc_branch').val(branch).attr('disabled', true)
+            $('#acc_ifsc').val(ifsc).attr('disabled', true)
+            $('#acc_cell').val(ph).attr('disabled', true)
+            $('#acc_bank').val(bank).attr('disabled', true)
+        })
+
+    }
+
+    function material_check() {
+        $('.material_check').click(function (e) {
+            e.preventDefault()
+            var id = $(this).attr('href')
+            var params = {
+                'CDC': $('.cdc' + id).val(),
+                'Vehicle_No': $('.v' + id).val(),
+                'Quantity': $('.q' + id).val(),
+                'Fianl_PO_Price': $('.pp' + id).val(),
+                'Final_Offer_Price': $('.op' + id).val(),
+                'csrfmiddlewaretoken': csrftoken
+            }
+            var dynamicurl = baseUrl + 'post-api/material-info/' + id + '/'
+            PATCHPARAMMethod(params, dynamicurl)
+        })
+    }
+
+
+    function PATCHPARAMMethod(params, dynamicurl) {
+        $.ajax({
+            type: 'PATCH',
+            url: dynamicurl,
+            data: JSON.stringify(params),
+            processData: false,
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            success: function (response) {
+
+            },
+            error: function (response) {
+                alert('Network issue Try again later. !!!')
+            }
+        });
+    }
+
+    $('#add_voucher').click(function () {
+        var v_n = $('#vou_num').val()
+
+        if (v_n.length == 0) {
+            alert('Voucher Number Should not be empty. !!!')
+        } else {
+            var params = {
+                'vou_date': $('#vou_date').val(),
+                'vou_num': v_n,
+                'vou_sl_num': $('#vou_sl_num').val(),
+                'vou_debit': $('#vou_debit').val(),
+            }
+            // console.log(params)
+        }
+
+    })
+
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('.quo_download').click(function () {
+        doc.fromHTML($('#final_quotation').html(), 15, 15, {
+            'width': 170,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('sample-file.pdf');
+    });
+
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+    }
+
+    window.onafterprint = function () {
+        window.location.reload()
+    }
+</script>
+
+{% endblock %})

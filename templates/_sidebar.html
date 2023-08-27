@@ -1,0 +1,223 @@
+{% load mathfilters %}
+<nav id="sidebarMenu" class="col-md-3 ps-3 pe-0  col-lg-2 d-md-block bg-dark sidebar collapse">
+    <div class="position-sticky pt-3" style="height: 100%;overflow-y: scroll;">
+        <ul class="nav flex-column">
+            <li class="nav-item me-3">
+                <div id="agencyupdatestatus" class="text-success"></div>
+                <select class="form-select" name="" id="SelectCompany">
+
+                </select>
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link ps-0 dashboardMenu" aria-current="page" href="/">
+                    <i class="fa fa-tachometer me-2" aria-hidden="true"></i>Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 agencyMenu" aria-current="page" href="{% url 'agency' %}">
+                    <i class="fa fa-building-o me-2" aria-hidden="true"></i> Agencies
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 vendorMenu" href="{% url 'vendors' %}">
+                    <i class="fa fa-bus me-2" aria-hidden="true"></i> Vendors
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link ps-0 productMenu" href="{% url 'products' %}">
+                    <i class="fa me-2 fa-product-hunt" aria-hidden="true"></i>Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 customerMenu" href="{% url 'customer' %}">
+                    <i class="fa fa-users me-2" aria-hidden="true"></i>Customers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 orderMenu" aria-current="page" href="{% url 'orders' %}">
+                    <i class="fa me-2 fa-calendar-plus-o" aria-hidden="true"></i>Daily Orders
+                </a>
+            </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-3 mb-1">
+            <span>Business Reports</span>
+            <a class="link-secondary" href="#" aria-label="Add a new report">
+                <span data-feather="plus-circle"></span>
+            </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item ">
+                <a class="nav-link customersReportsMenu ps-0" aria-current="page" href="{% url 'customers_reports' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Customers Reports
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link salesReportsMenu ps-0" aria-current="page" href="{% url 'sales_reports' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Sales Reports
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link vendorsReportsMenu ps-0" aria-current="page" href="{% url 'vendors_reports' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Vendors Reports
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link purchaseReportsMenu ps-0" aria-current="page" href="{% url 'purchase_reports' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Purchase Reports
+                </a>
+            </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-3 mb-1">
+            <span>Entries</span>
+            <a class="link-secondary" href="#" aria-label="Add a new report">
+                <span data-feather="plus-circle"></span>
+            </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item ">
+                <a class="nav-link quotationMenu ps-0" aria-current="page" href="{% url 'quotations' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Quotations
+                </a>
+            </li>
+            <li>
+                <a class="nav-link ps-0 purchaseMenu" aria-current="page" href="{% url 'purchase' %}">
+                    <i class="fa me-2 fa-usd" aria-hidden="true"></i>Purchase Entry
+                </a>
+            </li>
+            <li>
+                <a class="nav-link ps-0 salesMenu" aria-current="page" href="{% url 'sales' %}">
+                    <i class="fa me-2 fa-gift" aria-hidden="true"></i>Sales Entry
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link expenceMenu ps-0" href="{% url 'expences' %}">
+                    <i class="fa me-2 fa-money" aria-hidden="true"></i>Expence Entries
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link bankMenu ps-0" href="{% url 'bank_entries' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Bank Entries
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link netpurchaseMenu ps-0" href="{% url 'netpurchase' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Net Purchase
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link netsalesMenu ps-0" href="{% url 'netsales' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Net Sales
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link netpayMenu ps-0" href="{% url 'netpay' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Net payable
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link netreciveMenu ps-0" href="{% url 'netrecive' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Net reciveable
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link LoanMenu ps-0" href="{% url 'loan' %}">
+                    <i class="fa me-2 fa-bank" aria-hidden="true"></i>Loan Management
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link bclMenu ps-0" href="{% url 'bcl' %}">
+                    <i class="fa fa-money me-2" aria-hidden="true"></i>Balance Conformation
+                </a>
+            </li>
+            <li class="nav-item ">
+                {% now "y" as current_year %}
+                {% now "n" as current_month %}
+                {% with up=current_year|add:1 %}
+                <a class="nav-link balsheetMenu ps-0" href="
+                    {% if current_month <= 3 %}
+                    ../balancesheet/?calander_from=20{{current_year|sub:1}}-04-01&calander_to=20{{current_year}}-03-31
+                    {% else %}
+                    ../balancesheet/?calander_from=20{{current_year}}-04-01&calander_to=20{{up}}-03-31
+                    {% endif %}
+                    ">
+                    <i class="fa fa-money me-2" aria-hidden="true"></i>Balance Sheet
+                </a>
+                {% endwith %}
+            </li>
+            <li class="nav-item ">
+                {% now "y" as current_year %}
+                {% now "n" as current_month %}
+                {% with up=current_year|add:1 %}
+                <a class="nav-link itdetailsMenu ps-0" href="
+                {% if current_month <= 3 %}
+               ../it-details/?calander_from=20{{current_year|sub:1}}-04-01&calander_to=20{{current_year}}-03-31
+                {% else %}
+                ../it-details/?calander_from=20{{current_year}}-04-01&calander_to=20{{up}}-03-31
+                {% endif %} 
+                ">
+                    <i class="fa fa-money me-2" aria-hidden="true"></i>IT Details
+                </a>
+                {% endwith %}
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link gstMenu ps-0" href="{% url 'gst_details' %}">
+                    <i class="fa fa-money me-2" aria-hidden="true"></i>GST Details
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link reportsMenu ps-0" href="{% url 'reports' %}">
+                    <i class="fa fa-file me-2" aria-hidden="true"></i>Reports
+                </a>
+            </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-3 mb-1">
+            <span>Saved reports</span>
+            <a class="link-secondary" href="#" aria-label="Add a new report">
+                <span data-feather="plus-circle"></span>
+            </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link ps-0 fileMenu" href="{% url 'filemanagement' %}">
+                    <i class="fa me-2 fa-upload" aria-hidden="true"></i>File Management
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 phonebookMenu" href="{% url 'phonebooks' %}">
+                    <i class="fa me-2 fa-phone-square" aria-hidden="true"></i>Phonebooks
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ps-0 quciknoteMenu" href="{% url 'quicknotes' %}">
+                    <i class="fa me-2 fa-sticky-note-o" aria-hidden="true"></i>Quick Notes
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>

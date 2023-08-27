@@ -1,0 +1,591 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="row mx-2 mb-4">
+  <div class="col-12">
+    <a href="{% url 'orders' %}" class="btn btn-sm my-2 ps-0"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+      Back</a>
+  </div>
+
+  <div class="col-4 h-100">
+    <!-- Sales info -->
+    <div class="card p-3">
+      <h6>Sales Company Info</h6>
+      <hr class="mt-0 mb-1">
+      <p class="d-none" id="materiallist"></p>
+      <p class="d-none" id="product_material"></p>
+
+      <input type="hidden" name="Sales_Company" id="sales_company_id">
+      <div class="">
+        <div for="sales_company_name" class="form-label small fw-bold mb-1">Sales Company Name : <a href=""
+            data-bs-toggle="modal" data-bs-target="#addCustomer" class="float-end"><i class="fa fa-plus"></i></a></div>
+        <select name="sales_company_name" class="form-control form-control-sm" id="sales_company_name"
+          class="sales_company_name">
+          <option value="">-------------</option>
+          {% for i in obj.customer_obj %}
+          <option value="{{i.Company_Name}}">{{i.Company_Name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="deliveryList">
+        <div class="text-danger mt-1 fw-bold ba d-none">Billing Address : </div>
+        <div class="small text-danger billingaddress"></div>
+        <div class="text-danger mt-0 da d-none fw-bold">Delivery Address : </div>
+        <div class="small text-danger deliveryaddress"></div>
+      </div>
+
+      <div class="mt-1">
+        <label for="deliveryaddress" class="form-label small fw-bold mb-0">Delivery Address :</label>
+        <textarea rows="2" class="form-control form-control-sm" id="deliveryaddress"
+          placeholder="Delivery Address."></textarea>
+      </div>
+
+      <div class="mt-1">
+        <label for="billingaddress" class="form-label small fw-bold mb-1">Billing Address :</label>
+        <textarea rows="2" class="form-control form-control-sm" id="billingaddress"
+          placeholder="Billing Address."></textarea>
+      </div>
+
+
+      <!-- po info -->
+
+      <div class="mt-1 afterpo">
+        <label for="salescompany" class="form-label small fw-bold mb-1">PO Type :</label>
+        <select class="form-control form-control-sm" name="PO_Type" id="Order_PO_Type">
+          <option value="">-------------</option>
+          <option value="PA">PO Applicable</option>
+          <option value="NA">Not Applicable</option>
+        </select>
+      </div>
+
+      <div class="row podetail">
+
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-danger btn-sm w-100 addOrder" type="submit">Add Order</button>
+      </div>
+
+    </div>
+
+    <div class="card mt-3 p-3">
+      <table class="table mb-0 table-bordered table-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Material</th>
+            <th>Qty</th>
+            <th>Assinged</th>
+            <th>Balanced</th>
+          </tr>
+        </thead>
+        <tbody class='remainingQty'>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="col-8 ps-0 h-100">
+    <div class="card p-3 mb-3 box-2">
+      <h6>PO Material Info</h6>
+      <hr class="mt-0 mb-2">
+      <div class="row">
+        <div class="col-12 poalert d-none">
+          <div class="alert alert-success alert-dismissible fade show mb-1 py-2" role="alert">
+            <strong>PO Material </strong> Added Successfully. !!!<button type="button" class="btn-close pt-2 pb-3 pe-1"
+              data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="col-6 pe-1">
+          <label for="" class="small fw-bold">PO Material</label>
+          <select name="" class="form-control SelectPOMaterial">
+            <option value="">Select Material</option>
+            {% for i in obj.product_obj %}
+            <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-2 px-1">
+          <label for="" class="small fw-bold">PO Quantity</label>
+          <input type="text" class="form-control" id="po_quantity">
+        </div>
+        <div class="col-1 px-1">
+          <label for="" class="small fw-bold">Type</label>
+          <select name="" class="form-control" id="quantity_type">
+            <option value="">---</option>
+            <option value="NO">NO</option>
+            <option value="MT">MT</option>
+            <option value="CFT">CFT</option>
+            <option value="QF">QF</option>
+            <option value="M3">M3</option>
+            <option value="QM">QM</option>
+            <option value="Cage">Cage</option>
+            <option value="KG">KG</option>
+          </select>
+        </div>
+
+
+        <div class="col-1 px-1">
+          <label for="" class="small fw-bold">Loads</label>
+          <input type="text" class="form-control" id="po_load">
+        </div>
+        <div class="col-2 ps-1">
+          <label for="" class="small fw-bold">PO Rates</label>
+          <input type="text" class="form-control" id="po_rates">
+        </div>
+        <div class="col-3 mt-2 pe-1">
+          <label for="" class="small fw-bold">Moisture</label>
+          <select class="form-control" id="moisture">
+            <option value="">-----</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="col-4 mt-2 px-1">
+          <label for="moisture_number" class="small fw-bold">Moisture Percentage</label>
+          <input type="text" class="form-control" id="moisture_number">
+        </div>
+        <div class="col-4 mt-2 px-1">
+          <label for="" class="small fw-bold">PO Terms</label>
+          <input type="text" class="form-control" id="po_terms">
+        </div>
+        <div class="col-1 mt-4 ps-1">
+          <button type="submit" class="btn w-100 mt-1 btn-primary add_po_material"><i
+              class="fa fa-plus me-2"></i></button>
+        </div>
+
+        <div class="col-12 po_table ">
+          <table class="table table-sm mt-2 mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>PO Material Name</th>
+                <th>PO Quantity</th>
+                <th>PO Load</th>
+                <th>PO Rates</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pomaterialid">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card p-3">
+      <h6>Material Info</h6>
+      <hr class="mt-0 mb-2">
+      <div class="material_messages d-none mb-2 text-success fw-bold">
+        Material Added Successfully. !!!
+      </div>
+      <div class="row materialDetail">
+        <div class="col-12">
+          <select name="" class="form-control SelectMaterial">
+            <option value="">Select PO Material</option>
+          </select>
+        </div>
+        <div class="col-12 priceTable d-none">
+          <table class="table table-striped table-bordered table-sm mt-2">
+            <thead class="table-dark ">
+              <tr>
+                <th>Name & Company Name</th>
+                <th>Price</th>
+                <th>Capability</th>
+                <th>Latest Price</th>
+                <th>Add</th>
+              </tr>
+            </thead>
+            <tbody id="pricelist">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-4 mt-1 pe-2">
+          <label for="v_name" class="small fw-bold">Vendor Name</label>
+          <input type="text" class="form-control" disabled name="v_name" id="v_name">
+        </div>
+        <div class="col-4 mt-1 px-1">
+          <label for="v_company" class="small fw-bold">Company Name</label>
+          <input type="text" class="form-control" disabled name="v_company" id="v_company">
+        </div>
+        <div class="col-4 mt-1 ps-2">
+          <label for="v_type" class="small fw-bold">Vendor Type</label>
+          <select class="form-control" name="v_type" id="v_type" disabled>
+            <option value="">---------</option>
+            <option value="GST User">GST User</option>
+            <option value="Unregistered User">Unregistered User</option>
+          </select>
+        </div>
+        <div class="col-4 pe-0 mt-1">
+          <label class="small fw-bold">Location They Can Supply</label>
+          <select type="text" class="form-control" id="location_supplysel">
+
+          </select>
+        </div>
+        <div class="col-4 pe-0 mt-1">
+          <label for="location_supply" class="small fw-bold">Unloading Site</label>
+          <input type="text" class="form-control" name="location_supply" id="location_supply">
+        </div>
+        <div class="col-4 mt-1">
+          <label for="v_payment" class="small fw-bold">Payment Capability</label>
+          <input type="text" class="form-control" name="v_payment" id="v_payment" disabled>
+        </div>
+        <div class="col-2 mt-1 ">
+          <input type="hidden" name="Vendor_Id" id="Vendor_Id">
+          <input type="hidden" name="Product_id" id="Product_id">
+          <input type="hidden" name="Mat_PO_id" id="Mat_PO_id">
+          <input type="hidden" name="moisture_id" id="moisture_id">
+          <label for="" class="small fw-bold">Current Price</label>
+          <input type="text" class="form-control" required name="Price" id="Price">
+        </div>
+        <div class="col-2 mt-1 ps-0">
+          <label for="" class="small fw-bold">Purchase Price</label>
+          <input type="text" class="form-control" required name="Purchase_Price" id="Purchase_Price">
+        </div>
+        <div class="col-2 mt-1 ps-0">
+          <label for="" class="small fw-bold">Sales Price</label>
+          <input type="text" class="form-control" required name="Sales_Price" id="Sales_Price">
+        </div>
+        <div class="col-1 mt-1 ps-0">
+          <label for="" class="small fw-bold">Qty</label>
+          <input type="text" class="form-control" name="Quantity" id="Quantity">
+        </div>
+        <div class="col-1 mt-1 ps-0">
+          <label for="" class="small fw-bold">Type</label>
+          <select class="form-control" name="quantityType" id="quantityType">
+            <option value="">---</option>
+            <option value="NO">NO</option>
+            <option value="MT">MT</option>
+            <option value="CFT">CFT</option>
+            <option value="QF">QF</option>
+            <option value="M3">M3</option>
+            <option value="QM">QM</option>
+            <option value="Cage">Cage</option>
+            <option value="KG">KG</option>
+          </select>
+        </div>
+        <div class="col-2 mt-1  ps-0">
+          <label for="" class="small fw-bold">Loads</label>
+          <input type="text" class="form-control" name="No_Of_Load" id="No_Of_Load">
+        </div>
+        <div class="col-2 mt-1 ps-0">
+          <label for="" class="small fw-bold">Expected Date</label>
+          <input type="date" class="form-control" name="Expected_Date" id="Expected_Date">
+        </div>
+        <div class="col-4 mt-1 ">
+          <label for="" class="small fw-bold">Quality Material Type</label>
+          <select name="Quality_Material_Type" class="select form-control custom-select" id="id_Quality_Material_Type">
+            <option value="">---------</option>
+            <option value="N">Natural</option>
+            <option value="M">Manufactured</option>
+          </select>
+        </div>
+        <div class="col-3 ps-0 mt-1">
+          <label for="" class="small fw-bold">HSN Code</label>
+          <input type="text" class="form-control" name="HSNCode" id="HSNCode">
+        </div>
+        <div class="col-2 ps-0 mt-1">
+          <label for="" class="small fw-bold">Moisture</label>
+          <input type="text" class="form-control" name="Moisture" disabled id="Moisture">
+        </div>
+        <div class="col-3 ps-0 mt-1">
+          <label for="" class="small fw-bold">Moisture Percentage</label>
+          <!-- <input type="text" class="form-control d-none" name="quantityType" id="quantityType"> -->
+          <input type="text" class="form-control" name="Moisture_Number" disabled id="Moisture_Number">
+        </div>
+        <div class="col-3 mt-1">
+          <label for="" class="small fw-bold">Material Term</label>
+          <input type="text" class="form-control" name="Material_Term" id="Material_Term">
+        </div>
+        <div class="col-9 ps-0 mt-1">
+          <label for="" class="small fw-bold">Others</label>
+          <textarea class="form-control" name="Others" rows="1" id="Others"></textarea>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary mt-2 btn-sm" id="add_materials">Add Material</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="row materialtable">
+      <div class="col-12 ">
+        <h6 class="mt-2">Material List</h6>
+        <table class="table table-bordered table-sm mb-2">
+          <thead class="table-dark">
+            <tr>
+              <th style="width: 12%;">Material Name</th>
+              <th style="width: 15%;">Vendor Info</th>
+              <th style="width: 15%;">Type</th>
+              <th>Qty</th>
+              <th>Moisture</th>
+              <th style="width: 9%;">Current Price</th>
+              <th style="width: 7%;">Purchase Price</th>
+              <th style="width: 7%;">Sales Price</th>
+
+              <th style="width: 6%;"></th>
+            </tr>
+          </thead>
+          <tbody class="small material_list">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal fade" id="addCustomer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content ">
+      <div class="modal-header py-2">
+        <h5 class="modal-title" id="exampleModalLabel">Add new customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-2">
+        <form>
+          <div class="row">
+            <div class="col-3 pe-0">
+              <label for="Founder_Name" class="">Founder Name:</label>
+              <input type="text" class="form-control form-control-sm" id="Founder_Name">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Company_Name" class="">Company Name:</label>
+              <input type="text" class="form-control form-control-sm" id="Company_Name">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Founder_Phone" class="">Founder Phone:</label>
+              <input type="text" class="form-control form-control-sm" id="Founder_Phone">
+            </div>
+            <div class="col-3">
+              <label for="Founder_Email" class="">Founder Email:</label>
+              <input type="text" class="form-control form-control-sm" id="Founder_Email">
+            </div>
+            <div class="col-12 my-1">
+              <label for="Founder_Address" class="">Founder Address:</label>
+              <input type="text" class="form-control form-control-sm" id="Founder_Address">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="PAN_No" class="">PAN No:</label>
+              <input type="text" class="form-control form-control-sm" id="PAN_No">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="PAN_Scan_Copy" class="">PAN Scan Copy:</label>
+              <input type="file" class="form-control form-control-sm" id="PAN_Scan_Copy">
+            </div>
+            <div class="col-2">
+              <label for="No_Of_Project" class="">No Of Project:</label>
+              <input type="text" class="form-control form-control-sm" id="No_Of_Project">
+            </div>
+            <div class="col-4 ps-0">
+              <label for="Payment_Terms" class="">Payment Terms:</label>
+              <input type="text" class="form-control form-control-sm" id="Payment_Terms">
+            </div>
+            <div class="col-12 mb-1">
+              <label for="Remarks" class="">Remarks:</label>
+              <input type="text" class="form-control form-control-sm" id="Remarks">
+            </div>
+            <small class="fw-bold text-danger">Staff Info</small>
+            <div class="col-3 pe-0">
+              <label for="Name" class="">Name:</label>
+              <input type="text" class="form-control form-control-sm" id="Name">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Contact_No" class="">Contact No:</label>
+              <input type="text" class="form-control form-control-sm" id="Contact_No">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Email" class="">Email:</label>
+              <input type="text" class="form-control form-control-sm" id="Email">
+            </div>
+            <div class="col-3">
+              <label for="Position" class="">Position:</label>
+              <select name="Position" class="select form-control form-control-sm custom-select" required=""
+                id="id_Position">
+                <option value="" selected="">---------</option>
+                <option value="PH">Purchase Head</option>
+                <option value="AH">Account Head</option>
+                <option value="QH">QC Head</option>
+                <option value="PU">Payment Head</option>
+                <option value="US">Unloading Suprivisor</option>
+                <option value="SP">Security</option>
+              </select>
+            </div>
+            <div class="col-12 my-1">
+              <label for="Location" class="">Location:</label>
+              <input type="text" class="form-control form-control-sm" id="Location">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="City" class="">City:</label>
+              <input type="text" class="form-control form-control-sm" id="City">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Zip" class="">Zip:</label>
+              <input type="text" class="form-control form-control-sm" id="Zip">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="State" class="">State:</label>
+              <input type="text" class="form-control form-control-sm" id="State">
+            </div>
+            <div class="col-3">
+              <label for="Country" class="">Country:</label>
+              <input type="text" class="form-control form-control-sm" id="Country">
+            </div>
+            <small class="fw-bold text-danger mt-1">Delivery Address</small>
+            <div class="col-3 pe-0">
+              <label for="Branch" class="">Branch:</label>
+              <input type="text" class="form-control form-control-sm" id="Branch">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="URL_Office_Location" class="">URL Office Location:</label>
+              <input type="text" class="form-control form-control-sm" id="URL_Office_Location">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Invoice_Submitting_URL" class="">Invoice Submitting URL:</label>
+              <input type="text" class="form-control form-control-sm" id="Invoice_Submitting_URL">
+            </div>
+            <div class="col-3  ">
+              <label for="Payment_Collecting_URL" class="">Payment Collecting URL:</label>
+              <input type="text" class="form-control form-control-sm" id="Payment_Collecting_URL">
+            </div>
+            <div class="col-6 my-1 pe-0">
+              <label for="URL_Location_Of_The_Unloading_Place" class="">URL Location Of The Unloading Place:</label>
+              <input type="text" class="form-control form-control-sm" id="URL_Location_Of_The_Unloading_Place">
+            </div>
+            <div class="col-3 my-1 pe-0">
+              <label for="URL_Of_Owner_House" class="">URL Of Owner House:</label>
+              <input type="text" class="form-control form-control-sm" id="URL_Of_Owner_House">
+            </div>
+            <div class="col-3 my-1 ">
+              <label for="Add_other_URL" class="">Add other URL:</label>
+              <input type="text" class="form-control form-control-sm" id="Add_other_URL">
+            </div>
+
+            <small class="fw-bold text-danger mt-1">Bank Accounts</small>
+            <div class="col-3 pe-0">
+              <label for="Category" class="">Category:</label>
+              <select name="Category" class="select form-control form-control-sm custom-select" id="Category">
+                <option value="" selected="">---------</option>
+                <option value="0">Personal</option>
+                <option value="1">Registered Account</option>
+              </select>
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Account_No" class="">Account No:</label>
+              <input type="text" class="form-control form-control-sm" id="Account_No">
+            </div>
+            <div class="col-2 pe-0">
+              <label for="IFSC_Code" class="">IFSC_Code:</label>
+              <input type="text" class="form-control form-control-sm" id="IFSC Code">
+            </div>
+            <div class="col-2 pe-0 ">
+              <label for="Branch" class="">Branch:</label>
+              <input type="text" class="form-control form-control-sm" id="Branch">
+            </div>
+            <div class="col-2  ">
+              <label for="Register_Phone" class="">Register Phone:</label>
+              <input type="text" class="form-control form-control-sm" id="Register_Phone">
+            </div>
+
+            <small class="fw-bold text-danger mt-1">GST No</small>
+            <div class="col-3 pe-0">
+              <label for="GST_No" class="">GST No:</label>
+              <input type="text" class="form-control form-control-sm" id="GST_No">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Scan_Copy" class="">Scan Copy:</label>
+              <input type="file" class="form-control form-control-sm" id="Scan_Copy">
+            </div>
+            <div class="col-6">
+              <label for="Address" class="">Address:</label>
+              <input type="text" class="form-control form-control-sm" id="Address">
+            </div>
+            <div class="col-3 my-1 pe-0">
+              <label for="City" class="">City:</label>
+              <input type="text" class="form-control form-control-sm" id="City">
+            </div>
+            <div class="col-3 my-1 pe-0">
+              <label for="Zip" class="">Zip:</label>
+              <input type="text" class="form-control form-control-sm" id="Zip">
+            </div>
+            <div class="col-3 my-1 pe-0">
+              <label for="State" class="">State:</label>
+              <input type="text" class="form-control form-control-sm" id="State">
+            </div>
+            <div class="col-3 my-1">
+              <label for="Country" class="">Country:</label>
+              <input type="text" class="form-control form-control-sm" id="Country">
+            </div>
+            <div class="col-3">
+              <label for="Location_Url" class="">Location Url:</label>
+              <input type="text" class="form-control form-control-sm" id="Location_Url">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Mobile" class="">Mobile:</label>
+              <input type="text" class="form-control form-control-sm" id="Mobile">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Mail_Id" class="">Mail_Id:</label>
+              <input type="text" class="form-control form-control-sm" id="Mail_Id">
+            </div>
+            <div class="col-3 pe-0">
+              <label for="Photo" class="">Photo:</label>
+              <input type="file" class="form-control form-control-sm" id="Photo">
+            </div>
+
+
+          </div>
+          <div class="mb-3">
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i
+            class="fa fa-close"></i></button>
+        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus me-1"></i> Save Customer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/order.js' %}"></script>
+
+<style>
+  .addPriceMaterial {
+    background: #009587;
+    padding: 5px 4px;
+    position: relative;
+    top: 8px;
+    border-radius: 5px;
+    color: white;
+  }
+
+  .deleteMaterials {
+    background: #dc3545;
+    padding: 5px 5px;
+    border-radius: 5px;
+    position: relative;
+    top: -10px;
+    left: 14px;
+    color: white;
+  }
+
+  .deleteMaterials:hover {
+    color: #dc3545;
+    background: white;
+  }
+
+  .addPriceMaterial:hover {
+    color: #009587;
+    background: white;
+  }
+</style>
+{% endblock %}

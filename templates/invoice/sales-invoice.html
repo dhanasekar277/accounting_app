@@ -1,0 +1,524 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+{% load mathfilters %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold"><a href="{% url 'sales' %}" class="btn btn-primary btn-sm me-3"><i
+                        class="fa fa-chevron-left"></i> &nbsp;Back</a></a>Sales Invoice </h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <b>Invoice Material List : </b>
+                <ul id="material_list" class="mb-0">
+                    {% for i in sales.sales.all %}
+                    <li class="mt-1">
+                        {% if i.sale_invoice %}
+                        <a href="{{i.id}}"
+                            class="btn btn-sm btn-success si{{i.id}} py-0 small sale_invoice fa-12 px-1"><i
+                                class="fa fa-10 fa-file me-1"></i> Invoice &nbsp;( {{i.remainder.GSTFilledInvNo}} )</a>
+                        <a href="" data-id="{{i.id}}"
+                            class="btn btn-sm btn-blue text-white py-0 small fa-12 px-1 invoice_print ip{{i.id}} d-none"><i
+                                class="fa fa-print fa-10 me-1"></i> Print</a>
+                        <a href="{{i.id}}"
+                            class="btn btn-sm btn-danger py-0 small fa-12 px-1 delete_invoice id{{i.id}} d-none"><i
+                                class="fa fa-trash fa-10 me-1"></i> Delete</a>
+                        <a href="{{i.id}}"
+                            class="btn btn-sm btn-warning py-0 small fa-12 px-1 download_xl id{{i.id}} d-none"><i
+                                class="fa fa-file-excel-o fa-10 me-1"></i> Summary</a>
+                        <a href="{{i.id}}"
+                            class="btn btn-sm btn-success py-0 small fa-12 px-1 download_excel id{{i.id}} d-none"><i
+                                class="fa fa-download fa-10 me-1"></i> Excel</a>
+                        {% else %}
+                        <a href="{{i.id}}" class="generateInvoice si{{i.id}}"><span
+                                class="text-danger">{{i.remainder.GSTFilledInvNo}}</span> <span
+                                class="text-dark text-capitalize">( <b>Approved by : </b>
+                                {{i.remainder.GSTFilledInvReceive}} )</span></a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div id="invoice_action" class="d-none text-end">
+                <a href="" class="btn invoice_del btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                <a href="" class="btn print_fun btn-blue ms-1 text-white btn-sm"><i class="fa fa-print"></i> Print</a>
+            </div>
+            <div class="invoice_section small d-none rounded bg-white p-2 mb-4" id="inv_print">
+                <form id="invoice_details">
+                    <h6 class="text-center mb-0"><b>TAX INVOICE
+                            {% now "y" as current_year %}
+                            {% now "n" as current_month %}
+                            {% if current_month <= 3 %} 20{{current_year|sub:1}}-20{{current_year}} {% else %}
+                                20{{current_year}}-20{{current_year|add:1}} {% endif %} </b><span
+                                    class="float-end small">
+                                    <select name="" class="border-0 copy_list" id="">
+                                        <option value="">( Original Copy )</option>
+                                        <option value="">( Duplicate Copy )</option>
+                                        <option value="">( Triplicate Copy )</option>
+                                        <option value="">( Extra Copy )</option>
+                                    </select>
+
+                                </span></h6>
+                    <span class="d-none" id="saleId">{{sales.id}}</span>
+                    <span class="d-none" id="orderId">{{sales.orderid.id}}</span>
+                    <table class="table table-sm table-bordered mb-0">
+                        <tr>
+                            <td width="30%">
+                                <p class="mb-0">{{sales.orderid.Agency.Name}}</p>
+                                <span class="text-capitalize">{{sales.orderid.Agency.Address}},
+                                    {{sales.orderid.Agency.City}} - {{sales.orderid.Agency.Zip}},
+                                    {{sales.orderid.Agency.State}},
+                                    {{sales.orderid.Agency.Country}}
+                                </span>
+                                <div class="my-1">
+                                    <span class="fw-bold">CELL : </span> <span class="invoicePhone"></span>
+                                    <select name="phone" id="phone_data" required>
+                                        {% for i in sales.orderid.Agency.Phone.all %}
+                                        <option value="{{i.id}}">{{i}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div><span class="fw-bold">GSTIN/UIN : </span>{{sales.orderid.Agency.GST_Number}}</div>
+                                <p class="mb-0"><span class="fw-bold">State Name :
+                                    </span>{{sales.orderid.Agency.State}}, <span class="ms-2 fw-bold">Code :
+                                    </span>{{sales.orderid.Agency.Zip}}</p>
+                                <p class="mb-0"></p>
+                                <div><span class="fw-bold">E-Mail : </span>{{sales.orderid.Agency.Email}}</div>
+                            </td>.
+                            <td width="25%" class="px-0">
+                                <p class="mb-0 mx-2 fw-bold small">Invoice No : </p>
+                                <div class="mb-0 mx-2"><input type="text" required id="InvoiceNo" name="InvoiceNo"
+                                        class="form-control form-control-sm"></div>
+                                <hr class="my-1">
+                                <p class="mb-0 mx-2 fw-bold small">Delivery Note : </p>
+                                <div class="mb-0 mx-2"><input type="text" required id="DeliveryNote" name="DeliveryNote"
+                                        class="form-control delivery_note form-control-sm"></div>
+                                <hr class="my-1">
+                                <p class="mb-0 mx-2 fw-bold small">Supplier's Ref : </p>
+                                <div class="mb-0 mx-2"><input type="text" required id="SupplierRef" name="SupplierRef"
+                                        class="form-control form-control-sm"></div>
+                            </td>
+                            <td width="25%" class="px-0">
+                                <div class="mb-0 mx-2 fw-bold small">Dated : </div>
+                                <div class="mb-0 mx-2"><input type="date" required name="InvoiceDate" id="InvoiceDate"
+                                        class="form-control form-control-sm"></div>
+                                <hr class="my-1">
+                                <p class="mb-0 mx-2 fw-bold small">Other Reference(s) : </p>
+                                <div class="mb-0 mx-2"><input type="text" required id="OtherReference"
+                                        name="OtherReference" class="form-control form-control-sm"></div>
+                                <hr class="my-1">
+                                <p class="mb-0 mx-2 fw-bold small">Mode/Terms of Payment : </p>
+                                <div class="mb-0 mx-2"><input type="text" required id="TermsPayment" name="TermsPayment"
+                                        class="form-control form-control-sm TermsPayment"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td width="30%" style="border-bottom-style: hidden;" class="pb-0">
+                                <div>Buyer</div>
+                                <div class="text-uppercase company_name"></div>
+                                <div class="text-capitalize company_address"></div>
+                                <div class="text-capitalize company_city_zip"></div>
+                                <div class="text-capitalize company_state_country"></div>
+                                <div class="mb-0"><span class="fw-bold me-2">GSTIN/UIN : </span><span
+                                        class="customer_gst_no"></span></div>
+                                <div class="mb-0"><span class="fw-bold me-2">PAN/IT No : </span><span
+                                        class="customer_pan_no"></span></div>
+                            </td>
+                            <td width="25%" class="px-0">
+                                <div class="mx-2"><b class="small">Buyer's Order No :
+                                    </b>PO{{sales.orderid.PO_Number.id}}</div>
+                                <hr class="my-1">
+                                <div class="mx-2 fw-bold small">Despatch Document No : </div>
+                                <div class="mb-0 mx-2 "><input type="text" id="DespatchDocumentNo" required
+                                        name="DespatchDocumentNo" class="form-control form-control-sm"></div>
+                                <hr class="mt-0 mb-1">
+                                <div class="mx-2">
+                                    <p class="mb-0 fw-bold">Delivery Company : </p>
+                                    <p class="mb-0 company_name">{{sales.customer.customerid.Company_Name}}</p>
+                                </div>
+                            </td>
+                            <td width="25%" class="px-0">
+                                <div class="mx-2 "><b class="small">Date :
+                                    </b>{{sales.orderid.PO_Number.Order_Recieved_Date}}</div>
+                                <hr class="my-1">
+                                <div class="mb-0 mx-2 fw-bold small">Despatched through : </div>
+                                <div class="mb-0 mx-2">ROAD</div>
+                                <hr class="my-1">
+                                <div class="my-1 mx-2">
+                                    <p class="mb-0 fw-bold">Delivery Address : </p>
+                                    <div class="company_delivery_address">{{sales.orderid.Sales_Delivery_Address}}</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- <tr>
+                            <td class="pt-0">
+
+                            </td>
+                            <td colspan="2" class="py-1 text-capitalize">
+                               
+                            </td>
+                        </tr> -->
+
+                    </table>
+                    <table class="table table-sm table-bordered mb-0 ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Description of Goods</th>
+                                <th>HSN/SAC</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>per</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <span class="d-none salesCount">{{sales.poInfo.count}}</span>
+                        <tbody id="salesMaterial">
+                            {% for i in sales.poInfo.all %}
+                            <tr class="mb-4 sales{{forloop.counter}}">
+                                <td> {{i.MatId}}
+                                    {{forloop.counter}}</td>
+                                <td class="d-none poid">{{i.id}}</td>
+                                <td id="mname">{{i.MatId.Material_Name}}</td>
+                                <td id="mhsnc">{{i.MatId.HSNCode}}</td>
+                                <td id=""><span id="mqty">{{i.qty}}</span> <span
+                                        id="mqtype">{{i.MatId.Quantity_Type}}</span></td>
+                                <td id="mprice">{{i.Total}}</td>
+                                <td id="">{{i.MatId.Quantity_Type}}</td>
+                                <td id="mtotal">{{i.Total}}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                        <tbody class="total_product_price d-none">
+                            <tr class="mb-4">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td id="ttl_price"></td>
+                            </tr>
+                        </tbody>
+
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <div class="text-end fw-bold">
+                                        <div><span class="sgst_cgst_per"></span>% - CGST-OUTPUT TAX</div>
+                                        <div><span class="sgst_cgst_per"></span>% - SGST-OUTPUT TAX</div>
+                                        <div>ROUNDED OFF</div>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <div class="sgst_cgst_"></div>
+                                        <div class="sgst_cgst_"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>%</div>
+                                    <div>%</div>
+                                </td>
+                                <td>
+                                    <div class="text-end">
+                                        <div class="cgst_price"></div>
+                                        <div class="sgst_price"></div>
+                                        <div id="rounded_price"></div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>Total</td>
+                                <td></td>
+                                <td id="total_qtys"></td>
+                                <td></td>
+                                <td></td>
+                                <td id="total">{{sales.total.total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div>
+                                        <div><small>Amount Chargeable (in words)</small> <span class="float-end">E &
+                                                O.E</span></div>
+                                        <div class="fw-bold">INR <span id="total_words"></span> Only</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered border-top-0 mb-0 table-sm">
+                        <tr class="text-center fw-bold">
+                            <td>HSN/SAC</td>
+                            <td>Taxable Value</td>
+                            <td colspan="2">Central Tax</td>
+                            <td colspan="2">State Tax</td>
+                            <td>Total</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td>Rate</td>
+                            <td>Amount</td>
+                            <td>Rate</td>
+                            <td>Amount</td>
+                            <td>Tax Amount</td>
+                        </tr>
+                        <tr>
+                            <td id="hsnc"></td>
+                            <td class="final_total"></td>
+                            <td class="sgst_cgst_"></td>
+                            <td class="cgst_price"></td>
+                            <td class="sgst_cgst_"></td>
+                            <td class="sgst_price"></td>
+                            <td class="tax"></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-end">Total</td>
+                            <td class="final_total"></td>
+                            <td></td>
+                            <td class="cgst_price"></td>
+                            <td></td>
+                            <td class="sgst_price"></td>
+                            <td class="tax"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <div>
+                                    <span>Tax Amount (in words) : </span><b>INR <span id="tax_words"></span> Only</b>
+                                </div>
+                                <div>
+                                    <b>Remarks :</b>
+                                    <div>BEING THE INVOICE NUMBER : <span id="invoice_id"></span>/INVOICE</div>
+                                    <div>DATE : <span id="date_generated"></span> <span
+                                            class="text-capitalize">{{sales.customer.customerid.Company_Name}}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="4">
+                                <div>
+                                    <span>Company's VAT TIN : </span><b>{{sales.orderid.Agency.Tin}}</b>
+                                </div>
+                                <div>
+                                    <span>Buyer's VAT TIN : </span>
+
+                                    <b>{{sales.customer.tin.TIN_No}}</b>
+                                </div>
+                                <div>
+                                    <span>Company's PAN : </span><b>{{sales.orderid.Agency.PAN_Number}}</b>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="width:50%;">
+                                <div>
+                                    <u>Declaration</u>
+                                    <div>
+                                        We declare that this invoice shows the actual price of the goods described
+                                        and that all particulars are true and correct.
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="3">
+                                <div>Company's Bank Details</div>
+                                <select name="BankAccount" id="bank_account">
+                                    {% for i in sales.orderid.Agency.Bank_Account.all %}
+                                    <option value="{{i.id}}">{{i.Bank_Name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div>
+                                    <div><b>Bank Name : </b> <span class="ibank"></span></div>
+                                    <div><b>A/C No : </b> <span class="iac_no"></span></div>
+                                    <div><b>Branch & IFSC : </b> <span class="ibranch"></span> & <span
+                                            class="iifsc"></span></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="width:50%;">
+                                <div>
+                                    Customer's Seal and Signature
+                                </div>
+                                <br><br>
+                            </td>
+                            <td colspan="3" class="text-center">
+                                <div>for KAVITHA AGENCY</div>
+                                <div class="mt-5">Authorised Signature</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <button type="submit" class="btn btn-primary my-3 text-center" id="invoice_submit"><i
+                            class="fa fa-file"></i> &nbsp;Generate Invoice</button>
+                </form>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="modal fade" id="SummaryModal" tabindex="-1" aria-labelledby="SummaryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="SummaryModalLabel">Summary</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="p-5 text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-blue text-white summary_printbtn ip{{i.id}}"><i
+                                    class="fa fa-print me-1"></i> Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+<script src="{% static 'js/sales-entry.js' %}"></script>
+<script>
+    $('.salesMenu').addClass('active')
+
+    $('.summary_printbtn').click(function (event) {
+        event.preventDefault()
+        $(`#invoice_summary`).printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "../css/style.css",
+            pageTitle: false,
+            removeInline: false,
+            printDelay: 200,
+            header: false,
+            formValues: true,
+            margin: 0,
+            padding: 0,
+        });
+    })
+
+    $('.invoice_print').click(function (event) {
+        event.preventDefault()
+        $(`#inv_print`).printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "../css/style.css",
+            pageTitle: false,
+            removeInline: false,
+            printDelay: 200,
+            header: false,
+            formValues: true,
+            margin: 0,
+            padding: 0,
+        });
+    })
+
+    $('.delete_invoice').click(function (event) {
+        event.preventDefault()
+        let saleinvoiceid = $(this).attr('href');
+
+        let person = prompt("Please Enter Your Name ?", "");
+        if (person == '{{request.user.username}}') {
+
+            let get_iv_data = GetData(`/post-api/sales/${saleinvoiceid}`)
+            ig_data = get_iv_data?.poInfo
+
+            for (var i = 0; i < ig_data.length; i++) {
+                let ig_url = `/post-api/sales-material-info/${ig_data[i]}/`
+                var params = {
+                    ig: false
+                }
+                PatchMethod(params, ig_url)
+            }
+
+
+            $.ajax({
+                type: "DELETE",
+                url: '/api/sales/' + saleinvoiceid,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({ 'id': saleinvoiceid }),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (data) {
+                    alert('Deleted Successfully. !!!')
+                    location.reload()
+                }
+            });
+
+
+        }
+        else {
+            alert('Invalid Name. !!!')
+        }
+
+
+    })
+
+    var params = new window.URLSearchParams(window.location.search);
+    if (params.get('si')) {
+        var get_id = params.get('si')
+        // $(`.si${get_id}`)[0].click((e) => {
+        //     e.preventDefault()
+        // });
+    }
+
+</script>
+<style type="text/css" media="print">
+    /* @media print {
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    } */
+</style>
+<style>
+    .copy_list {
+        width: 120px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+        background-color: #ffffff;
+        border: 0;
+        padding: 0;
+        min-height: 20px;
+    }
+
+    input:disabled {
+        background-color: #ffffff;
+        border: 0;
+    }
+</style>
+{% endblock %}

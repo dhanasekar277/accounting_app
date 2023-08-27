@@ -1,0 +1,59 @@
+
+
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+
+    <a href="../" class="btn mx-2 btn-sm my-2"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</a>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="alerts mx-3 alert-{{ message.tags }}" {% endif %}> {{ message }} </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card p-3 mb-3 mx-3 box-2">
+        <h6><b>Update Agency</b></h5>
+        {% crispy obj.fm %}
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+<style>
+    #div_id_Certificate_Scan_Copy .custom-file, #div_id_Logo .custom-file{
+        padding: 0 !important;
+    }
+    #div_id_Certificate_Scan_Copy .custom-file-label,#div_id_Logo .custom-file-label{
+        display:none !important;
+    }
+
+    .alerts{
+        padding: 5px 15px;
+        margin-bottom: 10px;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+    .alert-error{
+        background: #dc3545;
+    }
+    .alert-success{
+        background:#0f5132 !important; 
+    }
+</style>
+    <script>
+        $(document).ready(function(){
+
+            $('.agencyMenu').addClass('active')
+            $('#submit-id-add_agency').val('Update Agency')
+
+        })
+    </script>
+{% endblock %})

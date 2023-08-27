@@ -1,0 +1,624 @@
+{% extends "_base.html" %} {% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Loan Management</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <p class="mb-1"><span class="fw-bold">Agency Name : </span>{{agency.Name}}</p>
+                        <p class="mb-1"><span class="fw-bold">GST_Number : </span>{{agency.GST_Number}}</p>
+                        <p class="mb-1"><span class="fw-bold">PAN_Number : </span>{{agency.PAN_Number}}</p>
+                    </div>
+                    <div class="col-md-5">
+                        <p class="mb-1"><span class="fw-bold">Address : </span>{{agency.Address}}</p>
+                        <p class="mb-1"><span class="fw-bold">City : </span>{{agency.City}}-{{agency.Zip}}</p>
+                        <p class="mb-1"><span class="fw-bold">State : </span>{{agency.State}}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="mb-1"><span class="fw-bold">Country : </span>{{agency.Country}}</p>
+                        <p class="mb-1"><span class="fw-bold">Email : </span>{{agency.Email}}</p>
+                        <p class="mb-1"><span class="fw-bold">Tin : </span>{{agency.Tin}}</p>
+                    </div>
+                </div>
+
+
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <a href="" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal"
+                            data-bs-target="#AddLoanModal"><i class="fa fa-plus me-1"></i> Add</a>
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if loans %}
+                <table id="loanmanagement" class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Released</th>
+                            <th scope="col">Maturity</th>
+                            <th scope="col">Repayment</th>
+                            <th scope="col">Principal</th>
+                            <th scope="col">Penalty</th>
+                            <th scope="col">Due Amount</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col" width="10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                        <tr class="loanDetails{{loan.id}}">
+                            <td>
+                                <p class="mb-0"> {{loan.Name}}</p>
+                            </td>
+                            <td>{{loan.Released_Date}}</td>
+                            <td>{{loan.Maturity_Date}}</td>
+                            <td>{{loan.Repayment_Type}}</td>
+                            <td>
+                                <p class="mb-0">Rs.{{loan.Principal_Amount}}</p>
+                                <small class="text-secondary">@{{loan.Interest}}% Interest</small>
+                            </td>
+                            <td>Rs.{{loan.Penalty}}</td>
+                            <td>
+                                <p class="mb-0">Rs.{{loan.Due_Amount}}</p>
+                            </td>
+                            <td>Rs.{% widthratio loan.Due_Amount 1 loan.Months_Paid %}</td>
+                            <td>
+                                <a href="" class="text-success addrepaymentbtn" data-bs-toggle="modal"
+                                    data-bs-target="#AddRepaymentModal" data-bs-whatever="@mdo" data-id="{{loan.id}}"><i
+                                        class="fa fa-lg fa-plus"></i></a>
+                                <a href="" class="text-success viewrepaymentbtn" data-bs-toggle="offcanvas"
+                                    data-bs-target="#LoanDetails" data-id="{{loan.id}}"><i
+                                        class="fa fa-lg ms-2 fa-eye"></i></a>
+                                <a href="" class="text-danger loanDelete" data-id="{{loan.id}}"><i
+                                        class="fa fa-lg ms-2 fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if loans.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if loans.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{loans.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in loans.paginator.page_range %}
+                        {% if loans.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if loans.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{loans.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Repayment -->
+<div class="modal fade" id="AddRepaymentModal" tabindex="-1" aria-labelledby="AddRepaymentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Repayment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="final_invoice">
+                <form class="row" id="addrepaymentform" novalidate action="">
+                    <div class="col-md-6 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="date" class="form-control repayloan_date"
+                                placeholder="Collection Date">
+                            <label for="Collection Date">Collection Date</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-1">
+                        <div class="form-floating">
+                            <select required class="form-select repayloan_paymethod"
+                                aria-label="Floating label select example">
+                                <option value="" selected disabled>Payment Method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                            <label for="Method">Payment Method</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input required type="text" class="form-control repayloan_collectby"
+                                placeholder="Collected By">
+                            <label for="Collected By">Collected By</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control repayloan_paid" placeholder="Paid Amount">
+                            <label for="Paid Amount">Amount Paid</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="btn float-end btn-sm btn-primary" type="submit">Submit</button>
+                        <button type="button" class="btn float-end btn-sm btn-danger me-2"
+                            data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Loan -->
+<div class="modal fade" id="AddLoanModal" tabindex="-1" aria-labelledby="AddLoanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Loan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="final_invoice">
+                <form class="row" novalidate id="addloanform" action="">
+                    <input type="hidden" value="{{agency.id}}" class="form-control loan_agency">
+                    <div class="col-md-6 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="text" class="form-control loan_name" placeholder="Name">
+
+                            <label for="Name">Name</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-1">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control loan_pricipal" placeholder="principal">
+                            <label for="principal">Principal Amount</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="date" class="form-control loan_released" placeholder="Released">
+                            <label for="Released">Released Date</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 px-1">
+                        <div class="form-floating mb-3">
+                            <input required type="date" class="form-control loan_maturity" placeholder="Maturity">
+                            <label for="Maturity">Maturity Date</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ps-1">
+                        <div class="form-floating">
+                            <select required class="form-select loan_paytype"
+                                aria-label="Floating label select example">
+                                <option selected disabled value="">Repayment Type</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="3 Months Once">3 Months Once</option>
+                                <option value="6 Months Once">6 Months Once</option>
+                            </select>
+                            <label for="Repayment Type">Repayment Type</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control loan_penalty" placeholder="Penalty">
+                            <label for="Penalty">Penalty</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-1">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control loan_interset" placeholder="Interest">
+                            <label for="Interest">Interest</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="date" class="form-control loan_emistart" placeholder="EMI Start Date">
+                            <label for="EMI Start Date">EMI Start Date</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-1">
+                        <div class="form-floating mb-3">
+                            <input required type="date" class="form-control loan_emiend" placeholder="EMI End Date">
+                            <label for="EMI End Date">EMI End Date</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pe-1">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control loan_due" placeholder="Due">
+                            <label for="Due">Due Amount</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-1">
+                        <div class="form-floating mb-3">
+                            <input required type="number" class="form-control loan_paid" placeholder="Total Months">
+                            <label for="Paid">Total Months</label>
+                            <div class="invalid-feedback">
+                                Required Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="btn float-end btn-sm btn-primary" type="submit">Submit</button>
+                        <button type="button" class="btn float-end btn-sm btn-danger me-2"
+                            data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loan Details -->
+<div class="offcanvas offcanvas-bottom" style="height: 60%;" tabindex="-1" id="LoanDetails"
+    aria-labelledby="LoanDetailsLabel">
+    <div class="offcanvas-body">
+        <table class="table repaytable">
+            <thead class="table-dark">
+                <tr>
+                    <td>Collection Date</td>
+                    <td>Collected By</td>
+                    <td>Method</td>
+                    <td>Paid Amount</td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+        </table>
+        <p class="text-center is_rec_available">No Records Available</p>
+        <div class="loanamountdetails">
+
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.LoanMenu').addClass('active')
+    })
+
+    var csrftoken = $('meta[name="csrf-token"]').attr('content');
+
+    // Add Loan
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#addloanform')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    if (form.checkValidity()) {
+                        event.preventDefault()
+                        $.post('/api/loans/', {
+                            'Agency': $('.loan_agency').val(),
+                            'Name': $('.loan_name').val(),
+                            'Principal_Amount': $('.loan_pricipal').val(),
+                            'Released_Date': $('.loan_released').val(),
+                            'Maturity_Date': $('.loan_maturity').val(),
+                            'Repayment_Type': $('.loan_paytype').val(),
+                            'Fees': $('.loan_fees').val(),
+                            'Penalty': $('.loan_penalty').val(),
+                            'Interest': $('.loan_interset').val(),
+                            'EMI_Start_Date': $('.loan_emistart').val(),
+                            'EMI_End_Date': $('.loan_emiend').val(),
+                            'Due_Amount': $('.loan_due').val(),
+                            'Months_Paid': $('.loan_paid').val(),
+                            'csrfmiddlewaretoken': csrftoken
+                        }, function (data, status) {
+                            // console.log($('.loan_agency').val())
+                            // alert('Loan Added Successfully')
+                            $('#addloanform').trigger('reset')
+                            $('#addloanform').removeClass('was-validated')
+                            $('#AddLoanModal').modal('hide')
+                            $('#loanmanagement tbody').prepend(`
+                            <tr class="loanDetails` + data['id'] + `">
+                                <td>
+                                    <p class="mb-0">` + data['Name'] + `</p>
+                                </td>
+                                <td>` + data['Released_Date'] + `</td>
+                                <td>` + data['Maturity_Date'] + `</td>
+                                <td>` + data['Repayment_Type'] + `</td>
+                                <td>
+                                    <p class="mb-0">` + data['Principal_Amount'] + `</p>
+                                    <small class="text-secondary">@` + data['Interest'] + ` % Interest</small>
+                                </td>
+                                <td>Rs.` + data['Penalty'] + `</td>
+                                <td>
+                                    <p class="mb-0">Rs.` + data['Due_Amount'] + `</p>
+                                </td>
+                                <td>Rs.` + data['Due_Amount'] * data['Months_Paid'] + `</td>
+                                <td>
+                                    <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#AddRepaymentModal"
+                                        data-id="` + data['id'] + ` data-bs-whatever=" @mdo"><i class="fa fa-lg fa-plus"></i></a>
+                                        <a href="" class="text-success viewrepaymentbtn" data-bs-toggle="offcanvas" data-bs-target="#LoanDetails" data-id="` + data['id'] + `"><i class="fa fa-lg ms-2 fa-eye"></i></a>
+                                    <a href="" class="text-danger loanDelete" data-id="` + data['id'] + `"><i class="fa fa-lg ms-2 fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            `);
+                            loanDelete()
+                            ViewLoanDetails()
+                        })
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Delete Loan
+    function loanDelete() {
+        $('.loanDelete').click(function (event) {
+            event.preventDefault()
+            let loanid = $(this).attr('data-id')
+            if (confirm('Are You Sure Want to Delete')) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/api/loans/" + loanid + "/",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: {
+                        "id": loanid,
+                    },
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    success: function (data, status) {
+                        $('.loanDetails' + loanid).remove()
+                    }
+                })
+            }
+        });
+    }
+    loanDelete();
+
+    // Add Repayment form Validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#addrepaymentform')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    if (form.checkValidity()) {
+                        event.preventDefault()
+                        AddRepayment()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Add and Update Repayment
+    function AddRepayment() {
+        $('.addrepaymentbtn').off('click').on('click', function (event) {
+            var loanid = $(this).attr('data-id')
+            // console.log(loanid)
+            $('#addrepaymentform').submit(function (event) {
+                event.preventDefault()
+                $.post('/api/loan-repayment/', {
+                    'Collection_Date': $('.repayloan_date').val(),
+                    'Payment_Method': $('.repayloan_paymethod').val(),
+                    'Collected_By': $('.repayloan_collectby').val(),
+                    'Amount_Paid': $('.repayloan_paid').val(),
+                    'csrfmiddlewaretoken': csrftoken
+                }, function (data1, status) {
+                    // console.log(data1)
+                    $.get('/api/loans/' + loanid + '/', function (data2, status) {
+                        let repaymentdata = []
+                        for (var i = 0; i < data2['Repayments'].length; i++) {
+                            repaymentdata.push(data2['Repayments'][i])
+                        }
+                        repaymentdata.push(data1['id'])
+                        $.ajax({
+                            type: 'PATCH',
+                            url: '/api/loans/' + loanid + '/',
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRFToken': csrftoken,
+                            },
+                            data: JSON.stringify({
+                                'Repayments': repaymentdata
+                            }),
+                            success: function (data3, status) {
+                                location.reload()
+                                // console.log(data3)
+                            }
+                        })
+                    })
+                })
+            })
+        });
+    }
+    AddRepayment()
+
+    // View Repayments
+    function ViewLoanDetails() {
+        $('.viewrepaymentbtn').click(function (event) {
+            event.preventDefault()
+            var bankid = $(this).attr('data-id')
+            $.get('/api/loans/' + bankid, function (data1, status) {
+                let totalrepay = 0
+                if (data1['Repayments'].length > 0) {
+                    for (var i = 0; i < data1['Repayments'].length; i++) {
+                        $.get('/api/loan-repayment/' + data1['Repayments'][i] + '/', function (data2 = {}, status) {
+                            $('.is_rec_available').addClass('d-none')
+                            $('.repaytable').append(`
+                            <tbody>
+                                <tr class="repayrow${data2['id']}">
+                                    <td>${data2['Collection_Date']}</td>
+                                    <td>${data2['Collected_By']}</td>
+                                    <td>${data2['Payment_Method']}</td>
+                                    <td>Rs.${data2['Amount_Paid']}</td>
+                                    <td>
+                                        <a href="" class="text-danger deleterepayments" data-id="${data2['id']}"><i class="fa fa-lg ms-2 fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>`)
+                            totalrepay = totalrepay + parseInt(data2['Amount_Paid'])
+                            $('#LoanDetails .loanamountdetails').html(`
+                            <p class="m-3 float-end">
+                                    <b>Total Balance Amount : </b>Rs.
+                                    ${parseInt(data1['Due_Amount'] * data1['Months_Paid']) - totalrepay}    
+                            </p>
+                            <p class="m-3 float-end">
+                                <b>Total Amount Paid : </b>Rs. ${totalrepay}    
+                            </p>`)
+
+                            var myOffcanvas = document.getElementById('LoanDetails')
+                            myOffcanvas.addEventListener('hide.bs.offcanvas', function () {
+                                $('.repaytable tbody').remove()
+                                $('#LoanDetails .loanamountdetails').html('')
+                            })
+                            DeleteRepayments()
+                        })
+                    }
+                }
+            })
+        })
+    }
+    ViewLoanDetails()
+
+    // Delete EMI Payments
+    function DeleteRepayments() {
+        $('.deleterepayments').click(function (event) {
+            event.preventDefault()
+            var repayid = $(this).attr('data-id')
+            if (confirm("Are You Sure Want to Delete")) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/api/loan-repayment/" + repayid + "/",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        'id': repayid
+                    }),
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function (data, status) {
+                        $('.repayrow' + repayid).remove()
+                        event.stopPropagation()
+                    }
+                })
+            }
+        })
+    }
+    // DeleteRepayments()
+</script>
+
+
+{% endblock %})

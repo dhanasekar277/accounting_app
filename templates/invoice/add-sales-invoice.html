@@ -1,0 +1,370 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold mb-1">
+                <a href="{% url 'sales-invoice' %}" class="btn btn-sm ps-0"><i class="fa fa-chevron-left me-2"></i>Back</a>
+                Add Saless Invoice
+            </h5>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="orders" class="fw-bold small">Order </label>
+                        <select name="" id="Orders" class="form-control">
+                            <option value="">Select Orders</option>
+                            {% for i in context.order %}
+                            <option value="{{i.id}}">{{i.Sales_Company.Company_Name}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="box-2 py-2 px-3 mt-2 bg-light rounded agency_card d-none">
+                            <h6 class="fw-bold">Agency Info</h6>
+                            <hr class="mt-0 mb-1">
+                            <div>
+                                <h5 class="text-uppercase agency_name mb-1 fw-bold text-capitalize"></h5>
+                                <div class="agency_address text-capitalize"></div>
+                                <div>
+                                    <b>CELL : </b><span class="agency_cell text-capitalize"></span>
+                                    <b class="ms-2">GST IN/UIN : </b><span class="agency_gst text-capitalize"></span>
+                                    <b class="ms-2">State : </b><span class="agency_state text-capitalize"></span>
+                                    <b class="ms-2">Email : </b><span class="agency_email"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-2 px-3 py-2 mt-2 rounded bg-light agency_card d-none">
+                            <h6 class="fw-bold">Sales Info</h6>
+                            <hr class="mt-0 mb-1">
+                            <div>
+                                <h5 class="text-uppercase sales_name mb-1 fw-bold text-capitalize"></h5>
+                                <div class="sales_address text-capitalize"></div>
+                                <div>
+                                    <b>CELL : </b><span class="sales_cell text-capitalize"></span>
+                                    <b class="ms-2">GST IN/UIN : </b><span class="sales_gst text-capitalize"></span>
+                                    <b class="ms-2">PAN/IN No: </b><span class="sales_pan text-capitalize"></span>
+                                    <b class="ms-2">State Name: </b><span class="sales_state text-capitalize"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="box-2 px-3 py-2 mt-2 rounded agency_card d-none">
+                            <div class="row">
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Invoice No</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Invoice Date</label>
+                                    <input type="date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Delivery Note</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Mode/Terms of Payment</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Supplier's Ref</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Other Reference(s)</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Buyer's Order No</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Dated</label>
+                                    <input type="date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Despatch Document No</label>
+                                    <input type="date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Delivery Note Date</label>
+                                    <input type="date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Despatched through</label>
+                                    <input type="date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3 mb-1">
+                                    <label for="" class="fw-bold small">Destination</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+
+                                <h6 class="mb-1 mt-2 fw-bold">Terms of Delivery</h6>
+                                <div class="col-3">
+                                    <label for="" class="fw-bold small">Name</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="fw-bold small">Survey No</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-6">
+                                    <label for="" class="fw-bold small">Address</label>
+                                    <textarea class="form-control form-control-sm" rows="1"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-12 ">
+                        <div class="box-2 px-3 py-2 mt-2 rounded agency_card d-none">
+                            <h6 class="fw-bold">Material Info</h6>
+                            <hr class="mt-0 mb-1">
+                            <table class="table table-bordered mb-0 table-stripped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>SL.No</th>
+                                        <th>Description of Goods</th>
+                                        <th style="width: 12%;">HSN/SAC</th>
+                                        <th style='width:10%;'>Quantity</th>
+                                        <th>Rate</th>
+                                        <th>Per</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="_material">
+
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-bold">2.5%-CGST-OUTPUT TAX</div>
+                                                <div class="fw-bold">2.5%-SGST-OUTPUT TAX</div>
+                                                <div class="fw-bold">ROUNDED OFF</div>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <div>
+                                                <div>2.50</div>
+                                                <div>2.50</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div>%</div>
+                                                <div>%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div>600.30</div>
+                                                <div>600.30</div>
+                                                <div>0.40</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            Total
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <b>10.440 MT</b>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                        <td>
+                                            <b>25,213.00</b>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7">
+                                            <div>
+                                                <div class="small">
+                                                    Amount Chargeable (in words)
+                                                    <span class="float-end">E. & O.E</span>
+                                                </div>
+                                                <div>
+                                                    <span>INR</span>
+                                                    <span>Twenty Five Thousand Two Hundred Thirteen Only</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered mb-0 table-stripped">
+                                <thead>
+                                    <tr>
+                                        <th>HSN/SAC</th>
+                                        <th>Taxable </th>
+                                        <th colspan="2">Central Tax</th>
+                                        <th colspan="2">State Tax</th>
+                                        <th>Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>Value</th>
+                                        <th>Rate</th>
+                                        <th>Amount</th>
+                                        <th>Rate</th>
+                                        <th>Amount</th>
+                                        <th>Tax Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>05505005</td>
+                                        <td>24,012.00</td>
+                                        <td>2.50%</td>
+                                        <td>600.30</td>
+                                        <td>2.50%</td>
+                                        <td>600.30</td>
+                                        <td>1,200.60</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right text-end fw-bold">Total</td>
+                                        <td>24,012.00</td>
+                                        <td></td>
+                                        <td>600.30</td>
+                                        <td></td>
+                                        <td>600.30</td>
+                                        <td>1,200.60</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7">
+                                            <div>
+                                                <span>Tax Amount (in words) : </span><b>INR One Thousand Two Hundred
+                                                    Thirteen Only</b>
+                                            </div>
+                                            <div>
+                                                <b>Remarks :</b>
+                                                <div>BEING THE INVOICE NUMBER : 105 / 2021-2022 / INVOICE</div>
+                                                <div>DATE : <span>29.09.2021</span> ALLIANCE BUSINESS PARKS PVT LTD
+                                                </div>
+                                                <div>ACCOUNTED</div>
+                                            </div>
+                                            <div>
+                                                <span>Company's VAT TIN : </span><b>32748324987</b>
+                                            </div>
+                                            <div>
+                                                <span>Buyer's VAT TIN : </span><b>32748324987</b>
+                                            </div>
+                                            <div>
+                                                <span>Company's PAN : </span><b>32748324987</b>
+                                            </div>
+
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="width:50%;">
+                                            <div>
+                                                <u>Declaration</u>
+                                                <div>
+                                                    We declare that this invoice shows the actual price of the goods
+                                                    described
+                                                    and that all particulars are true and correct.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td colspan="3">
+                                            <div>Company's Bank Details</div>
+                                            <div><b>Bank Name : </b> <span>INDIAN BANK</span></div>
+                                            <div><b>A/C No : </b> <span>673499345</span></div>
+                                            <div><b>Branch & IFSC : </b> <span>PALLAVARAM</span> & <span>IDB98324</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="width:50%;">
+                                            <div>
+                                                Customer's Seal and Signature
+                                            </div>
+                                            <br><br>
+                                        </td>
+                                        <td colspan="3" class="text-center">
+                                            <div>for KAVITHA AGENCY</div>
+                                            <div class="mt-5">Authorised Signature</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        $('.salesMenu').addClass('active')
+        var base = 'http://127.0.0.1:8000/'
+        var url = 'http://127.0.0.1:8000/api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        $('#Orders').change(function () {
+            var id_ = $(this).val()
+            $('.agency_card').removeClass('d-none')
+            $.get(url + 'orders/' + id_ + '/', function (res) {
+                // console.log(res)
+                var agency = res?.Agency
+                var address = agency?.Address + ', ' + agency?.City + '-' + agency?.Zip
+                var address1 = agency?.State + ', ' + agency?.Country
+
+                var sales_ = res?.Sales_Company
+                var billing_address = sales_?.GST_No?.State + ', Code : ' + sales_?.GST_No?.Zip
+
+                $('.agency_name').text(agency?.Agency_Name)
+                $('.agency_address').text(address)
+                $('.agency_cell').text(agency?.Phone)
+                $('.agency_gst').text(agency?.GST_Number)
+                $('.agency_state').text(address1)
+                $('.agency_email').text(agency?.Email)
+
+                $('.sales_name').text(sales_?.Company_Name)
+                $('.sales_address').text(sales_?.GST_No?.Address)
+                $('.sales_cell').text(sales_?.Founder_Phone)
+                $('.sales_gst').text(sales_?.GST_No?.GST_No)
+                $('.sales_pan').text(sales_?.PAN_No)
+                $('.sales_state').text(billing_address)
+
+                var material = res?.Materials
+                // console.log(material)
+                for (var i = 0; i < material.length; i++) {
+                    $('._material').append('<tr><td>' + (i + 1) + '</td><td class="d-flex"><b>' + material[i]?.Material_Name + '</b><input type="text" class="form-control w-50 ms-2 mat_' + material[i]?.id + ' form-control-sm"></td><td><input type="text" class="form-control form-control-sm"></td><td class="d-flex"><input type="text" class="form-control me-2 mat_' + material[i]?.id + ' form-control-sm" value="' + material[i]?.Quantity + '" > MT</td><td>' + material[i]?.Fianl_PO_Price + '.00</td><td>MT</td><td>' + material[i]?.Final_Offer_Price + '</td></tr>')
+                }
+
+            })
+        })
+    })
+</script>
+{% endblock %})

@@ -1,0 +1,1187 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Reports</h5>
+        </div>
+        <div class="col-md-12">
+            <form action="">
+                <div class="row reports">
+
+                    <div class="col-3">
+                        <label for="">Category</label>
+                        <select name="model" id="category" class="form-control">
+                            <option value="0">Select Category</option>
+                            <option value="agency">Agency</option>
+                            <option value="vendor">Vendor</option>
+                            <option value="customer">Customer</option>
+                            <option value="product">Product</option>
+                            <option value="order">Order</option>
+                            <option value="quotation">Quotation</option>
+                            <option value="purchase">Purchase</option>
+                            <option value="voucher">Voucher</option>
+                            <option value="sales">Sale</option>
+                            <option value="invoice">Invoice</option>
+                            <option value="expence_entries">Expence Entries</option>
+                            <option value="bank_entries">Bank Entries</option>
+                            <option value="net_purchase">Net Purchase</option>
+                            <option value="net_sales">Net Sales</option>
+                            <option value="net_payable">Net Payable</option>
+                            <option value="net_reciveable">Net Reciveable</option>
+                            <option value="loan_management">Loan Management</option>
+                            <option value="purchase_gst_details">Purchase GST Details</option>
+                            <option value="sales_gst_details">Sales GST Details</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="">From</label>
+                        <input type="date" name="from" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <label for="">To</label>
+                        <input type="date" name="to" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn mt-4 btn-sm w-100 btn-primary" id="report_search"><i
+                                class="fa fa-search"></i> &nbsp;Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12 mt-2">
+            <div class="box-1 rounded bg-white mt-2 p-3 ">
+                {% if data %}
+                <div class="fixTableHead" id="report_table">
+                    <table id="reporttable" class="table reports table-bordered mb-1 table-striped"
+                        style="width:99.9%;">
+                        {% if model == 'agency' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Name</th>
+                                <th>Bank Detail</th>
+                                <th>GST & PAN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td>
+                                    <a href="{{i.id}}">{{i.Name}}</a>
+                                    <div><b>Email : </b><span>{{i.Email}}</span></div>
+                                    <div><b>Phone : </b>{{i.Phone}}</div>
+                                    <div><b>Address : </b>{{i.Address}} ,<br> {{i.City}},
+                                        {{i.State}}, {{i.Zip}}, {{i.Country}}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% for j in i.Bank_Account.all %}
+                                    <div><b>Holder Name : </b>{{j.Account_Holder_Name}} ( {{j.Account_Holder_Position}}
+                                        )</div>
+                                    <div>{{j.Account_Number}}</div>
+                                    <div><b>IFSC : </b>{{j.IFSC_Code}} <b>Branch : </b>{{j.Branch}}</div>
+                                    <div class="border-bottom"><b>Bank Name : </b>{{j.Bank_Name}} </div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <div><b>GST : </b>{{i.GST_Number}}</div>
+                                    <div><b>PAN : </b>{{i.PAN_Number}}</div>
+                                    <div><b>TIN : </b>{{i.Tin}}</div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'vendor' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Name</th>
+                                <th>Company Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Payment Capabilities</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">{{i.Vendor_Name}}</a></td>
+                                <td class="text-capitalize">{{i.Company_Name}}</td>
+                                <td><a href="tel:{{i.Phone}}">{{i.Phone}}</a></td>
+                                <td><a href="mailto:{{i.Email}}">{{i.Email}}</a></td>
+                                <td class="text-capitalize">{{i.Payment_Capabilities}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'customer' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Name</th>
+                                <th>Company Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>No Of Project</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">{{i.Founder_Name}}</a></td>
+                                <td class="text-capitalize">{{i.Company_Name}}</td>
+                                <td class="{{cus_i.id}}">
+                                    {% for j in i.Founder_Phone.all %}
+                                    <div>{{j.Phone_Number}}</div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if i.Company_Email %}
+                                    <a href="mailto:{{i.Email}}">{{i.Company_Email}}</a>
+                                    {% else %}
+                                    <div>-</div>
+                                    {% endif %}
+                                </td>
+                                <td>{{i.No_Of_Project}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'product' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Material Name</th>
+                                <th>HSN Code</th>
+                                <th>Price</th>
+                                <th>GST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">{{i.Product}}</a></td>
+                                <td class="text-capitalize">{{i.HSNCode}}</td>
+                                <td>
+                                    {% for j in i.Quality.all %}
+                                    <div>{{j.Quality}} - {{j.Price}}</div>
+                                    {% endfor %}
+                                </td>
+                                <td>{{i.GST}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'order' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Order Id</th>
+                                <th style="width: 20%;">Customer Name</th>
+                                <th style="width:20%;">Delivery Address</th>
+                                <th style="width:20%;">Billing Address</th>
+                                <th>PO Materials</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td style="width: 8%;">
+                                    <a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a>
+                                </td>
+                                <td>
+                                    <a class="text-capitalize"
+                                        href="{{i.Sales_Company.id}}">{{i.Sales_Company.Company_Name}}</a>
+                                    <div class="small text-capitalize">Founder :
+                                        {{i.Sales_Company.Founder_Name}}</div>
+                                    <div>Email :
+                                        {% if i.Sales_Company.Company_Email %}
+                                        {{i.Sales_Company.Company_Email}}
+                                        {% else %}
+                                        null
+                                        {% endif %}
+                                    </div>
+                                    <div>Phone :
+                                        {% for j in i.Sales_Company.Founder_Phone.all %}
+                                        {{j.Phone_Number}}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="text-capitalize">{{i.Sales_Delivery_Address}}</td>
+                                <td class="text-capitalize">{{i.Billing_Address}}</td>
+                                <td>
+                                    {% for j in i.PO_Number.PO_Material_Info.all %}
+                                    <div class="small">{{forloop.counter}}. {{j.Material_Name}} -
+                                        <span title="Total quantity">{{j.Quantity}}</span>
+                                    </div>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'quotation' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>S.No</th>
+                                <th>Quotation Id</th>
+                                <th>Order Id</th>
+                                <th>Customer Name</th>
+                                <th class="w-50">PO Materials</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td><a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a></td>
+                                <td><a class="text-capitalize" href="{{i.order.id}}">#{{i.order.id}}</a>
+                                </td>
+                                <td class="text-capitalize">{{i.order.Sales_Company.Company_Name}}</td>
+                                <td>
+                                    {% for j in i.order.PO_Number.PO_Material_Info.all %}
+                                    <div class="small">{{forloop.counter}}. {{j.Material_Name}} - <span
+                                            title="Total quantity">{{j.Quantity}}</span>
+                                    </div>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'purchase' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th style="width: 9%;">Purchase Id</th>
+                                <th style="width: 10%;">Quotation Id</th>
+                                <th style="width: 9%;">Order Id</th>
+                                <th>Customer Name</th>
+                                <th class="w-50">PO Materials</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a></td>
+                                <td><a class="text-capitalize" href="{{i.quotation.id}}">#{{i.quotation.id}}</a></td>
+                                <td><a class="text-capitalize"
+                                        href="{{i.quotation.order.id}}">#{{i.quotation.order.id}}</a>
+                                </td>
+                                <td>
+                                    <a href="i.customerId.id" class="text-capitalize">{{i.customerId.Company_Name}}</a>
+                                    <div class="text-capitalize">Founder : {{i.customerId.Founder_Name}}</div>
+                                    <div>Email :
+                                        {% if i.customerId.Company_Email %}
+                                        {{i.customerId.Company_Email}}
+                                        {% else %}
+                                        No Data
+                                        {% endif %}
+                                    </div>
+                                    <div>Phone :
+                                        {% for j in i.customerId.Founder_Phone.all %}
+                                        {{j.Phone_Number}}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="small">
+                                        {% for j in i.quotation.order.PO_Number.PO_Material_Info.all %}
+                                        {{forloop.counter}}. {{j.Material_Name}} - <span
+                                            title="Total quantity">{{j.Quantity}}</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'voucher' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Voucher Id</th>
+                                <th>Vendor Name</th>
+                                <th>Order Id</th>
+                                <th>Customer Name</th>
+                                <th class="w-50">PO Materials</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a></td>
+                                <td>
+                                    <a class="text-capitalize" href="{{i.VendorId.id}}">{{i.VendorId.Company_Name}}</a>
+                                    <div><b>Ac No :</b> {{i.vendorDetail.AcNumber}}</div>
+                                    <div><b>Bank :</b> {{i.vendorDetail.Bank}}<b class="ms-1">IFSC :</b>
+                                        {{i.vendorDetail.IFSC}}</div>
+                                    <div><b>GST No :</b> {{i.vendorDetail.GSTNo}}</div>
+                                </td>
+                                <td><a class="text-capitalize"
+                                        href="{{i.quotation.order.id}}">#{{i.quotation.order.id}}</a>
+                                </td>
+                                <td class="text-capitalize">
+                                    <a
+                                        href="{{i.quotation.order.Sales_Company.id}}">{{i.quotation.order.Sales_Company.Company_Name}}</a>
+                                    <div>Founder : {{i.quotation.order.Sales_Company.Founder_Name}}</div>
+                                    <div>Email : {{i.quotation.order.Sales_Company.Company_Email}}</div>
+                                </td>
+                                <td>
+                                    {% for j in i.amount.all %}
+                                    <div class="mb-1 border border-rounded p-1">
+                                        <div class="mb-1 border border-rounded p-1">
+                                            <b class="me-1">{{forloop.counter}}. </b>
+                                            {% for k in j.VoucherMaterialInfo.all|slice:"1" %}
+                                            {{k.MaterialName}}
+                                            {% endfor %}
+                                            <!-- ({% for k in j.VoucherMaterialInfo.all %}
+                                            {{k.QtyCalc}}
+                                            {% endfor %}) -->
+                                            <div class="small">
+                                                <b class="">Amount :</b> {{j.total|floatformat:"2"}}
+                                                <b class="ms-2">CGST :</b> {{j.cgst_amount|floatformat:"2"}}
+                                                <b class="ms-2">SGST :</b> {{j.sgst_amount|floatformat:"2"}}
+                                                <b class="ms-2">Total :</b>
+                                                {{j.total_amount|floatformat:"2"}}
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'sales' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th>Sales Id</th>
+                                <th>Order Id</th>
+                                <th>Customer</th>
+                                <th class="w-50">PO Materials</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a></td>
+                                <td><a class="text-capitalize" href="{{i.orderid.id}}">#{{i.orderid.id}}</a></td>
+                                <td class="text-capitalize">
+                                    <a class="text-capitalize"
+                                        href="{{i.customer.customerid.id}}">{{i.customer.customerid.Company_Name}}
+                                        ({{i.customer.customerid.Founder_Name}})</a>
+                                    <div class="small">
+                                        <b>Phone : </b>{{i.customer.phone.Phone_Number}}<br>
+                                        <b>GST No : </b>{{i.customer.gst.GST_No}}<br>
+                                        <b>PAN No : </b>{{i.customer.pan.PAN_No}}<br>
+                                        <b>TIN No : </b>{{i.customer.tin.TIN_No}}
+                                    </div>
+                                </td>
+                                <td>
+
+                                    <div>
+                                        {% for j in i.poInfo.all|slice:"1" %}
+                                        {{j.MatId.Material_Name}}
+                                        {% endfor %}
+                                        <!-- - <span title="Total quantity"
+                                            class="text-success">${parseFloat(ph_data).toFixed(2)}</span> -->
+                                        <div class="small"><b>Remainder : </b> {{i.remainder.GSTFilledInvNo}} (
+                                            {{i.remainder.GSTFilledInvReceive}} )</div>
+                                        <div class="small">
+                                            <b>With GST : </b> {{i.netAmount.WithGSTNetTotalAmount|floatformat:"2"}}
+                                            <b class="ms-2">With Out GST : </b>
+                                            {{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"2"}}<br>
+                                            <b>Amount Payyed : </b> {{i.netAmount.AmountPayyed|floatformat:"2"}}
+                                            <b class="ms-2">Balance : </b> {{i.netAmount.Balance|floatformat:"2"}}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'invoice' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th style="width: 8%;">Invoice Id</th>
+                                <th style="width: 8%;">Sales Id</th>
+                                <th style="width: 8%;">Order Id</th>
+                                <th style="width: 35%;">Customer Name</th>
+                                <th class="w-50">Invoices</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td><a class="text-capitalize" href="{{i.id}}">#{{i.id}}</a></td>
+                                <td class="text-capitalize"><a class="text-capitalize"
+                                        href="{{i.saleid.id}}">#{{i.saleid.id}}</a></td>
+                                <td><a class="text-capitalize"
+                                        href="{{i.saleid.orderid.id}}">#{{i.saleid.orderid.id}}</a></td>
+                                <td>
+                                    <a class="text-capitalize"
+                                        href="{{i.saleid.orderid.Sales_Company.id}}">{{i.saleid.orderid.Sales_Company.Company_Name}}
+                                        ({{i.saleid.orderid.Sales_Company.Founder_Name}})</a>
+                                    <div><b>phone : </b>
+                                        {% for j in i.saleid.orderid.Sales_Company.Founder_Phone.all %}
+                                        {{j.Phone_Number}}
+                                        {% endfor %}
+                                        <b class="ms-2">PAN No : </b>
+                                        {% for j in i.saleid.orderid.Sales_Company.PAN_No.all %}
+                                        {{j.PAN_No}}
+                                        {% endfor %}
+                                    </div>
+                                    <div><b>TIN No : </b>
+                                        {% for j in i.saleid.orderid.Sales_Company.TIN_No.all %}
+                                        {{j.TIN_No}}
+                                        {% endfor %}
+                                        <b class="ms-2">GST No : </b>
+                                        {% for j in i.saleid.orderid.Sales_Company.GST_No.all %}
+                                        {{j.GST_No}}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% for j in i.invoice.all %}
+
+                                    Invoice No : {{j.InvoiceNo}} <small>( {{j.InvoiceDate}} )</small><br>
+                                    {% for k in j.DC.all %}
+                                    <div>
+                                        Material : {{k.material_name}}
+                                        <div><b>Quantity : </b>{{k.quantity|floatformat:"2"}}
+                                            <b class="ms-2">Amount : </b>
+                                            {{k.amount|floatformat:"2"}}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endfor %}
+                                    <hr class="my-1" />
+
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'expence_entries' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Exp Name</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Expence Category</th>
+                                <th scope="col">Mode of Payment</th>
+                                <th scope="col">Payment Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <td>{{i.id}}</td>
+                                <td>{{i.Expence_Name}}</td>
+                                <td>{{i.Date}}</td>
+                                <td>Rs.{{i.Amount}} </td>
+                                <td>{{i.Expence_Category.Category}}</td>
+                                <td>{{i.Payment_Mode}}</td>
+                                <td>{{i.Payment_Type}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'bank_entries' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Post Date</th>
+                                <th scope="col">Value Date</th>
+                                <th scope="col">Remitance Branch</th>
+                                <th scope="col">Transaction Type</th>
+                                <th scope="col">Cheque No</th>
+                                <th scope="col">GST Type</th>
+                                <th scope="col">Mode of Payment</th>
+                                <th scope="col">Net Amount Paid</th>
+                                <th scope="col">GST Amount Paid</th>
+                                <th scope="col">Total Net Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr class="bankentry{{i.id}}">
+                                <td>{{i.id}}</td>
+                                <td>{{i.Name}}</td>
+                                <td>{{i.Post_Date}}</td>
+                                <td>{{i.Value_Date}}</td>
+                                <td>{{i.Remitance_Branch}}</td>
+                                <td>{{i.Transaction_Type}}</td>
+                                <td>{{i.Cheque_No}}</td>
+                                <td>{{i.GST_Type}}</td>
+                                <td>{{i.Payment_Mode}}</td>
+                                <td>Rs.{{i.Net_Balance_Paid}}</td>
+                                <td>Rs.{{i.GST_Balance_Paid}}</td>
+                                <td>Rs.{{i.Total_Amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'net_purchase' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Voucher Date</th>
+                                <th scope="col">Vendor Name</th>
+                                <th scope="col">Voucher Number</th>
+                                <th scope="col">Total W/O Gst</th>
+                                <th scope="col">Total Amount</th>
+                                <th scope="col">SGST Amount</th>
+                                <th scope="col">CGST Amount</th>
+                                <th scope="col">SGST %</th>
+                                <th scope="col">CGST %</th>
+                                <th scope="col">Net Amount Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for voucherdetail in data %}
+                            <tr>
+                                <td>{{voucherdetail.id}}</td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        <li>{{i.vendorDetail.Name}}</li>
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.sgst_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.cgst_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.quotation.order.Materials.all|slice:"1" %}
+                                    <div>{{i.Product_Name.GST|cut:"%"|div:"2"}}%</div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.quotation.order.Materials.all|slice:"1" %}
+                                    <div>{{i.Product_Name.GST|cut:"%"|div:"2"}}%</div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in voucherdetail.purchase.entries.all %}
+                                        <li>{{i.netAmount.Balance|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'net_payable' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Voucher Date</th>
+                                <th scope="col">Voucher Number</th>
+                                <th scope="col">Vendor Name</th>
+                                <th scope="col">Gst Number</th>
+                                <th scope="col">Total W/O Gst</th>
+                                <th scope="col">Gst %</th>
+                                <th scope="col">Sgst</th>
+                                <th scope="col">Cost</th>
+                                <th scope="col">Total Amout</th>
+                                <th scope="col">Total Paid W/O Gst</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for voucherdetail in data %}
+                            <tr>
+                                <td>{{voucherdetail.id}}</td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        <li>{{i.vendorDetail.Name}}</li>
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        <li>{{i.vendorDetail.GSTNo}}</li>
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all|slice:"1" %}
+                                    {% for j in i.amount.all|slice:"1" %}
+                                    <div>{{j.sgst_amount|div:j.total_amount|mul:100|mul:2|floatformat:"2"}}%</div>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all|slice:"1" %}
+                                    {% for j in i.amount.all|slice:"1" %}
+                                    <div>{{j.sgst_amount|div:j.total_amount|mul:100|floatformat:"2"}}%</div>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.sgst_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in voucherdetail.purchase.entries.all %}
+                                        <li>{{i.netAmount.AmountPayyed|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'net_sales' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Invoice Date</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Invoice Number</th>
+                                <th scope="col">Total w/o Gst</th>
+                                <th scope="col">Total Incl Gst</th>
+                                <th scope="col">SGST</th>
+                                <th scope="col">CGST</th>
+                                <th scope="col">SGST %</th>
+                                <th scope="col">CGST %</th>
+                                <th scope="col">Net Amount Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salesinvoice in data %}
+                            <tr>
+                                <td>{{salesinvoice.id}}</td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                    {{i.customer.customerid.Company_Name}}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% with sgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{sgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.Balance|floatformat:"2"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'net_reciveable' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Invoice Date</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Gst Number</th>
+                                <th scope="col">Invoice Number</th>
+                                <th scope="col">Total W/O Gst</th>
+                                <th scope="col">Total Incl Gst</th>
+                                <th scope="col">Recived Amount</th>
+                                <th scope="col">Net reciveable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salesinvoice in data %}
+                            <tr>
+                                <td>{{salesinvoice.id}}</td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                    {{i.customer.customerid.Company_Name}}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                    {{i.customer.gst.GST_No}}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"2"}}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.AmountPayyed|floatformat:"2"}}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li>Rs.{{i.netAmount.Balance|floatformat:"2"}}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'loan_management' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Released</th>
+                                <th scope="col">Maturity</th>
+                                <th scope="col">Repayment</th>
+                                <th scope="col">Principal</th>
+                                <th scope="col">Penalty</th>
+                                <th scope="col">Due Amount</th>
+                                <th scope="col">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for loan in data %}
+                            <tr class="loanDetails{{loan.id}}">
+                                <td>{{loan.id}}</td>
+                                <td>
+                                    <p class="mb-0"> {{loan.Name}}</p>
+                                </td>
+                                <td>{{loan.Released_Date}}</td>
+                                <td>{{loan.Maturity_Date}}</td>
+                                <td>{{loan.Repayment_Type}}</td>
+                                <td>
+                                    <p class="mb-0">Rs.{{loan.Principal_Amount}}</p>
+                                </td>
+                                <td>Rs.{{loan.Penalty}}</td>
+                                <td>
+                                    <p class="mb-0">Rs.{{loan.Due_Amount}}</p>
+                                </td>
+                                <td>Rs.{% widthratio loan.Due_Amount 1 loan.Months_Paid %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'purchase_gst_details' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Voucher Date</th>
+                                <th scope="col">Voucher Number</th>
+                                <th scope="col">Vendor Name</th>
+                                <th scope="col">Total W/O Gst</th>
+                                <th scope="col">Total Incl Gst</th>
+                                <th scope="col">Total Sgst</th>
+                                <th scope="col">Total Cgst</th>
+                                <th scope="col">Sgst %</th>
+                                <th scope="col">Cgst %</th>
+                                <th scope="col">Total Purchase</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for voucherdetail in data %}
+                            <tr>
+                                <td>{{voucherdetail.id}}</td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.Info.VoucherNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <div>{{i.vendorDetail.GSTNo.Trade_Name}}</div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.sgst_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.cgst_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.sgst_amount|div:j.total_amount|mul:100|floatformat:"2"}}%</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>{{j.cgst_amount|div:j.total_amount|mul:100|floatformat:"2"}}%</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in voucherdetail.voucher.all %}
+                                    <ul>
+                                        {% for j in i.amount.all %}
+                                        <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% elif model == 'sales_gst_details' %}
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th scope="col">S.no</th>
+                                <th scope="col">Invoice Date</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Invoice Number</th>
+                                <th scope="col">Total W/O Gst</th>
+                                <th scope="col">Total Incl Gst</th>
+                                <th scope="col">Total Sgst</th>
+                                <th scope="col">Total Cgst</th>
+                                <th scope="col">Sgst %</th>
+                                <th scope="col">Cgst %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salesinvoice in data %}
+                            <tr>
+                                <td>{{salesinvoice.id}}</td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceDate}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                    {{i.customer.customerid.Company_Name}}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.invoice.all %}
+                                        <li>{{i.InvoiceNo}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                        {% for i in salesinvoice.saleid.sales.all %}
+                                        <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                        </li>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                    {% for j in i.orderid.Materials.all|slice:"1" %}
+                                    {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                    {% endfor %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% endif %}
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center no_results">
+                    <h4 class="fw-bold">No Results. !!!</h4>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fixTableHead {
+        overflow-y: auto;
+        height: 27rem;
+    }
+
+    .fixTableHead thead th {
+        position: sticky;
+        top: 0;
+    }
+</style>
+{% endblock %}
+
+{% block script %}
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+<!-- export css script -->
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
+<!-- <script src="{% static 'js/reports.js' %}"></script> -->
+<script>
+    $(document).ready(function () {
+        $('.reportsMenu').addClass('active')
+    })
+
+    function jsondatatable() {
+        // console.log('w')
+        $('#reporttable').DataTable().destroy();
+        $('#reporttable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        })
+        // $('#reporttable').DataTable().draw();
+        // ref.ajax.reload();
+        setInterval(function () {
+            $('#reporttable').ajax.reload();
+        }, 3000);
+    } jsondatatable()
+</script>
+{% endblock %}

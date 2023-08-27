@@ -1,0 +1,2258 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Customers</h5>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <a class="btn btn-sm btn-primary float-end " href="{% url 'add-customer' %}"><i
+                                class="fa fa-plus me-1"></i> Add</a>
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if obj.customer_obj %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Info</th>
+                            <th scope="col">Customer Staff Info</th>
+                            <th scope="col">Branches</th>
+                            <th scope="col">Bank Account</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in obj.customer_obj %}
+                        <tr class="row_{{i.id}}">
+                            <td class="text-capitalize" style="width: 22%;">
+                                <b class="small">Founder Name : </b>{{i.Founder_Name}} <a class="ms-2"
+                                    href="tel:{{i.Founder_Phone}}"><i class="fa fa-phone"></i></a> <a
+                                    class="ms-2 text-danger" href="mailto:{{i.Founder_Email}}"><i
+                                        class="fa fa-envelope"></i></a>
+                                <br>( {{i.Company_Name}} )
+                                <br><b class="small">No Of Projects : </b>{{i.No_Of_Project}}
+                                <br>
+
+                                <!-- gst starts here -->
+
+                                {% if i.GST_Type == '0' %}
+                                <hr class="my-2">
+                                {% if i.GST_No.all %}
+                                <div id="carouselExampeontrol{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                    data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% for k in i.GST_No.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <div>
+                                                    {{k.GST_No}}
+                                                    {% if k.Scan_Copy %}
+                                                    <a href="/media/{{k.Scan_Copy}}" download class="ms-2 text-blue"><i
+                                                            class="fa fa-file"></i></a>
+                                                    {% endif %}
+                                                    {% if k.Photo %}
+                                                    <a href="/media/{{k.Photo}}" download class="ms-2 text-blue"><i
+                                                            class="fa fa-user"></i></a>
+                                                    {% endif %}
+                                                    <a href="" class="ms-2 delete_action" data-id="{{k.id}}"
+                                                        delete_action="delete"
+                                                        data-action-url="customer-gst-billing-address"><i
+                                                            class="fa fa-trash"></i></a>
+                                                </div>
+                                                <div>{{k.Leggal_Name}} ({{k.Trade_Name}})</div>
+                                                <div>{{k.Holder_Name}} <a href="tel:{{k.Mobile}}"
+                                                        class="ms-2 text-success"><i class="fa fa-phone"></i></a><a
+                                                        href="mailto:{{k.Mail_Id}}" class='ms-2'><i
+                                                            class="fa fa-envelope"></i></a></div>
+                                                <div>{{k.Position}}</div>
+                                                <!-- <div><b>Account No : </b>{{k.Account_No}}</div> -->
+                                                <div><b>Bank AC No : </b>{{k.GST_Bank}}</div>
+                                                <div><b>IFSC : </b> <span>{{k.IFSC}}</span><b class="ms-2">Branch : </b>
+                                                    <span>{{k.GST_Branch}}</span>
+                                                </div>
+                                                <div>{{k.Address}}, {{k.City}} - {{k.Zip}}, {{k.State}}, {{k.Country}}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <a href="" class="btn btn-sm btn-primary mt-1 px-1 py-0 fa-12"
+                                        data-bs-toggle="modal" data-bs-target="#addgst" data-action="add"
+                                        data-action-url="customer-gst-billing-address" data-id="{{i.id}}"><i
+                                            class="fa fa-plus me-1"></i> GST</a>
+                                    <hr class="mt-2 mb-0">
+                                    {% else %}
+                                    GST Un Registered User
+                                    {% endif %}
+                            </td>
+                            <td style="width: 18%;">
+                                {% if i.Founder_Phone.all %}
+                                {% for k in i.Founder_Phone.all %}
+                                <div>
+                                    <b class="my-1">{{k.customer_name}} : </b>
+                                    {{k.Phone_Number}} <a href="tel:{{k.Phone_Number}}" class="mx-2 text-success"><i
+                                            class="fa fa-phone"></i></a>
+                                    <a href="" class="delete_action" delete_action="delete"
+                                        data-action-url="customer-phone" data-id="{{k.id}}"><i
+                                            class="fa fa-trash"></i></a>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div>
+                                    <a req href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addcusPhone" data-action-url="customer-phone"
+                                        data-id="{{i.id}}"><i class="fa fa-plus"></i> Phone</a>
+                                </div>
+                                <hr class="my-1">
+                                {% if i.TIN_No.all %}
+                                {% for k in i.TIN_No.all %}
+                                <div>
+                                    {{k.TIN_No}}
+                                    {% if k.Scan_Copy %}
+                                    <a download href="/media/{{k.Scan_Copy}}" class="mx-2 text-blue"><i
+                                            class="fa fa-download"></i></a>
+                                    {% endif %}
+                                    <a href="" class="delete_action" delete_action="delete"
+                                        data-action-url="customer-tin" data-id="{{k.id}}"><i
+                                            class="fa fa-trash"></i></a>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div>
+                                    <a req href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addtin" data-action-url="customer-tin" data-id="{{i.id}}"><i
+                                            class="fa fa-plus"></i> TIN</a>
+                                </div>
+                                <hr class="my-1">
+
+                                {% if i.PAN_No.all %}
+                                {% for k in i.PAN_No.all %}
+                                <div>
+                                    {{k.PAN_No}}
+                                    {% if k.PAN_Scan_Copy %}
+                                    <a download href="/media/{{k.PAN_Scan_Copy}}" class="mx-2 text-blue"><i
+                                            class="fa fa-download"></i></a>
+                                    {% endif %}
+                                    <a href="" class="delete_action" delete_action="delete"
+                                        data-action-url="customer-pan" data-id="{{k.id}}"><i
+                                            class="fa fa-trash"></i></a>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div>
+                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addpan" data-action-url="customer-pan" data-id="{{i.id}}"><i
+                                            class="fa fa-plus"></i> PAN</a>
+                                </div>
+                                <hr class="my-1">
+
+                                {% if i.Certificate.all %}
+                                {% for k in i.Certificate.all %}
+                                <div>
+                                    {{k.Certificate_Name}}
+                                    {% if k.Scan_Copy %}
+                                    <a download href="{{k.Scan_Copy}}" class="mx-2 text-blue"><i
+                                            class="fa fa-download"></i></a>
+                                    {% endif %}
+                                    <a href="" class="delete_action" delete_action="delete"
+                                        data-action-url="customer-certificate" data-id="{{k.id}}"><i
+                                            class="fa fa-trash"></i></a>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div>
+                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addcertificate" data-action-url="customer-certificate"
+                                        data-id="{{i.id}}"><i class="fa fa-plus"></i> CERTIFICATE</a>
+                                </div>
+
+                            </td>
+                            <td style="width: 15%;">
+                                {% if i.Customer_Staff_Account.all %}
+                                <div id="carouselExampleControl{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                    data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% if i.Customer_Staff_Account.all|length > 1 %}
+                                        <div class="d-block">
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#carouselExampleControl{{i.id}}" data-bs-slide="prev">
+                                                <i class="fa fa-lg fa-angle-left"></i>
+                                            </button>
+                                            <button class="carousel-control-next float-end" type="button"
+                                                data-bs-target="#carouselExampleControl{{i.id}}" data-bs-slide="next">
+                                                <i class="fa fa-lg fa-angle-right"></i>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                        {% for k in i.Customer_Staff_Account.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <span class="text-capitalize">{{k.Name}}</span>
+                                                <a href="#"
+                                                    class="text-danger px-1 py-0 btn-sm fa-12 ms-1 delete_action"
+                                                    data-action-url="customer-staff" data-action="delete"
+                                                    data-id="{{k.id}}"><i class="fa fa-trash"></i></a>
+                                                {% if k.Photo %}
+                                                <a href="/media/{{k.Photo}}" download=""
+                                                    class="text-blue px-0 py-0 btn-sm fa-12 "><i
+                                                        class="fa fa-user"></i></a>
+                                                {% endif %}
+                                                <div>
+                                                    <a href="tel:{{k.Contact_No}}" class="text-success"><i
+                                                            class="fa fa-phone"></i> : {{k.Contact_No}}</a>
+                                                    <a href="mailto:{{k.Email}}" class="text-danger ms-1"><i
+                                                            class="fa fa-envelope"></i></a>
+                                                </div>
+                                                <div>{{k.Position}}</div>
+                                                <div><a href="{{k.Location}}">{{k.Location}}</a></div>
+                                                <div class="text-capitalize"><i class="fa fa-map-marker"></i> :
+                                                    {{k.City}}, {{k.Zip}}, {{k.State}}, {{k.Country}}</div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addStaff" data-action-url="customer-staff"
+                                        data-id="{{i.id}}"><i class="fa fa-plus"></i></a>
+                            </td>
+                            <td style="width: 18%;">
+                                {% if i.Branches.all %}
+                                <div id="customerBranches{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                    data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% if i.Branches.all|length > 1 %}
+                                        <div class="d-block">
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#customerBranches{{i.id}}" data-bs-slide="prev">
+                                                <i class="fa fa-lg fa-angle-left"></i>
+                                            </button>
+                                            <button class="carousel-control-next float-end" type="button"
+                                                data-bs-target="#customerBranches{{i.id}}" data-bs-slide="next">
+                                                <i class="fa fa-lg fa-angle-right"></i>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                        {% for k in i.Branches.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <!-- billing address -->
+                                                <div class="text-success small fw-bold">Billing Address :
+                                                    <a href="{{k.id}}" class="text-danger deletegstaddress ms-1">
+                                                        <i class="fa fa-trash "></i>
+                                                    </a>
+                                                </div>
+                                                <div><b>Legal Name : </b>{{k.Billing_Address.Leggal_Name}}
+                                                    {% if k.Billing_Address.Scan_Copy %}
+                                                    <a href="/media/{{k.Billing_Address.Scan_Copy}}" download
+                                                        class="ms-2 text-blue"><i class="fa fa-file"></i></a>
+                                                    {% endif %}
+                                                    {% if k.Billing_Address.Photo %}
+                                                    <a href="/media/{{k.Billing_Address.Photo}}" download
+                                                        class="ms-2 text-blue"><i class="fa fa-user"></i></a>
+                                                    {% endif %}
+                                                </div>
+                                                <div><b>Trade Name : </b>{{k.Billing_Address.Trade_Name}}</div>
+                                                <div><b>GST No : </b>{{k.Billing_Address.GST_No}}</div>
+                                                <!-- delivery address -->
+                                                <div class="text-success small fw-bold mt-1">Delivery Address : <a
+                                                        href="" data-bs-toggle="modal"
+                                                        data-bs-target="#add_delivery_address"
+                                                        data-action-url="customer-branch-delivery-address"
+                                                        data-id="{{k.id}}" data-action="add"><i
+                                                            class="fa fa-plus"></i></a></div>
+                                                <ul class="mb-0 ps-3 text-capitalize ">
+                                                    {% for j in k.Delivery_Address.all %}
+                                                    <li>{{j.NickName}}
+                                                        <a href="" data-id="{{j.id}}" data-address="{{j.Address}}"
+                                                            data-city="{{j.City}}" data-state="{{j.State}}"
+                                                            data-zip="{{j.Zip}}" data-country="{{j.Country}}"
+                                                            data-nick="{{j.NickName}}"
+                                                            class="small text-warning EditDeliveryAddres ps-1"><i
+                                                                class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <!-- Staff Detail -->
+                                                <div class="text-success small fw-bold mt-1">Staff Detail :
+                                                    <a href="" data-bs-toggle="modal" data-bs-target="#addStaff1"
+                                                        data-action-url="customer-staff" data-id="{{k.id}}"
+                                                        data-action="addstaff">
+                                                        <i class="fa fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                                {% if k.Staff_Detail.all %}
+                                                <ul class="mb-0 ps-3 text-capitalize ">
+                                                    {% for j in k.Staff_Detail.all %}
+                                                    <li>
+                                                        {{j.Name}} ( {{j.Position}} )
+                                                        {% if j.Photo %}
+                                                        <a href="/media/{{j.Photo}}" download class="ms-2 text-blue"><i
+                                                                class="fa fa-user"></i></a>
+                                                        {% endif %}
+                                                        <a href="{{j.id}}" data-action="edit" data-name="{{j.Name}}"
+                                                            data-contact="{{j.Contact_No}}" data-email="{{j.Email}}"
+                                                            data-position="{{j.Position}}"
+                                                            data-location="{{j.Location}}" data-zip="{{j.Zip}}"
+                                                            data-city="{{j.City}}" data-state="{{j.State}}"
+                                                            data-country="{{j.Country}}"
+                                                            class="small editCustomerStaff text-warning ms-1">
+                                                            <i class="fa fa-edit "></i>
+                                                        </a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% endif %}
+                                                <!-- Payment Term -->
+                                                <div class="text-success small fw-bold mt-1">Payment Term :
+                                                    {% if k.Payment_Term %}
+                                                    <span class="text-dark">
+                                                        {{k.Payment_Term}}
+
+                                                        <a href="{{i.id}}" data-payment="{{k.Payment_Term}}"
+                                                            class="text-warning ms-1 update_payment_term">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    </span>
+                                                    {% else %}
+                                                    <a href="" data-bs-toggle="modal" data-bs-target="#payment_terms"
+                                                        data-action-url="customer-branch" data-id="{{k.id}}"
+                                                        data-action="add"><i class="fa fa-plus"></i></a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                    {% endif %}
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#adddelivery"
+                                        data-action-url="customer-gst-billing-address" data-action="add"
+                                        data-id="{{i.id}}"><i class="fa fa-plus"></i> New Branch</a>
+                                </div>
+                            </td>
+                            <td class="text-capitalize">
+                                {% if i.Bank_Account.all %}
+                                <div id="customerBankAccout{{i.id}}" class="carousel slide"
+                                    data-bs-ride="carousel" data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% if i.Bank_Account.all|length > 1 %}
+                                        <div class="d-block">
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#customerBankAccout{{i.id}}" data-bs-slide="prev">
+                                                <i class="fa fa-lg fa-angle-left"></i>
+                                            </button>
+                                            <button class="carousel-control-next float-end" type="button"
+                                                data-bs-target="#customerBankAccout{{i.id}}" data-bs-slide="next">
+                                                <i class="fa fa-lg fa-angle-right"></i>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                        {% for k in i.Bank_Account.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+
+                                                <div>
+                                                    {% if k.Category %}
+                                                    <b class="small">Personal :</b> {{k.Account_No}}
+                                                    {% else %}
+                                                    <b class="small">Registered :</b> {{k.Account_No}}
+                                                    {% endif %}
+                                                    <a href="" class="text-warning px-1 py-0 fa-12"
+                                                        data-bs-toggle="modal" data-action="edit"
+                                                        data-cat="{{k.Account_Category}}"
+                                                        data-position="{{k.Account_Position}}"
+                                                        data-holder="{{k.Account_Holder_Name}}"
+                                                        data-branch="{{k.Branch}}" data-phone="{{k.Register_Phone}}"
+                                                        data-email="{{k.Register_Email}}" data-ifsc="{{k.IFSC_Code}}"
+                                                        data-an="{{k.Account_No}}" data-bs-target="#addbankaccount"
+                                                        data-action-url="customer-bank-account" data-id="{{k.id}}"><i
+                                                            class="fa fa-edit"></i></a>
+                                                </div>
+
+                                                <div><b class="small text-primary">( IFSC : {{k.IFSC_Code}} )</b> </div>
+                                                <div><b class="small">Branch : </b>{{k.Branch}} </div>
+                                                <div>{{k.Account_Holder_Name}} <a class="ms-1"
+                                                        href="tel:{{k.Register_Phone}}"><i class="fa fa-phone"></i></a>
+                                                    <a class="ms-1" href="mailto:{{k.Register_Email}}"><i
+                                                            class="fa fa-envelope"></i></a>
+                                                </div>
+                                                <div>{{k.Account_Position}} </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                    {% endif %}
+                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12" data-bs-toggle="modal"
+                                        data-bs-target="#addbankaccount" data-action-url="customer-bank-account"
+                                        data-action="add" data-id="{{i.id}}"><i class="fa fa-plus"></i></a>
+                            </td>
+                            <td style="width:1%">
+                                <a href="view-customer" data-id="{{i.id}}" class="me-2 text-success veiwcustomer"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="update-customer/{{i.id}}" class="me-2 text-warning add_agency"><i
+                                        class="fa fa-18 fa-edit"></i></a>
+                                {% if user.is_superuser %}
+                                <a href="{{i.id}}" class="text-danger deleteForAdmin" id="deleteForAdmin"
+                                    data-url="customers" data-id="{{i.id}}"><i class="fa fa-18 fa-trash"></i></a>
+                                {% else %}
+                                <a href="{{i.id}}" class="text-danger deleteForUser" data-method="Delete"
+                                    data-url="customers"><i class="fa fa-lg fa-trash"></i></a>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if obj.customer_obj.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if obj.customer_obj.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{obj.customer_obj.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in obj.customer_obj.paginator.page_range %}
+                        {% if obj.customer_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if obj.customer_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{obj.customer_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add Phone -->
+<div class="modal fade" id="addcusPhone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Customer Phone Number</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="add_customer_Phone_form">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="Customer_Name">Customer Name :</label>
+                            <input required type="text" title="Enter The Name " class="form-control" id="customer_name"
+                                name="customer_name">
+
+                            <label for="Phone_Number">Phone No :</label>
+                            <input required type="text" pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" class="form-control" id="Phone_Number"
+                                name="Phone_Number">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add staff detail -->
+<div class="modal fade" id="addStaff" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Staff</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="customer_staff_form">
+                    <input type="hidden" class="form-control" id="">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="Name">Name:</label>
+                            <input type="text" required class="form-control" id="Name" name="Name">
+                        </div>
+                        <div class="col-6">
+                            <label for="Contact_No">Contact No:</label>
+                            <input type="text" required class="form-control" id="Contact_No" name="Contact_No">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Email">Email:</label>
+                            <input type="text" required class="form-control" id="Email" name="Email">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Position">Position:</label>
+                            <input class="form-control" list="datalistOptions" name="Position" id="Position"
+                                placeholder="Type to search...">
+                            <datalist id="datalistOptions">
+                                <option value="Purchase Head">
+                                <option value="Account Head">
+                                <option value="QC Head">
+                                <option value="Payment Head">
+                                <option value="Unloading Suprivisor">
+                                <option value="Security">
+                            </datalist>
+                        </div>
+                        <div class="col-12">
+                            <label for="Location">Address:</label>
+                            <input type="text" required class="form-control" id="Location" name="Location">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="City">City:</label>
+                            <input type="text" required class="form-control" id="City" name="City">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Zip">Zip:</label>
+                            <input type="text" required class="form-control" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-6">
+                            <label for="State">State:</label>
+                            <input type="text" required class="form-control" id="State" name="State">
+                        </div>
+                        <div class="col-6">
+                            <label for="Country">Country:</label>
+                            <input type="text" required class="form-control" id="Country" name="Country">
+                        </div>
+                        <div class="col-12 mt-1">
+                            <label for="Photo">Photo:</label>
+                            <input type="file" class="form-control" id="Photo" name="Photo">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete deletegst me-2 mt-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add bank account detail -->
+<div class="modal fade" id="addbankaccount" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Bank Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="addnewbank_form">
+                    <input type="hidden" class="form-control" id="">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="Account_Category" class="mb-1">Type :</label>
+                            <select required name="Account_Category" class="select form-control custom-select"
+                                id="Account_Category">
+                                <option value="" selected="">---------</option>
+                                <option value="0">Personal</option>
+                                <option value="1">Registered Account</option>
+                            </select>
+                        </div>
+                        <div class="col-6 ps-0">
+                            <label for="Account_No" class="mb-1">Account No :</label>
+                            <input type="number" required class="form-control" id="Account_No" name="Account_No">
+                        </div>
+                        <div class="col-6 mt-2">
+                            <label for="IFSC_Code" class="mb-1">IFSC Code :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9_.-]*$"
+                                title="IFSC code does not contain special charecters and space" class="form-control"
+                                id="IFSC_Code" name="IFSC_Code">
+                        </div>
+                        <div class="col-6 ps-0 mt-2">
+                            <label for="Branch" class="mb-1">Branch :</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Branch name contains alphabets only" id="Branch" name="Branch">
+                        </div>
+                        <div class="col-6 mt-2 ">
+                            <label for="Account_Holder_Name" class="mb-1">Account Holder Name :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Account_Holder_Name" name="Account_Holder_Name">
+                        </div>
+                        <div class="col-6 mt-2  ps-0">
+                            <label for="Account_Position" class="mb-1">Account Position :</label>
+                            <input type="text" required class="form-control" id="Account_Position"
+                                name="Account_Position">
+                        </div>
+                        <div class="col-6 my-2 ">
+                            <label for="Register_Phone" class="mb-1">Phone :</label>
+                            <input type="text" required pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" class="form-control" id="Register_Phone"
+                                name="Register_Phone">
+                        </div>
+                        <div class="col-6 my-2 ps-0">
+                            <label for="Register_Email" class="mb-1">Email :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" class="form-control" id="Register_Email"
+                                name="Register_Email">
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete deletegst me-2 mt-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add gst detail -->
+<div class="modal fade" id="addgst" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add GST</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="add_gst_form">
+                    <input type="hidden" class="form-control" id="">
+                    <div class="row">
+                        <div class="col-3 ">
+                            <label for="Leggal_Name">Leggal Name :</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Leggal_Name" name="Leggal_Name">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="Trade_Name">Trade Name :</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Trade_Name" name="Trade_Name">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="GST_No">GST No :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Gst number does not contain special charecters and space" class="form-control"
+                                id="GST_No" name="GST_No">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="Scan_Copy">Scan Copy :</label>
+                            <input type="file" class="form-control" id="Scan_Copy" name="Scan_Copy">
+                        </div>
+                        <div class="col-3 my-2">
+                            <label for="Mobile">Mobile :</label>
+                            <input type="text" required pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" class="form-control" id="Mobile"
+                                name="Mobile">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Mail_Id">Mail Id :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" class="form-control" id="Mail_Id"
+                                name="Mail_Id">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Holder_Name">Holder Name :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Holder_Name" name="Holder_Name">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Position">Position :</label>
+                            <input type="text" required class="form-control" id="Position" name="Position">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Photo">Photo :</label>
+                            <input type="file" class="form-control" id="Photo" name="Photo">
+                        </div>
+                        <div class="col-2">
+                            <label for="Account No ">Account No :</label>
+                            <input type="number" required class="form-control" id="Account_No" name="Account_No">
+                        </div>
+                        <div class="col-2">
+                            <label for="GST_Bank">GST Bank Acc :</label>
+                            <input type="text" required class="form-control" id="GST_Bank" name="GST_Bank">
+                        </div>
+                        <div class="col-2 ps-0">
+                            <label for="IFSC">IFSC :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9_.-]*$" class="form-control" id="IFSC"
+                                name="IFSC">
+                        </div>
+                        <div class="col-2 ps-0">
+                            <label for="GST_Branch">GST Branch :</label>
+                            <input type="text" required class="form-control" id="GST_Branch" name="GST_Branch">
+                        </div>
+                        <div class="col-4 ps-0">
+                            <label for="Address">Address :</label>
+                            <input type="text" required class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-3 my-2 ">
+                            <label for="City">City :</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="City contains alphabets only" id="City" name="City">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Zip">Zip :</label>
+                            <input type="text" required class="form-control" pattern="^\d{6}$"
+                                title="Zip contains six numbers only" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="State">State :</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="State contains alphabets only" id="State" name="State">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Country">Country:</label>
+                            <input type="text" required class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Country contains alphabets only" id="Country" name="Country">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Location_Url">Location Url:</label>
+                            <input type="text" class="form-control" id="Location_Url" name="Location_Url">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete deletegst me-2 mt-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add pan -->
+<div class="modal fade" id="addpan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Customer PAN</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="add_customer_pan_form">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="PAN_No">PAN No :</label>
+                            <input required type="text" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Pan number does not contain special charecters and space" class="form-control"
+                                id="PAN_No" name="PAN_No">
+                        </div>
+                        <div class="col-12 my-2 ">
+                            <label for="PAN_Scan_Copy">PAN Scan Copy :</label>
+                            <input type="file" class="form-control" id="PAN_Scan_Copy" name="PAN_Scan_Copy">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add tin -->
+<div class="modal fade" id="addtin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Customer TIN</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="add_customer_tin_form">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="TIN_No">TIN No :</label>
+                            <input required type="text" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Tin number does not contain special charecters and space" class="form-control"
+                                id="TIN_No" name="TIN_No">
+                        </div>
+                        <div class="col-12 my-2 ">
+                            <label for="Scan_Copy">Scan Copy :</label>
+                            <input type="file" class="form-control" id="Scan_Copy" name="Scan_Copy">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add customer certificate -->
+<div class="modal fade" id="addcertificate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Customer Certificates</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mb-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="add_customer_certificate_form">
+                    <div class="row">
+                        <div class="col-12 ">
+                            <label for="Certificate_Name">Certificate Name :</label>
+                            <input required type="text" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Certificate name does not contain special charecters and space"
+                                class="form-control" id="Certificate_Name" name="Certificate_Name">
+                        </div>
+                        <div class="col-12 ">
+                            <label for="Scan_Copy">Scan Copy :</label>
+                            <input required type="file" class="form-control" id="Scan_Copy" name="Scan_Copy">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add delviery address detail -->
+<div class="modal fade" id="adddelivery" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static"
+    data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Branch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="billing_address_form">
+
+                    <div class="row">
+                        <h6 class="fw-bold">Billing Address : </h6>
+                        <div class="col-3 ">
+                            <label for="Leggal_Name">Leggal Name :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Leggal_Name" name="Leggal_Name">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="Trade_Name">Trade Name :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Trade_Name" name="Trade_Name">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="GST_No">GST No :</label>
+                            <input type="text" required class="form-control" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Gst does not contain special charecters and space" id="GST_No" name="GST_No">
+                        </div>
+                        <div class="col-3 ps-0">
+                            <label for="Scan_Copy">Scan Copy :</label>
+                            <input type="file" class="form-control" id="Scan_Copy" name="Scan_Copy">
+                        </div>
+                        <div class="col-3 my-2">
+                            <label for="Mobile">Mobile :</label>
+                            <input type="text" required pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" class="form-control" id="Mobile"
+                                name="Mobile">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Mail_Id">Mail Id :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" class="form-control" id="Mail_Id"
+                                name="Mail_Id">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Holder_Name">Holder Name :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Holder_Name" name="Holder_Name">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Position">Position :</label>
+                            <input type="text" required class="form-control" id="Position" name="Position">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Photo">Photo :</label>
+                            <input type="file" class="form-control" id="Photo" name="Photo">
+                        </div>
+
+                        <div class="col-3">
+                            <label for="GST_Bank">GST Bank Acc :</label>
+                            <input type="text" required class="form-control" id="GST_Bank" name="GST_Bank">
+                        </div>
+                        <div class="col-2 ps-0">
+                            <label for="IFSC">IFSC :</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9_.-]*$"
+                                title="IFSC code does not contain special charecters and space" class="form-control"
+                                id="IFSC" name="IFSC">
+                        </div>
+                        <div class="col-2 ps-0">
+                            <label for="GST_Branch">GST Branch :</label>
+                            <input type="text" required class="form-control" id="GST_Branch" name="GST_Branch">
+                        </div>
+                        <div class="col-5 ps-0">
+                            <label for="Address">Address :</label>
+                            <input type="text" required class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-3 my-2 ">
+                            <label for="City">City :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="City contains alphabets only"
+                                class="form-control" id="City" name="City">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Zip">Zip :</label>
+                            <input type="text" required class="form-control" pattern="^\d{6}$"
+                                title="Zip contains six numbers only" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="State">State :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="State contains alphabets only"
+                                class="form-control" id="State" name="State">
+                        </div>
+                        <div class="col-2 my-2 ps-0">
+                            <label for="Country">Country:</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Country contains alphabets only"
+                                class="form-control" id="Country" name="Country">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Location_Url">Location Url:</label>
+                            <input type="text"
+                                pattern="^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$"
+                                title="Please enter valid location url" class="form-control" id="Location_Url"
+                                name="Location_Url">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Next</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add payment_terms detail -->
+<div class="modal fade" id="add_delivery_address" tabindex="-1" aria-labelledby="exampleModalLabel"
+    data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Delivery Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="delivery_address_form">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="Address">Address :</label>
+                            <input type="text" required class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-5 my-2">
+                            <label for="City">City :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="City contains alphabets only"
+                                class="form-control" id="City" name="City">
+                        </div>
+                        <div class="col-4 my-2 ps-0">
+                            <label for="State">State :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="State contains alphabets only"
+                                class="form-control" id="State" name="State">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Zip">Zip :</label>
+                            <input type="text" required pattern="^\d{6}$" title="Zip contains six numbers only"
+                                class="form-control" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-6">
+                            <label for="Country">Country :</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Country contains alphabets only"
+                                class="form-control" id="Country" name="Country">
+                        </div>
+                        <div class="col-6 ps-0">
+                            <label for="NickName">Nick Name :</label>
+                            <input type="text" required class="form-control" id="NickName" name="NickName">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit_delivery_address" tabindex="-1" aria-labelledby="exampleModalLabel"
+    data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Delivery Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="edit_delivery_address_form">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="Address">Address :</label>
+                            <input type="text" required class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-5 my-2">
+                            <label for="City">City :</label>
+                            <input type="text" required class="form-control" id="City" name="City">
+                        </div>
+                        <div class="col-4 my-2 ps-0">
+                            <label for="State">State :</label>
+                            <input type="text" required class="form-control" id="State" name="State">
+                        </div>
+                        <div class="col-3 my-2 ps-0">
+                            <label for="Zip">Zip :</label>
+                            <input type="text" required class="form-control" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-6">
+                            <label for="Country">Country :</label>
+                            <input type="text" required class="form-control" id="Country" name="Country">
+                        </div>
+                        <div class="col-6 ps-0">
+                            <label for="NickName">Nick Name :</label>
+                            <input type="text" required class="form-control" id="NickName" name="NickName">
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="btn btn-primary btn-sm edit_deliver_action float-end ms-2 mt-3">Submit</button>
+                    <button type="button"
+                        class="btn btn-danger btn-sm delete_delivery_address float-end mt-3">Delete</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add payment_terms detail -->
+<div class="modal fade" id="payment_terms" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static"
+    data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Payment Term</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+
+                <form id="payment_terms_form">
+
+                    <div class="row">
+                        <div class="col-12 ">
+                            <label for="State">Payment Terms :</label>
+                            <input type="text" class="form-control" id="State" name="State">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add staff detail -->
+<div class="modal fade" id="addStaff1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Staff </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="customer_staff_form_1">
+                    <input type="hidden" class="form-control" id="">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="Name">Name:</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Name" name="Name">
+                        </div>
+                        <div class="col-6">
+                            <label for="Contact_No">Contact No:</label>
+                            <input type="text" required pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" class="form-control" id="Contact_No"
+                                name="Contact_No">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Email">Email:</label>
+                            <input type="text" required pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" class="form-control" id="Email" name="Email">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Position">Position:</label>
+                            <input class="form-control" list="datalistOptions" name="Position" id="Position"
+                                placeholder="Type to search...">
+                            <datalist id="datalistOptions">
+                                <option value="Purchase Head">
+                                <option value="Account Head">
+                                <option value="QC Head">
+                                <option value="Payment Head">
+                                <option value="Unloading Suprivisor">
+                                <option value="Security">
+                            </datalist>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Location">Address:</label>
+                            <input type="text" required class="form-control" id="Location" name="Location">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="City">City:</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="City contains alphabets only"
+                                class="form-control" id="City" name="City">
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Zip">Zip:</label>
+                            <input type="text" required pattern="^\d{6}$" title="Zip contains six numbers only"
+                                class="form-control" id="Zip" name="Zip">
+                        </div>
+                        <div class="col-6">
+                            <label for="State">State:</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="State contains alphabets only"
+                                class="form-control" id="State" name="State">
+                        </div>
+                        <div class="col-6">
+                            <label for="Country">Country:</label>
+                            <input type="text" required pattern="^[A-Za-z_ ]+" title="Country contains alphabets only"
+                                class="form-control" id="Country" name="Country">
+                        </div>
+                        <div class="col-12 mt-1">
+                            <label for="Photo">Photo:</label>
+                            <input type="file" class="form-control" id="Photo" name="Photo">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete deletegst me-2 mt-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- customerView -->
+<div class="modal fade" id="customerviewmodel" tabindex="-1" aria-labelledby="customerviewmodelLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerviewmodelLabel">Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        var base = window.location.protocol + "//" + window.location.host + '/';
+        var url = base + 'api/'
+
+        $('.customerMenu').addClass('active')
+        var base = window.location.protocol + "//" + window.location.host + '/';
+        var url = base + 'api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+        $('.update_payment_term').click(function (e) {
+            e.preventDefault()
+            let payment_term = $(this).attr('data-payment')
+            let id = $(this).attr('href')
+            // console.log(payment_term)
+            $('#payment_terms_form #State').val(payment_term)
+            $('#payment_terms_form .action').addClass('editpayment')
+            $('#payment_terms').modal('toggle')
+            EditPayment(id)
+        })
+
+        function EditPayment(id) {
+            // console.log(id)
+            $('.editpayment').click(function (e) {
+                e.preventDefault()
+                var params = {
+                    "Payment_Term": $('#payment_terms_form #State').val()
+                }
+                action_url = `${url}customer-branch/${id}/`
+                Do_Update(action_url, params)
+                location.reload()
+            })
+        }
+
+        $('#example').DataTable()
+
+        $('.deletegstaddress').click(function (e) {
+            e.preventDefault()
+            var id = $(this).attr('href')
+            // console.log(id)
+            Delete_Call(id, 'customer-branch')
+        })
+
+        $('#agency').click(function () {
+            $('#add_agency .header').text('Add Customer')
+            $('#add_agency .btn-primary').html('<i class="fa fa-plus me-1"></i> Add Customer')
+            $('#add_agency').modal('toggle')
+            agency_validation()
+        })
+
+        var addStaff = document.getElementById('addStaff')
+        addStaff.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+
+            var button = event.relatedTarget
+            var data_action = button.getAttribute('data-action')
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+
+        })
+
+        $('.veiwcustomer').click(function (event) {
+            event.preventDefault()
+            let customerid = $(this).attr('data-id')
+            $.get('/api/customers/' + customerid, function (data) {
+                $('#customerviewmodel').modal('show')
+                $('#customerviewmodel .modal-body').html(`
+                <div class="row">
+                    <h6 class="fw-bold text-primary mb-1">Customer Details</h6>
+                    <div class="col-4">
+                        <div><b>User Type : </b>${data.GST_Type == 1 ? 'GST User' : 'Non GST User'}</div>
+                        <div><b>Company Name : </b>${data.Company_Name}</div>
+                        <div><b>Company Email : </b>${data.Company_Email}</div>
+                        <div><b>Payment Terms : </b>${data.Payment_Terms}</div>
+                    </div>
+                    <div class="col-4">
+                        <div><b>Founder Name : </b>${data.Founder_Name}</div>
+                        <div><b>Founder Email : </b>${data.Founder_Email}</div>
+                        <div><b>No Of Projects : </b>${data.No_Of_Project}</div>
+                        <div><b>Founder Address : </b>${data.Founder_Address}, ${data.Founder_City}, ${data.Founder_Zip}, ${data.Founder_State}, ${data.Founder_Country}</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-primary"><b>Company Address</b></div>
+                        <div>${data.Company_Address}, ${data.Company_City}, ${data.Company_Zip}, ${data.Company_State}, ${data.Company_Country}</div>
+                        <div class="text-primary mt-2"><b>Delivery Address</b></div>
+                        <div>${data.delivery_Address}, ${data.delivery_City}, ${data.delivery_Zip}, ${data.delivery_State}, ${data.delivery_Country}</div>
+                    </div>
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Branches</h6>
+                    <div class="table-responsive">
+                    <table class="table table-sm table-bordered branchdetails">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Bank</th>
+                                <th>Branch</th>
+                                <th>Position</th>
+                                <th>GST No</th>
+                                <th>Holder Name</th>
+                                <th>Leggal Name</th>
+                                <th>Trade Name</th>
+                                <th>Position</th>
+                                <th>IFSC</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>  
+                        <tbody>
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Bank Details</h6>
+                    <div class="table-responsive">
+                    <table class="table table-sm table-bordered cusbankDetails">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Branch</th>
+                                <th>Account No</th>
+                                <th>Account Position</th>
+                                <th>IFSC Code</th>
+                            </tr>
+                        </thead>  
+                        <tbody>
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Staff Details</h6>
+                    <div class="table-responsive">
+                    <table class="table table-sm table-bordered cusstaffDetails">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Contact_No</th>
+                                <th>Location</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>  
+                        <tbody>
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Gst Details</h6>
+                    <div class="table-responsive">
+                    <table class="table table-sm table-bordered gstDetails ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Bank Account</th>
+                                <th>Branch</th>
+                                <th>Holder Name</th>
+                                <th>Leggal Name</th>
+                                <th>Trade Name</th>
+                                <th>Account Number</th>
+                                <th>IFSC</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_po_material">
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                </div>
+                `)
+                for (let i = 0; i < data.Branches.length; i++) {
+                    $('.branchdetails tbody').append(`
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data.Branches[i].Billing_Address?.GST_Bank}</td>
+                            <td>${data.Branches[i].Billing_Address?.GST_Branch}</td>
+                            <td>${data.Branches[i].Billing_Address?.Position}</td>
+                            <td>${data.Branches[i].Billing_Address?.GST_No}</td>
+                            <td>${data.Branches[i].Billing_Address?.Holder_Name}</td>
+                            <td>${data.Branches[i].Billing_Address?.Leggal_Name}</td>
+                            <td>${data.Branches[i].Billing_Address?.Trade_Name}</td>
+                            <td>${data.Branches[i].Billing_Address?.Position}</td>
+                            <td>${data.Branches[i].Billing_Address?.IFSC}</td>
+                            <td>${data.Branches[i].Billing_Address?.Mobile}</td>
+                            <td>${data.Branches[i].Billing_Address?.Mail_Id}</td>
+                            <td>${data.Branches[i].Billing_Address?.Address}, ${data.Branches[i].Billing_Address?.City}, ${data.Branches[i].Billing_Address?.Zip}, ${data.Branches[i].Billing_Address?.State}, ${data.Branches[i].Billing_Address?.Country}</td>
+                        </tr>
+                    `)
+                }
+                for (let i = 0; i < data.Bank_Account.length; i++) {
+                    $('.cusbankDetails tbody').append(`
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${data.Bank_Account[i].Account_Holder_Name}</td>
+                        <td>${data.Bank_Account[i].Branch}</td>
+                        <td>${data.Bank_Account[i].Account_No}</td>
+                        <td>${data.Bank_Account[i].Account_Position}</td>
+                        <td>${data.Bank_Account[i].IFSC_Code}</td>
+                    </tr>
+                    `)
+                }
+                for (let i = 0; i < data.Customer_Staff_Account.length; i++) {
+                    $('.cusstaffDetails tbody').append(`
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${data.Customer_Staff_Account[i].Name}</td>
+                        <td>${data.Customer_Staff_Account[i].Position}</td>
+                        <td>${data.Customer_Staff_Account[i].Contact_No}</td>
+                        <td>${data.Customer_Staff_Account[i].Location}</td>
+                        <td>${data.Customer_Staff_Account[i].Email}</td>
+                        <td>${data.Customer_Staff_Account[i].Location}, ${data.Customer_Staff_Account[i].City}, ${data.Customer_Staff_Account[i].Zip}, ${data.Customer_Staff_Account[i].State}, ${data.Customer_Staff_Account[i].Country}</td>
+                    </tr>
+                    `)
+                }
+                for (let i = 0; i < data.GST_No.length; i++) {
+                    $('.gstDetails tbody').append(`
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${data.GST_No[i].GST_Bank}</td>
+                        <td>${data.GST_No[i].GST_Branch}</td>
+                        <td>${data.GST_No[i].Holder_Name}</td>
+                        <td>${data.GST_No[i].Leggal_Name}</td>
+                        <td>${data.GST_No[i].Trade_Name}</td>
+                        <td>${data.GST_No[i].Account_No}</td>
+                        <td>${data.GST_No[i].IFSC}</td>
+                        <td>${data.GST_No[i].Mobile}</td>
+                        <td>${data.GST_No[i].Mail_Id}</td>
+                        <td>${data.GST_No[i].Address}, ${data.GST_No[i].City}, ${data.GST_No[i].Zip}, ${data.GST_No[i].State}, ${data.GST_No[i].Country}</td>
+                    </tr>
+                    `)
+                }
+            })
+        })
+
+        // add bank account detail
+        var addbankaccount = document.getElementById('addbankaccount')
+        addbankaccount.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            document.getElementById("addnewbank_form").reset();
+            var data_action = button.getAttribute('data-action')
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction(data_action, data_id, staff_url)
+            if (data_action == 'edit') {
+
+                $('.modal-header #exampleModalLabel').text('Edit Bank Detail')
+                $('#addnewbank_form #Account_Category').val(button.getAttribute('data-cat'))
+                $('#addnewbank_form #Account_No').val(button.getAttribute('data-an'))
+                $('#addnewbank_form #IFSC_Code').val(button.getAttribute('data-ifsc'))
+                $('#addnewbank_form #Branch').val(button.getAttribute('data-branch'))
+                $('#addnewbank_form #Account_Holder_Name').val(button.getAttribute('data-holder'))
+                $('#addnewbank_form #Account_Position').val(button.getAttribute('data-position'))
+                $('#addnewbank_form #Register_Phone').val(button.getAttribute('data-phone'))
+                $('#addnewbank_form #Register_Email').val(button.getAttribute('data-email'))
+                $('#addnewbank_form .action').attr('data-id', data_id).attr('data-url', data_url).text('Edit')
+                $('#addnewbank_form .delete').removeClass('d-none').attr('data-id', data_id).attr('data-url', data_url)
+
+                Delete_Action_Call()
+                ModalFunction(data_action)
+
+            }
+
+        })
+
+
+        // add gst detail
+        var addgst = document.getElementById('addgst')
+        addgst.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+        })
+
+        // add pan detail
+        var addpan = document.getElementById('addpan')
+        addpan.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+        })
+
+        // add tin detail
+        var addtin = document.getElementById('addtin')
+        addtin.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+        })
+
+        // add Phone detail
+        var addphone = document.getElementById('addcusPhone')
+        addphone.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+        })
+
+        // add certificate detail
+        var addcertificate = document.getElementById('addcertificate')
+        addcertificate.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_url = button.getAttribute('data-action-url')
+            var data_id = button.getAttribute('data-id')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+        })
+
+
+        // add certificate detail
+        var adddelivery = document.getElementById('adddelivery')
+        adddelivery.addEventListener('show.bs.modal', function (event) {
+
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_url = button.getAttribute('data-action-url')
+            var data_id = button.getAttribute('data-id')
+            var staff_url = url + data_url + '/'
+            ModalFunction('add', data_id, staff_url)
+
+        })
+
+
+        // add certificate detail
+        var addpaymentterms = document.getElementById('payment_terms')
+        addpaymentterms.addEventListener('show.bs.modal', function (event) {
+
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_url = button.getAttribute('data-action-url')
+            var data_id = button.getAttribute('data-id')
+            var staff_url = url + data_url + '/' + data_id + '/'
+            ModalFunction('add', data_id, staff_url)
+
+        })
+
+
+        // add certificate detail
+        var add_delivery_address = document.getElementById('add_delivery_address')
+        add_delivery_address.addEventListener('show.bs.modal', function (event) {
+
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_url = button.getAttribute('data-action-url')
+            var data_id = button.getAttribute('data-id')
+            var staff_url = url + data_url + '/'
+
+            ModalFunction('add', data_id, staff_url)
+
+        })
+
+
+        var addStaff1 = document.getElementById('addStaff1')
+        addStaff1.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var data_id = button.getAttribute('data-id')
+            var data_url = button.getAttribute('data-action-url')
+            var staff_url = url + data_url + '/'
+            // console.log(staff_url)
+            $('#addStaff1 #exampleModalLabel').text('Add Staff')
+            $('.deletegst').addClass('d-none')
+            $('#customer_staff_form_1 .action').removeClass('editstaffform')
+            ModalFunction('add', data_id, staff_url)
+
+        })
+
+        $('.editCustomerStaff').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('href')
+
+            let position = $('#addStaff1 #Position').val()
+            if (position == 'PH') {
+                position = 'Purchase Head'
+            } else if (position == 'AH') {
+                position = 'Account Heada'
+            } else if (position == 'QH') {
+                position = 'QC Head'
+            } else if (position == 'PU') {
+                position = 'Payment Head'
+            } else if (position == 'US') {
+                position = 'Unloading Suprivisor'
+            } else if (position == 'SP') {
+                position = 'Security'
+            }
+
+            $('#addStaff1 #exampleModalLabel').text('Edit Staff')
+            $('#addStaff1 .pic').addClass('d-none')
+            $('#addStaff1').modal('toggle')
+            $('#addStaff1 #Name').val($(this).attr('data-name'))
+            $('#addStaff1 #Contact_No').val($(this).attr('data-contact'))
+            $('#addStaff1 #Email').val($(this).attr('data-email'))
+            $('#addStaff1 #Position').val(position)
+            $('#addStaff1 #Location').val($(this).attr('data-location'))
+            $('#addStaff1 #Zip').val($(this).attr('data-zip'))
+            $('#addStaff1 #City').val($(this).attr('data-city'))
+            $('#addStaff1 #State').val($(this).attr('data-state'))
+            $('#addStaff1 #Country').val($(this).attr('data-country'))
+            $('.deletstaff').removeClass('d-none')
+            $('#customer_staff_form_1 .action').addClass('editstaffform')
+            EditStaff(_id)
+            DeleteStaff(_id)
+        })
+
+
+        function EditStaff(id) {
+            $('.editstaffform').click(function (e) {
+                e.preventDefault()
+
+                var params = {
+                    "Position": $('#addStaff1 #Position').val(),
+                    "Name": $('#addStaff1 #Name').val(),
+                    "Contact_No": $('#addStaff1 #Contact_No').val(),
+                    "Email": $('#addStaff1 #Email').val(),
+                    "Location": $('#addStaff1 #Location').val(),
+                    "City": $('#addStaff1 #City').val(),
+                    "Zip": $('#addStaff1 #Zip').val(),
+                    "State": $('#addStaff1 #State').val(),
+                    "Country": $('#addStaff1 #Country').val(),
+                }
+
+                staff_url = `${url}customer-staff/${id}/`
+
+                Do_Update(staff_url, params)
+                alert('Staff Updated. !!!')
+                location.reload()
+
+            })
+        }
+
+        function DeleteStaff(id) {
+            $('.deletegst').click(function (e) {
+                e.preventDefault()
+                Delete_Call(id, 'customer-staff')
+            })
+        }
+
+        $('.EditDeliveryAddres').click(function (e) {
+            e.preventDefault()
+            $('#edit_delivery_address_form #Address').val($(this).attr('data-address'))
+            $('#edit_delivery_address_form #City').val($(this).attr('data-city'))
+            $('#edit_delivery_address_form #State').val($(this).attr('data-state'))
+            $('#edit_delivery_address_form #Zip').val($(this).attr('data-zip'))
+            $('#edit_delivery_address_form #Country').val($(this).attr('data-country'))
+            $('#edit_delivery_address_form #NickName').val($(this).attr('data-nick'))
+            $('#edit_delivery_address').modal('toggle')
+            let id = $(this).attr('data-id')
+            EditDeliveryAddress(id)
+            DeleteDeliveryAddress(id)
+        })
+
+        function EditDeliveryAddress(id) {
+            $('.edit_deliver_action').click(function (e) {
+                e.preventDefault()
+                var params = {
+                    "Address": $('#edit_delivery_address_form #Address').val(),
+                    "City": $('#edit_delivery_address_form #City').val(),
+                    "State": $('#edit_delivery_address_form #State').val(),
+                    "Zip": $('#edit_delivery_address_form #Zip').val(),
+                    "Country": $('#edit_delivery_address_form #Country').val(),
+                    "NickName": $('#edit_delivery_address_form #NickName').val()
+                }
+
+                action_url = `${url}customer-branch-delivery-address/${id}/`
+                Do_Update(action_url, params)
+                alert('Delivery Updated. !!!')
+                location.reload()
+            })
+        }
+
+
+        function DeleteDeliveryAddress(id) {
+            $('.delete_delivery_address').click(function (e) {
+                e.preventDefault()
+                Delete_Call(id, 'customer-branch-delivery-address')
+            })
+        }
+
+        $('.delete_action').click(function (e) {
+            e.preventDefault()
+            var data_url = $(this).attr('data-action-url')
+            var data_action = $(this).attr('data-action')
+            var data_id = $(this).attr('data-id')
+
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+
+                var params = { 'id': data_id }
+                var _url = url + data_url + '/' + data_id + '/'
+                // console.log(_url)
+                // console.log(params)
+                Delete_Function(_url, params)
+                location.reload()
+
+            } else {
+                alert('Invalid Name. !!!')
+            }
+
+        })
+
+
+        $('.BranchDeliveryAddres').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('data-id')
+            var _url = $(this).attr('data-url')
+            Delete_Call(_id, _url)
+        })
+
+
+        $('.CustomerStaff').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('data-id')
+            var _url = $(this).attr('data-url')
+            Delete_Call(_id, _url)
+        })
+
+
+        function Delete_Call(id, baseurl) {
+            var params = { 'id': id }
+            var action_url = url + baseurl + '/' + id + '/'
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                Delete_Function(action_url, params)
+                alert('Deleted Successfully. !!!')
+                location.reload()
+            } else {
+                alert('Invalid Name. !!!')
+            }
+
+        }
+
+        function Delete_Action_Call() {
+
+            $('#addnewbank_form .delete').click(function (e) {
+                e.preventDefault()
+                var id = $(this).attr('data-id')
+                var _url = $(this).attr('data-url')
+
+                var params = { 'id': id }
+                var action_url = url + _url + '/' + id + '/'
+
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+                    Delete_Function(action_url, params)
+                    alert('Deleted Successfully. !!!')
+                    location.reload()
+                } else {
+                    alert('Invalid Name. !!!')
+                }
+            })
+
+        }
+
+
+        function Delete_Function(action_url, params) {
+            $.ajax({
+                type: "DELETE",
+                url: action_url,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(params),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            });
+        }
+
+
+        function ModalFunction(_action, _vid, _url) {
+            // console.log(_action)
+            // add action
+            if (_action == 'add') {
+
+                $('.modal-body .delete').addClass('d-none')
+
+                $('#customer_staff_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    Do_Addition_Action(data, _url, _vid, 'Customer_Staff_Account', 'Staff detail added Successfully. !!!')
+                })
+
+                $('#addnewbank_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    Do_Addition_Action(data, _url, _vid, 'Bank_Account', 'Customer Bank Added Successfully. !!!')
+                })
+
+                $('#add_gst_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    Do_Addition_Action(data, _url, _vid, 'GST_No', 'GST No Added Successfully. !!!')
+                })
+
+                $('#add_customer_tin_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    // console.log(data)
+                    Do_Addition_Action(data, _url, _vid, 'TIN_No', 'TIN no added Successfully. !!!')
+                })
+
+                $('#add_customer_Phone_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    Do_Addition_Action(data, _url, _vid, 'Founder_Phone', 'Phone Number added Successfully. !!!')
+                })
+
+                $('#add_customer_pan_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    Do_Addition_Action(data, _url, _vid, 'PAN_No', 'PAN no added Successfully. !!!')
+                })
+
+                $('#add_customer_certificate_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _id = Do_Addition_Action(data, _url, _vid, 'Certificate', 'Certificate added Successfully. !!!')
+                })
+
+                $('#billing_address_form').submit(function (e) {
+                    e.preventDefault()
+                    $(this).prop('disabled',true)
+                    var data = new FormData(this);
+                    var _id = Do_Addition_Action_Without_Reload(data, _url, _vid)
+                })
+
+                $('#payment_terms_form').submit(function (e) {
+                    e.preventDefault()
+                    var params = {
+                        'Payment_Term': $('#payment_terms_form #State').val()
+                    }
+                    var _id = Do_Update(_url, params)
+                    $('.alertMessage .alert').removeClass('d-none').text('Payment Terms Added. !!!')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                })
+
+                $('#delivery_address_form').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _id = Create_Function(_url, data)
+                    var action_url = url + 'customer-branch/' + _vid + '/'
+                    Update_Function(action_url, _id, 'Delivery_Address')
+                    $('.alertMessage .alert').removeClass('d-none').text('Delivery Address Added Successfully. !!!')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                })
+
+                $('#customer_staff_form_1').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _id = Create_Function(_url, data)
+                    // console.log(_id)
+                    // console.log('woeks')
+                    var action_url = url + 'customer-branch/' + _vid + '/'
+                    Update_Function(action_url, _id, 'Staff_Detail')
+
+                    $('.alertMessage .alert').removeClass('d-none').text('Staff Create Successfully. !!!')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                })
+
+            }
+
+            //  edit action
+            if (_action == 'edit') {
+
+                $('.modal-body .delete').removeClass('d-none')
+
+                $('#addnewbank_form').submit(function (e) {
+
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var object = {};
+                    data.forEach(function (value, key) {
+                        object[key] = value;
+                    });
+
+                    var data_id = $('#addnewbank_form .action').attr('data-id')
+                    var data_url = $('#addnewbank_form .action').attr('data-url')
+
+                    var _url = url + data_url + '/' + data_id + '/'
+                    Do_Update(_url, object)
+                    $('.alertMessage .alert').removeClass('d-none').text('Bank Edited Successfully. !!!')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                })
+            }
+        }
+
+        function Do_Addition_Action(data, _url, _vid, column, message) {
+
+            var object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            var id = Create_Function(_url, data)
+            var action_url_1 = base + 'post-api/customers/' + _vid + '/'
+
+            Update_Function(action_url_1, id, column)
+
+            $('.alertMessage .alert').removeClass('d-none').text(message)
+            setTimeout(() => {
+                location.reload()
+            }, 500)
+
+        }
+
+
+        function Do_Addition_Action_Without_Reload(data, _url, _vid) {
+
+            var object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            var id = Create_Function(_url, data)
+            // console.log(id)
+            var params = {
+                'Billing_Address': id,
+                'csrfmiddlewaretoken': csrftoken
+            }
+            // console.log(params)
+            var action_url = url + 'customer-branch/'
+            // console.log(action_url)
+            var _id = POST_Function(action_url, params)
+            // console.log(_id)
+            var action_url = base + 'post-api/customers/' + _vid + '/'
+            // console.log(action_url)
+            // console.log(_id)
+            Update_Function(action_url, _id, 'Branches')
+
+            $('.alertMessage .alert').removeClass('d-none').text('Branch Created Successfully. !!!')
+            setTimeout(() => {
+                location.reload()
+            }, 500)
+        }
+
+
+        // delete method for users
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var customerName = prompt("Please enter your username ");
+                let username = $('#user_name').attr('data-name')
+                let userid = $('#userid').html()
+
+                if (customerName == username) {
+
+                    var id = $(this).attr('href')
+                    var _obj = JSON.stringify({ 'id': id, 'model': $(this).attr('data-url') });
+                    var params = {
+                        "Notifications": _obj,
+                        'csrfmiddlewaretoken': csrftoken,
+                        'Types': $(this).attr('data-method'),
+                        'User': userid
+                    }
+                    $.post(base + 'post-api/notifications/', params, function (req, res) {
+                    })
+
+                    var customer_params = {
+                        is_active: false
+                    }
+                    let customer_url = `${base}post-api/customers/${id}/`
+                    PatchMethod(customer_params, customer_url)
+                    alert('Delete Request has been send. !!!')
+                    location.reload()
+
+                } else {
+                    alert('Invalid Name. !!!')
+                }
+
+
+
+            }
+        })
+
+        $('.deleteForAdmin').click(function (e) {
+            e.preventDefault()
+            var _url = $(this).attr('data-url')
+            var key = $(this).attr('data-url')
+            var _id = $(this).attr('data-id')
+            var baseurl = url + _url + '/' + _id
+            var params = { ['id']: _id };
+            CheckValidation(params, baseurl)
+        })
+
+        function CheckValidation(param, url) {
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                DELETEMethod(param, url)
+                alert('Customer Deleted Successfully. !!!')
+                setTimeout(() => {
+                    location.reload()
+                }, 500);
+            } else {
+                alert('Invalid Name. !!!')
+            }
+        }
+
+        function POST_Function(action_url, data) {
+            var data;
+            $.ajax({
+                type: "POST",
+                url: action_url,
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    data = response?.id
+                    callback.call(data)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+            return data
+        }
+
+        function Create_Function(action_url, Formdata) {
+            var data;
+            $.ajax({
+                url: action_url,
+                type: 'POST',
+                data: Formdata,
+                async: false,
+                success: function (response) {
+                    data = response?.id
+                    callback.call(data)
+                },
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return data
+        }
+
+        function Do_Update(action_url, params) {
+            $.ajax({
+                type: 'PATCH',
+                url: action_url,
+                data: JSON.stringify(params),
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    // console.log(response)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+        }
+
+        function Update_Function(action_url, id, col) {
+
+            var data = View_Info(id, action_url, col)
+            // console.log(action_url, id, col)
+            data.push(id)
+
+            var params = {
+                [col]: data
+            }
+
+            $.ajax({
+                type: 'PATCH',
+                url: action_url,
+                data: JSON.stringify(params),
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    // console.log(response)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+
+        }
+
+        function DELETEMethod(params, baseurl) {
+            $.ajax({
+                type: "DELETE",
+                url: baseurl,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(params),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            });
+        }
+
+        function View_Info(id, dynamic_url, column) {
+            var data;
+            $.ajax({
+                url: dynamic_url,
+                type: 'GET',
+                async: false,
+                success: function (response) {
+                    data = response
+                    callback.call(data)
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+            return data[column]
+            // return data
+        }
+
+    })
+</script>
+<style>
+    .fa-18 {
+        font-size: 18px;
+    }
+</style>
+{% endblock %}

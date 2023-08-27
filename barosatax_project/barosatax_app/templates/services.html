@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - Our Services
+{% endblock %}
+{% block content %}
+
+
+<!-- Services starts here -->
+<section class="services">
+    <div class="row px-lg-5 px-4 mb-4 pb-lg-5">
+        <div class="col-lg-6 my-auto px-0 px-lg-2">
+            <h1 class="">Our Services</h1>
+            <p>Satisfaction Delivered  isn't just our motto, it is our underlying foundation. The following are general services we offer. Meet with us to understand the full scope of everything we have to offer you and your company.</p> 
+        </div>
+        <div class="col-lg-6 order-first order-lg-last mb-4 mb-lg-0 px-0 px-lg-2">
+            <img src="https://static.wixstatic.com/media/11062b_51cedaee803145618025f985ac3d84c5~mv2.jpeg/v1/fill/w_656,h_589,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/Office%20employee.jpeg" class="w-100" width="100%" alt="">
+        </div>
+
+    </div>
+</section>
+<!-- Services ends here -->
+
+
+<!-- stand_out starts here -->
+<section class="services px-lg-5">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/478355_f133cc90497c44078fe7877c81af6a6a~mv2.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/personal.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Personal Tax</h5>
+                <p>Tax situations vary with individuals.  We work closely with our clients to figure out their specific needs and adopt customised approach with each client.</p>    
+                <div class="text-center">
+                    <a href="{% url 'personal_tax' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/2fd079bb88774bbe8f9ae073791c9e01.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Business%20Meeting.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Self Employment Tax</h5>
+                <p>Small Business Taxes are unique to every business, our experts will help you choose the best options compliant under the Income Tax Act and Rules.</p>    
+                <div class="text-center">
+                    <a href="{% url 'self_employment' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/e63498afac804a82a4a8a64fdef2c6fd.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Successful%20Manager.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Corporate Tax</h5>
+                <p>We offer a single window solution for the end-to-end needs of Corporate in their Tax and Accounting Situations, With streamline practical approaches.</p>    
+                <div class="text-center">
+                    <a href="{% url 'corporate_tax' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/nsplsh_4cdfe10e81e94bfaa13cf715ae8eb3be~mv2.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Image%20by%20Scott%20Graham.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Business Incorporation Services</h5>
+                <p>Saugatax helps our clients to get incorporation of business in Canada and be a support to improve their credibility and growth potential.</p>    
+                <div class="text-center">
+                    <a href="{% url 'business_incorporation' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/11062b_426e593156994f51bf2122d7478883c5~mv2.jpg/v1/fill/w_367,h_305,fp_0.60_0.50,q_80,usm_0.66_1.00_0.01,enc_auto/Business%20Conference.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Additional Corporation Services</h5>
+                <p>We provide services for a wide variety of clients, from pre-financing to multi-billion dollar public companies. and help them to do the best.</p>    
+                <div class="text-center">
+                    <a href="{% url 'additional_corporation' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/nsplsh_d9488cd77aa340df99ffdbce49380dd0~mv2.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Image%20by%20Alesia%20Kazantceva.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Business Advisory Services</h5>
+                <p>Starting a business is easily said than done. The risk appetite of individuals vary and we deal with every individual in their perspective in its totality.</p>    
+                <div class="text-center">
+                    <a href="{% url 'business_advisory' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/6403fcc8193b4614a3fc48ab5cf90515.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/US%20Flag.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">US Taxes</h5>
+                <p>We make sure the expatriation tax accurate and complete through our expert methodology to minimize you taxes</p>    
+                <div class="text-center">
+                    <a href="{% url 'us_tax' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/b08fc97db8934f8196371bbbeda5c445.jpg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Business%20Meeting.jpg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Accounting & Bookkeeping</h5>
+                <p>BarosaTax offers timely, cost-effective, scalable accounting and book keeping solutions customized for requirements.</p>    
+                <div class="text-center">
+                    <a href="{% url 'accounting_bookkeeping' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <img src="https://static.wixstatic.com/media/11062b_254deac88da14c43a32af02941ed7b30~mv2.jpeg/v1/fill/w_367,h_305,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Business%20Conference.jpeg" width="100%" alt="">
+                <h5 class="text-danger fw-bold text-center mt-3">Other Services</h5>
+                <p>BarosaTax holds a team of analytical, experienced & Subject Matter Experts to solve any complicated business problems.</p>    
+                <div class="text-center">
+                    <a href="{% url 'other_services' %}" class="btn btn-blue">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- stand_out ends here -->
+
+
+
+{% include 'snippets/call_back.html' %}
+
+
+<hr>
+
+
+
+<script>
+    $('.servicesmenu').addClass('active')
+</script>
+{% endblock %}

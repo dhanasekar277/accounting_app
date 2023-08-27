@@ -1,0 +1,308 @@
+{% extends "_base.html" %}
+
+ 
+{% block content %}
+    <div class="container">
+        <div class="row mt-3">  
+            <div class="col-md-12 text-capitalize">
+                <h5 class="fw-bold">
+                    <a href="{% url 'purchase' %}" class="btn btn-primary btn-sm me-2"><i class="fa fa-chevron-left fa-12"></i> &nbsp;Back</a>
+                    {% for i in entries %}
+                        {{i.vendorId}} <a href="tel:{{i.Phone}}" class="ms-2"><i class="fa text-blue fa-14 fa-phone"></i></a>
+                        <a href="mailto:{{i.Email}}" class="ms-2"><i class="fa fa-14 fa-envelope"></i></a>
+                        <span class="float-end mt-1">{{i.customerId.Company_Name}}</span>
+                    {% endfor %}
+                </h5>
+            </div>
+
+            <div class="col-md-12">
+                <!-- total amount -->
+                <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                    <h6 class="fw-bold mb-2">Total Material</h6>
+                    <div id="total_material"></div>
+                </div>
+                <!-- table -->
+                <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                    <a  class="btn btn-sm btn-primary float-end" href="{% url 'add-purchase' %}"><i class="fa fa-plus me-1"></i> Add</a>
+                    <table id="example" class="table table-bordered table-striped">
+                        <thead class="table-dark text-capitalize">
+                            <tr >
+                                <th scope="col" style="width: 25% !important;">Sales Name</th>
+                                <th scope="col" style="width: 35% !important;">PO Details</th>
+                                <th scope="col" >Purchase Entries</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                            {% for i in entries%}
+                                <span id="materialLength" class="d-none">{{i.purchaseMaterial.all|length}}</span>
+                                {% for j in i.purchaseMaterial.all %}
+                                    <tr class="purchase{{forloop.counter}}">
+                                        <td>
+                                            <div >
+                                                <div><span class="text-capitalize text-blue mname">{{j.MaterialName}}</span> </div>
+                                                <div><span><b>Date : </b>{{j.PurchaseDate}}</span></div>
+                                                <div><span class="text-capitalize">{{j.UnloadingSite}}</span></div>
+                                                <div class=""><span class="text-danger"><b>Quantity : </b>
+                                                    <span class="qty">{{j.Quantity}}</span> {{j.QuantityType}}</span> 
+                                                    <span class="total_qty d-none">{{j.mat_id.Quantity}}</span>
+                                                    <span class="float-end">At Site</span></div>
+                                            </div>    
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div>
+                                                    <span class=""><b>CDC : </b>{{j.CDC}}</span> 
+                                                    <span class="ms-3"><b>LDC : </b>{{j.LDC}}</span>
+                                                </div>
+                                                <div><span class="text-capitalize"><b>Vehicle No : </b>{{j.VehicleNo}}</span></div>
+                                                <div>
+                                                    <span class="me-1"><b>Rate : </b>{{j.Rate}}</span> 
+                                                    <span class="me-1"><b>Total : </b>{{j.Total}}</span>
+                                                    <span><b>Round Off : </b>{{j.RoundOff}}</span>
+                                                </div>
+                                                <div class="">
+                                                    <b>GST : </b>{{j.GST}} 
+                                                    <span class="ms-1"><b>WithGST : </b>{{j.WithGST}}</span>
+                                                </div>
+                                            </div>  
+                                        </td>
+                                        <td>
+                                            <div class="text-capitalize">
+                                                <div>
+                                                    <span ><b>Site Supervisior : </b>{{j.SiteSupervisior}}</span> 
+                                                    <span class="ms-3"><b>QC : </b>{{j.QC}}</span>
+                                                </div>
+                                                <div>
+                                                    <span ><b>Security : </b>{{j.Security}}</span>
+                                                    <span class="ms-3"><b>Engineer : </b>{{j.Engineer}}</span>
+                                                </div>
+                                                <div class="">
+                                                    <span ><b>Driver Name : </b>{{j.DriverName}}</span>
+                                                </div>
+                                                <div class="">
+                                                    <span ><b>Unloading Supervisior : </b>{{j.UnloadingSupervisior}}</span>
+                                                </div>
+                                            </div>  
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- remainder -->
+                <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                    <h6 class="fw-bold mb-2">Remainder 
+                        <a href="" class="float-end remainder_edit" ><i class="fa fa-edit"></i></a>
+                    </h6>
+
+                           
+                    {% for i in entries %}
+
+                        <div class="row remainder">
+                            <div class="col-md-3">
+                                <label for="GSTFilledInvNo" class="small fw-bold">GST Filled Inv No</label>
+                                <input type="text" disabled id="GSTFilledInvNo" remainder_id="{{i.remainder.id}}" value="{{i.remainder.GSTFilledInvNo}}" class="form-control GSTFilledInvNo">
+                            </div>
+                            <div class="col-md-3 ps-0">
+                                <label for="GSTFilledInvReceive" class="small fw-bold">GST Filled Inv Receive</label>
+                                <input type="text" disabled id="GSTFilledInvReceive" value="{{i.remainder.GSTFilledInvReceive}}" class="form-control GSTFilledInvReceive">
+                            </div>
+                            <div class="col-md-3 ps-0">
+                                <label for="GSTFilledFiledCheck" class="small fw-bold">GST Filled Filed Check</label>
+                                <input type="text" disabled id="GSTFilledFiledCheck" value="{{i.remainder.GSTFilledFiledCheck}}" class="form-control GSTFilledFiledCheck">
+                            </div>
+                            <div class="col-md-3 ps-0">
+                                <label for="GSTFilledInvFiled" class="small fw-bold">GST Filled Inv Filed</label>
+                                <input type="text" disabled id="GSTFilledInvFiled" value="{{i.remainder.GSTFilledInvFiled}}" class="form-control GSTFilledInvFiled">
+                            </div>
+                            <div class="col-12 remainder_submit">
+
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+                <!-- net amount -->
+                <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                    <h6 class="fw-bold mb-2">Net Amount </h6>
+
+                           
+                    {% for i in entries %}
+                        {% for j in i.netAmount.all %}
+                            <div class="row mb-2 net{{j.id}}">
+                                <div class="col-md-3">
+                                    <label for="WithOutGSTNetTotalAmount" class="small fw-bold">WithOut GST Net TotalAmount</label>
+                                    <input type="text" disabled id="WithOutGSTNetTotalAmount" value="{{j.WithOutGSTNetTotalAmount}}" class="form-control WithOutGSTNetTotalAmount">
+                                </div>
+                                <div class="col-md-3 ps-0">
+                                    <label for="WithGSTNetTotalAmount" class="small fw-bold">With GST Net TotalAmount</label>
+                                    <input type="text" disabled id="WithGSTNetTotalAmount" value="{{j.WithGSTNetTotalAmount}}" class="form-control WithGSTNetTotalAmount">
+                                </div>
+                                <div class="col-md-3 ps-0">
+                                    <label for="AmountPayyed" class="small fw-bold">Amount Payyed</label>
+                                    <input type="text" disabled id="AmountPayyed" value="{{j.AmountPayyed}}" class="form-control AmountPayyed">
+                                </div>
+                                <div class="col-md-3 ps-0">
+                                    <label for="Balance" class="small fw-bold">Balance </label><a href="" class="float-end netAmountEdit" data-id="{{j.id}}"><i class="fa fa-14 fa-edit"></i></a>
+                                    <input type="text" disabled id="Balance" value="{{j.Balance}}" class="form-control Balance">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+
+            $('.purchaseMenu').addClass('active')
+            var base = 'http://127.0.0.1:8000/'
+            var url = 'http://127.0.0.1:8000/api/'
+            var csrftoken = $('meta[name="csrf-token"]').attr('content')
+            var userid = $('#user-id').attr('data-id')
+            var agencyid = $('#user-id').attr('data-id')
+0
+            $('#example').DataTable()
+
+            // print option using quotations
+            $('#print').click(function(){
+                $("#quotations").printThis({ 
+                    debug: false,              
+                    importCSS: true,             
+                    importStyle: true,         
+                    printContainer: true,       
+                    loadCSS: "../css/style.css", 
+                    pageTitle: false,             
+                    removeInline: false,        
+                    printDelay: 200,            
+                    header: false,             
+                    formValues: true          
+                }); 
+            })
+
+            // material Length
+            let material = Number($('#materialLength').text())
+
+            var mat = []
+            var mat_name = []
+            var total_mat_qty = []
+            for(var i=0;i<material;i++){
+                select = `.purchase${i+1}`
+                mat_name.push($(`${select} .mname`).text())
+                mat.push({
+                    'name':$(`${select} .mname`).text(),
+                    'qty':$(`${select} .qty`).text(),
+                    'total': $(`${select} .total_qty`).text(),
+                })
+            }
+            var mat_name = mat_name.filter((v,i,a)=>a.findIndex(t=>(t===v))===i)
+            for(var i=0;i<mat_name.length;i++){
+                data = mat.filter(p => p.name == mat_name[i])
+                qty_total = 0
+                for(var j=0;j<data.length; j++){
+                    qty_total += Number(data[j]?.qty)
+                }
+                total_mat_qty.push({'name': data[0]?.name, 'qty': qty_total, 'total': data[0]?.total, 'remainder': Number(data[0]?.total) - Number(qty_total)})
+            }
+            // console.log(total_mat_qty)
+            total_mat_qty.forEach(ele => {
+                $('#total_material').append(`<li>${ele?.name} <span>( ${ele?.total} - ${ele?.qty} = ${ele?.remainder} )</span></li>`)
+            })
+        
+            // remainder edit
+            remainderEdit()
+            function remainderEdit(){
+                $('.remainder_edit').click(function (e){
+                    e.preventDefault()
+                    $('.remainder input').attr('disabled', false)
+                    $(this).addClass('remainder_save').removeClass('remainder_edit').html('<i class="fa fa-check"></i> Save')
+                    remainderSave()
+                })
+            }
+            // remainder save
+            function remainderSave(){
+                $('.remainder_save').click(function (e){
+                    e.preventDefault()
+                    $('.remainder input').attr('disabled', true)
+                    $(this).addClass('remainder_edit').removeClass('remainder_save').html('<i class="fa fa-edit"></i>')
+                    var params = {
+                        GSTFilledInvNo: $('.GSTFilledInvNo').val(),
+                        GSTFilledInvReceive: $('.GSTFilledInvReceive').val(),
+                        GSTFilledFiledCheck: $('.GSTFilledFiledCheck').val(),
+                        GSTFilledInvFiled: $('.GSTFilledInvFiled').val(),
+                    }
+                    let r_id = $('.GSTFilledInvNo').attr('remainder_id')
+                    PATCHPARAMMethod(params, base+'post-api/purchase-remainder/'+r_id+'/')
+                    alert('Remainder Updated. !!!')
+                    remainderEdit()
+                })
+            }
+
+            // net amoutn section
+            netAmountEdit()
+            function netAmountEdit(){
+                $('.netAmountEdit').click(function (e){
+                    e.preventDefault()
+                    let id = $(this).attr('data-id')
+                    selector = `.net${id}`
+                    $(`${selector} input`).attr('disabled', false)
+                    $(this).addClass('netAmountSave').removeClass('netAmountEdit').html('<i class="fa fa-check"></i> Save')
+                    netAmountSave()
+                })
+            }
+            // net amount save
+            function netAmountSave(){
+                $('.netAmountSave').click(function (e){
+                    e.preventDefault()
+                    let id = $(this).attr('data-id')
+                    selector = `.net${id}`
+                    $(`${selector} input`).attr('disabled', true)
+                    $(this).addClass('netAmountEdit').removeClass('netAmountSave').html('<i class="fa fa-edit"></i>')
+                    var params = {
+                        WithOutGSTNetTotalAmount: $('.WithOutGSTNetTotalAmount').val(),
+                        WithGSTNetTotalAmount: $('.WithGSTNetTotalAmount').val(),
+                        AmountPayyed: $('.AmountPayyed').val(),
+                        Balance: $('.Balance').val(),
+                    }
+                    PATCHPARAMMethod(params, base+'post-api/purchase-net-amount/'+id+'/')
+                    alert('Net Amount Updated. !!!')
+                    netAmountEdit()
+                })
+            }
+
+
+            function PATCHPARAMMethod(params, dynamicurl) {
+                $.ajax({
+                    type: 'PATCH',
+                    url: dynamicurl,
+                    data: JSON.stringify(params),
+                    processData: false,
+                    contentType: "application/json",
+                    dataType: "json",
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (response) {
+
+                    },
+                    error: function (response) {
+                        alert('Network issue Try again later. !!!')
+                    }
+                });
+            }
+        })
+    </script>
+{% endblock %})
+
+{{entries}}

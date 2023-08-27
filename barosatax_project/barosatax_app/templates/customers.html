@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - Customers
+{% endblock %}
+{% block content %}
+{% load static %}
+
+
+<!-- Services starts here -->
+<section class="services">
+    <div class="row px-lg-5 px-4">
+        <div class="col-lg-6 my-auto px-0 px-lg-2">
+            <h1 class="fw-bold">Our Customers</h1>
+            <p>Barosatax is proudly serving a broad range of spectrum including self-employed professionals and Corporate firms.</p> 
+        </div>
+        <div class="col-lg-6 order-first order-lg-last mb-4 mb-lg-0 px-0 px-lg-2">
+            <img src="{% static '/img/Customer.jpg' %}" class="w-100" alt="">
+        </div>
+
+    </div>
+</section>
+<!-- Services ends here -->
+
+<!-- stand_out starts here -->
+<section class="stand_out my-4 py-lg-5 px-lg-5 px-4">
+    <h2 class="h1 text-center mb-4 fw-bold">Industries we serve</h2>
+    <div class="row px-5">
+        <div class="col-lg-4 mb-3">
+            <ul>
+                <li class="mb-2">Advertising Companies</li>
+                <li class="mb-2">Automobile Services</li>
+                <li class="mb-2">Banquet Hall & Convention Center</li>
+                <li class="mb-2">Carpet & Upholstery Cleaning Services</li>
+                <li class="mb-2">Courier Services</li>
+                <li class="mb-2">Dentist and Dental Services</li>
+                <li class="mb-2">Digital Marketing Agencies</li>
+                <li class="mb-2">Food Delivery Services</li>
+                <li class="mb-2">Painting Services</li>
+                <li class="mb-2">Pest Control Services</li>
+                <li class="mb-2">Placement Agency Services</li>
+            </ul>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <ul>
+                <li class="mb-2">Food Retail- Groceries & Convenient Stores</li>
+                <li class="mb-2">Online Businesses- E-commerce</li>
+                <li class="mb-2">Painting Services</li>
+                <li class="mb-2">Pest Control Services</li>
+                <li class="mb-2">Placement Agency Services</li>
+                <li class="mb-2">Property Management Services</li>
+                <li class="mb-2">PSW and Health care Professionals</li>
+                <li class="mb-2">Real Estate Agents</li>
+                <li class="mb-2">Real Estate Staging Services</li>
+                <li class="mb-2">Renovation – Residential and Commercial</li>
+                <li class="mb-2">Property Management Services</li>
+            </ul>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <ul>
+                <li class="mb-2">PSW and Health care Professionals</li>
+                <li class="mb-2">Restaurants & Bars</li>
+                <li class="mb-2">Restaurants/catering Services</li>
+                <li class="mb-2">Salon Spa and Beauty Solutions</li>
+                <li class="mb-2">Tours and Travel Agencies</li>
+                <li class="mb-2">Towing Services</li>
+                <li class="mb-2">Truck Services</li>
+                <li class="mb-2">Tuition and Educational Services</li>
+                <li class="mb-2">Uber/Lyt Passenget rServices</li>
+                <li class="mb-2">Warehousing Business</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- stand_out ends here -->
+
+<section class="bg-dark py-4 text-center">
+    <a href="" class="btn btn-danger">Contact Us</a>
+</section>
+
+<script>
+    $('.customersmenu').addClass('active')
+</script>
+{% endblock %}

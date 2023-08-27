@@ -1,0 +1,182 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold title"><span>Quick Notes</span> <a href="" data-bs-toggle="modal"
+                    data-bs-target="#addNotes" class="float-end btn btn-success btn-sm"><i class="fa me-1 fa-plus"></i>
+                    Add</a></h5>
+        </div>
+    </div>
+
+    <div id="quicknotes" class="row mx-0">
+
+    </div>
+</div>
+
+<!-- add Modal -->
+<div class="modal fade" id="addNotes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 py-2">
+                <h5 class="modal-title fw-bold" id="exampleModalLabel">Add Notes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <form class="needs-validation" method='post' novalidate>
+                    {% csrf_token %}
+                    <div class="form-check ps-0">
+                        <label class="form-check-label" for="userNotes">Notes</label>
+                        <textarea class="form-control" id="userNotes" required></textarea>
+                    </div>
+                    <div class="invalid-feedback"> required Field </div>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id='SaveNotes' class="btn btn-sm btn-primary">Save Notes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete Modal for admin -->
+<div class="modal fade" id="deleteMethod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2 bg-danger text-white">
+                <h5 class="modal-title fw-bold small" id="exampleModalLabel">DELETE PRODUCT</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure you want to delete ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-col="id" data-url="vendors" data-id=""
+                    class="btn btn-danger dlt btn-sm">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        $('.quciknoteMenu').addClass('active')
+
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        // GET QUICKNOTES
+        $.get('/api/quicknotes/', function (res) {
+            let data = res.results
+            let colors = ['#ffeb3b70', '#8bc34a85', '#ffc10769', '#f443369c', '#ff572275', '#19875475', '#0dcaf054', '#6610f257', '#d6338457']
+
+            for (var i = 0; i < data.length; i++) {
+                var no = Math.floor(Math.random() * 8)
+                var today = new Date(data[i]?.published)
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+                today = mm + '-' + dd + '-' + yyyy;
+
+                $('#quicknotes').append('<div class="col-4 quicknotes' + data[i]?.id + ' mt-2 px-1"><div class="card rounded box-2 p-3 notes" style="background:' + colors[no] + ';"><a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Notes" data-bs-content="' + data[i]?.notes + '"><h5 class="twolinesonly mb-3">' + data[i]?.notes + '</h5></a><div class="row"><div class="col-6"><p class="mb-0">' + today + '</p></div><div class="col-6"><p class="mb-0"><a class="deleteNotes float-end text-danger" href="' + data[i]?.id + '"><i class="fa fa-lg fa-trash"></i></a></p></div></div></div></div>')
+
+            }
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
+            })
+            deletenotes()
+        });
+
+        // ADD QUICKNOTES
+        (function () {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        if (form.checkValidity()) {
+                            event.preventDefault()
+                            $.post('/api/quicknotes/',
+                                {
+                                    "notes": $('#userNotes').val(),
+                                    'csrfmiddlewaretoken': '{{csrf_token}}'
+                                },
+                                function (data, status) {
+                                    if (status == 'success') {
+                                        var today = new Date(data.published)
+                                        var dd = String(today.getDate()).padStart(2, '0');
+                                        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        today = mm + '-' + dd + '-' + yyyy;
+                                        $('#userNotes').val(' ')
+                                        $('#addNotes').modal('toggle')
+                                        $('#quicknotes').prepend('<div class="col-4 quicknotes' + data.id + ' mt-2 px-1"><div class="card rounded box-2 p-3 notes" style="background:#ffc10769;"><a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Notes" data-bs-content="' + data.notes + '"><h5 class="twolinesonly mb-3">' + data.notes + '</h5></a><div class="row"><div class="col-6"><p class="mb-0">' + today + '</p></div><div class="col-6"><p class="mb-0"><a class="deleteNotes float-end text-danger" href="' + data.id + '"><i class="fa fa-lg fa-trash"></i></a></p></div></div></div></div>')
+                                    }
+                                    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+                                    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                                        return new bootstrap.Popover(popoverTriggerEl)
+                                    })
+                                    deletenotes()
+                                })
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+
+        // DELETE QUICKNOTES
+        function deletenotes() {
+            $('.deleteNotes').click(function (event) {
+                event.preventDefault()
+                notesid = $(this).attr('href')
+                if (confirm('Are you sure Want to Delete')) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/api/quicknotes/' + notesid,
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: notesid,
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success: function (data, status) {
+                            $('.quicknotes' + notesid).remove()
+                        }
+                    });
+                }
+            });
+        }
+    
+    })
+</script>
+
+<style>
+    .notes span {
+        position: relative;
+        top: 15px;
+    }
+
+    .title span {
+        position: relative;
+        top: 3px;
+    }
+</style>
+{% endblock %})

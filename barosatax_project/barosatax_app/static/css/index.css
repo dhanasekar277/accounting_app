@@ -1,0 +1,284 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap");
+
+body {
+  font-family: "Open Sans", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+.text-danger {
+  color: #ea282c !important;
+}
+.text-blue {
+  color: #24366f !important;
+}
+
+.btn-blue {
+  color: white;
+  padding: 10px 36px;
+  background-color: #24366f !important;
+  border-color: #24366f !important;
+  border-radius: 0 !important;
+}
+.btn-blue:hover {
+  color: white !important;
+  background-color: #ea282c !important;
+  border-color: #ea282c !important;
+}
+
+.btn-danger {
+  color: white;
+  padding: 10px 36px;
+  background-color: #ea282c !important;
+  border-color: #ea282c !important;
+  border-radius: 0 !important;
+}
+.btn-danger:hover {
+  border-color: #24366f !important;
+  background-color: #24366f !important;
+}
+
+.btn-danger-outline {
+  color: #ea282c;
+  padding: 10px 36px;
+  background-color: white !important;
+  border: 3px solid #ea282c !important;
+  border-radius: 0 !important;
+  font-weight: bold;
+}
+.btn-danger-outline:hover {
+  color: white !important;
+  border-color: #24366f !important;
+  background-color: #24366f !important;
+}
+
+/* Form Styles */
+.form-control {
+  padding: 0.75rem 0.75rem !important;
+  border-radius: 0 !important;
+}
+.form-control:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* ################### Navbar starts ################### */
+.navbar .nav-link, .navbar .nav-link-hover {
+  color: black;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.navbar .nav-link-hover:hover {
+  border-top: 5px solid #24366f;
+  margin-top: -6px;
+  border-radius: 2px;
+}
+.navbar .active {
+  border-top: 5px solid #ea282c;
+  margin-top: -6px;
+  border-radius: 2px;
+}
+/* ################### Navbar Ends ################### */
+
+/* ################### Footer Starts ################### */
+footer {
+  background-color: #24366f !important;
+}
+/* ################### Footer End ################### */
+
+/* ################### Home Starts ################### */
+.advantages .card {
+  transition: 0.35s;
+}
+.advantages .card:hover {
+  transform: scale(0.9);
+}
+
+.reach_us {
+  background-image: url("../img/478355_fe6e240b136641969dea6ed18aed3b1d_mv2.jpg");
+  height: 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.reach_us h1 {
+  line-height: 65px;
+}
+.testimonials {
+  background-image: url("../img/test.jpg");
+  height: 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.testimonials .card {
+  border-radius: 0 !important;
+  height: 278px;
+}
+
+.specialise .col-md-4:nth-child(1) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/personal.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(2) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Bicycle_Repair_Shop.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.specialise .col-md-4:nth-child(3) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Image_by_Carlos_Muza.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(4) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Professionals.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(5) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Image_by_Arlington_Research.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(6) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Men_with_Calculator.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(7) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Handshake.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(8) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Men_with_Calculator.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.specialise .col-md-4:nth-child(9) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Calculator.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.specialise .cardlayer .card {
+  height: 276px;
+}
+
+.specialise .cardlayer {
+  overflow: hidden;
+  position: relative;
+}
+
+.specialise .card {
+  transition: all 1s;
+  border-radius: 0 !important;
+}
+
+.specialise .card:hover {
+  transform: scale(1.2);
+}
+
+.specialise h5:hover {
+  transform: scale(1);
+}
+/* ################### Home Ends ################### */
+
+
+/* ################### Location Ends ################### */
+.stand_out .row .col-md-3:nth-child(1) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Scarborough.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(2) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/mechanic-ajax.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(3) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Oshawa.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(4) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Whitby.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(5) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Investing-in-the-Heart-of-Pickering.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(6) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Etobicoke.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(7) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Northyork.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(8) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Toronto.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(9) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/Brampton.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .row .col-md-3:nth-child(10) .cardlayer .card {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("../img/markham.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.stand_out .cardlayer .card {
+  height: 276px;
+}
+
+.stand_out .cardlayer {
+  overflow: hidden;
+  position: relative;
+}
+
+.stand_out .card {
+  transition: all 1s;
+  border-radius: 0 !important;
+}
+
+.stand_out .card:hover {
+  transform: scale(1.2);
+}
+
+.stand_out h5:hover {
+  transform: scale(1);
+}
+/* ################### Location Ends ################### */
+
+
+/* ################### Blogs Starts ################### */
+.avatar{
+  background: #24366f;
+  width: 63px;
+  padding: 6px 19px;
+  text-transform: capitalize;
+  border-radius: 50px;
+  margin-right: 1rem;
+  color: white;
+}
+@media(max-width: 478px) {
+  .avatar {
+    width: 53px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    margin-right: 1rem;
+    height: 53px;
+  }
+}
+/* ################### Blogs Ends ################### */

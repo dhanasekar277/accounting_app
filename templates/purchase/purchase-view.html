@@ -1,0 +1,779 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+<div class="container px-2">
+
+
+    <div class="box-1 rounded bg-white mt-2 p-3 mb-4 ">
+        <span id="ven_quo" class="d-none">{{mat_id}}</span>
+        {% for i in quotations %}
+        <span id="quotation_id" class="d-none">{{i.id}}</span>
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Purchase Entry
+                <span id="customer_name" class="text-blue">{{i.sales.customer.Company_Name}}</span>
+                <a href="" class="float-end btn btn-primary btn-sm invoiceview"><i class="fa fa-eye me-1"></i> View</a>
+            </h5>
+        </div>
+
+        <div id="salesDetail" class="text-capitalize mb-2">
+            <div>
+                <b>Sales : </b>
+                <span id="customer_id" class="me-2"
+                    customer-id="{{i.sales.customer.id}}">{{i.sales.customer.Founder_Name}}</span>
+                <b>Company Name : </b>
+                <span>{{i.sales.customer.Company_Name}}</span>
+            </div>
+            <div class="fa-16 mt-2 text-success"><b>Vendor Info : </b></div>
+            <div class="text-capitalize"><b>Vendor Name : </b> <span id="vendor_name"></span> ( <span
+                    id="vendor_company"></span> )</div>
+        </div>
+        {% endfor %}
+
+        <table class="table table-bordered table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>S.No</th>
+                    <th>Unloading Site</th>
+                    <th>Site</th>
+                    <th>Material</th>
+                    <th>Qty</th>
+                    <th>Moisture</th>
+                    <th>Type</th>
+                    <th>Add</th>
+                </tr>
+            </thead>
+            <tbody id="main_po_detail">
+
+            </tbody>
+        </table>
+
+        <div class="table-responsive">
+            <table id="purchase_tabel" class="table fa-12 d-none table-sm table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th hidden>mat_id</th>
+                        <th>Purchase Date</th>
+                        <th>Unloading Site</th>
+                        <th>Site</th>
+                        <th>Material</th>
+                        <th>CDC</th>
+                        <th>LDC</th>
+                        <th>Vehicle No</th>
+                        <th>Type</th>
+                        <th>Qty Formula</th>
+                        <th>Moisture</th>
+                        <th>Calc</th>
+                        <th>Round Off</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                        <th>GST</th>
+                        <th>With GST</th>
+                        <th>Site Supervisior</th>
+                        <th>QC</th>
+                        <th>Security</th>
+                        <th>Engineer</th>
+                        <th>Driver Name</th>
+                        <th>Unloading Supervisior</th>
+                    </tr>
+                </thead>
+                <tbody id="mat_append">
+
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+
+        <div class="d-none append_submit mt-3 pb-5">
+            <button id="po_submit" class="btn btn-primary btn-sm po_submit float-end"><i class="fa fa-plus"></i>
+                &nbsp;Add Purchase</button>
+        </div>
+
+        <div class="mt-4 ivsec">
+            <div class="my-2 is fa-16 fw-bold ps-0 d-none text-success">Invoice Section : <span
+                    class="quantitys float-end fw-bold"></span></div>
+            <table class="table table-bordered table-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Material Name</th>
+                        <th>Vehicle No & CDC</th>
+                        <th>Total Amount</th>
+                        <th style="width:130px;">Add</th>
+                    </tr>
+                </thead>
+                <tbody class="po_material_list">
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- remainder section -->
+        <form enctype="multipart/form-data" class="d-none" id="remainder_data">
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label for="">GST Filled Inv No</label>
+                    <input type="text" class="form-control form-control-sm" name="GSTFilledInvNo" id="GSTFilledInvNo"
+                        placeholder="GST Filled Inv No">
+                </div>
+                <div class="col-md-3">
+                    <label for="">GST Filled Scan Copy</label>
+                    <input type="file" class="form-control form-control-sm" name="GSTFilledScanCopy"
+                        id="GSTFilledInvScanCopy" placeholder="GST Filled Inv Scan Copy">
+                </div>
+                <div class="col-md-3">
+                    <label for="">GST Filled Inv Receive</label>
+                    <input type="text" class="form-control form-control-sm" name="GSTFilledInvReceive"
+                        id="GSTFilledInvReceive" placeholder="GST Filled Inv Receive">
+                </div>
+                <div class="col-md-3">
+                    <label for="">GST Filled Check</label>
+                    <select class="form-control form-control-sm" name="GSTFilledFiledCheck" id="GSTFilledInvFiled"
+                        placeholder="GST Filled Inv Filed">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- next section -->
+        <div class="row net_remainder mt-3 d-none">
+            <div class="col-md-4">
+                <label for="">Without GST Net Total Amount</label>
+                <input type="text" id="withoutgsttotalamount" class="form-control form-control-sm"
+                    placeholder="Without GST Net Total Amount">
+            </div>
+            <div class="col-md-4">
+                <label for="">With GST Net Total Amount</label>
+                <input type="text" id="withgsttotalamount" class="form-control form-control-sm"
+                    placeholder="With GST Net Total Amount">
+            </div>
+            <div class="col-md-4">
+                <label for="">GST Total Amount</label>
+                <input type="text" id="gsttotalamount" class="form-control form-control-sm"
+                    placeholder="GST Total Amount">
+            </div>
+            <div class="col-md-3 d-none">
+                <label for="">Net Amount Payyed</label>
+                <input type="text" id="amountpayyed" class="form-control amountpayyed form-control-sm"
+                    placeholder="Amount Payyed">
+            </div>
+            <div class="col-md-3 d-none">
+                <label for="">Net Amount Balance</label>
+                <input type="text" id="balanceamount" class="form-control form-control-sm" placeholder="Balance">
+            </div>
+            <div class="col-md-4 d-none mt-3">
+                <label for="">GST Amount Payyed</label>
+                <input type="text" id="gstamountpayyed" class="form-control gstamountpayyed form-control-sm"
+                    placeholder="GST Amount Payyed">
+            </div>
+            <div class="col-md-4 d-none mt-3">
+                <label for="">GST Amount Balance</label>
+                <input type="text" id="gstbalanceamount" class="form-control form-control-sm" placeholder="GST Balance">
+            </div>
+        </div>
+
+        <div id="AddPurchaseEntry" class="mt-4">
+            <button class="btn btn-outline-primary btn-sm oncesubmitbtn"><i class="fa fa-plus"></i> &nbsp;Add Purchase Entry</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    $(document).ready(function () {
+        $('#AddPurchaseEntry, .ivsec').addClass('d-none')
+        var ven_quo = $('#ven_quo').text()
+
+        var ven_quo_url = `${url}vendor-quo-mat/${ven_quo}/`
+        var quo_data = GetData(ven_quo_url)
+        quo_data = quo_data?.mat_id
+        // console.log(quo_data)
+        var vendor_id = quo_data[0]?.Vendor?.id
+        var quotation_id = $('#quotation_id').text()
+
+        var view_url = `../../invoice/${quotation_id}/${vendor_id}`
+        $('.invoiceview').attr('href', view_url)
+
+        var p_ids = []
+        var purchase_materials = []
+        if (quo_data) {
+
+            // let pur_url = `${base}post-api/purchase-material-entry/?p_id=${ven_quo}`
+            let pur_url = `${base}purchase/pm/${ven_quo}`
+            var pur_data = GetData(pur_url)
+
+            pur_data = JSON.parse(pur_data)
+            // console.log(pur_data)
+            // pur_materials = []
+            if (pur_data?.length > 0) {
+
+                $('.is, #remainder_data, .net_remainder, #AddPurchaseEntry, .ivsec').removeClass('d-none')
+                pur_materials = pur_data
+                purchase_materials = pur_materials
+                purchaseOrderSubmit(pur_materials)
+            }
+            // console.log(purchase_materials)
+        }
+
+        var append_id = 0
+
+        $('#vendor_name').text(quo_data[0]?.Vendor?.Vendor_Name).attr('vendor-id', quo_data[0]?.Vendor?.id)
+        $('#vendor_company').text(quo_data[0]?.Vendor?.Company_Name)
+
+
+
+        for (var i = 0; i < quo_data.length; i++) {
+            // console.log(quo_data[i])
+            var qt = Enc_QuantityType(quo_data[i]?.Quantity_Type)
+            // console.log
+            var moisture = quo_data[i]?.Moisture == '0' ? 'No' : 'Yes'
+
+            $('#main_po_detail').append(`
+                <tr class="upm_${quo_data[i]?.id}">
+                    <td>${i + 1}</td>
+                    <td>${quo_data[i]?.Location_Supply}</td>
+                    <td>At Site</td>
+                    <td id="matname">${quo_data[i]?.Material_Name}</td>
+                    <td id="quantity" mat-id="${quo_data[i]?.id}">${quo_data[i]?.Quantity}</td>
+                    <td >${moisture}</td>
+                    <td>${qt}</td>
+                    <td>
+                        <button 
+                        vm-id="${quo_data[i]?.id}"
+                        vm-ls="${quo_data[i]?.Location_Supply}" 
+                        vm-mn="${quo_data[i]?.Material_Name}" 
+                        vm-qty="${quo_data[i]?.Quantity}" 
+                        vm-qty-type="${quo_data[i]?.Quantity_Type}" 
+                        vm-qt="${qt}" 
+                        vm-fop="${quo_data[i]?.Final_Purchase_Price}" 
+                        vm-gst="${quo_data[i]?.Product_Name?.GST}" 
+                        vm-moisture="${moisture}"
+                        vm-ton="${quo_data[i]?.Product_Name?.Ton}"
+                        class="fa-12 btn btn-sm btn-primary append_mat_data py-0 w-100"><i class="fa fa-plus fa-12"></i><span class="qtycalc ms-1 fw-bold"></span> &nbsp;Add</button></td>
+                </tr>
+            `)
+        }
+
+        AddPoData()
+
+        MaterialQuantity(purchase_materials)
+
+        function MaterialQuantity(purchase_order) {
+            // console.log(purchase_order)
+            var pm_id = purchase_order.map(p => p?.fields.mat_id)
+
+            pm_id = pm_id.filter((v, i, a) => a.findIndex(t => (t === v)) === i)
+            // console.log(pm_id)
+            pm_id.forEach(p => {
+                var qty = 0
+                for (var i = 0; i < purchase_order.length; i++) {
+                    if (p == purchase_order[i]?.fields?.mat_id) {
+                        qty += Number(purchase_order[i]?.fields?.QtyCalc)
+                    }
+                }
+
+                var slct = `.upm_${p} #quantity`
+                var ttl_qty = Number($(slct).text())
+                var total_quantity = ttl_qty - qty
+
+                if (total_quantity == 0) {
+                    $(`.upm_${p} .append_mat_data`).addClass('text-uppercase btn-blue text-white').html(`<b class="me-1">${ttl_qty}</b> Completed`).attr('disabled', true)
+                } else if (total_quantity < 0) {
+                    $(`.upm_${p} .append_mat_data`).addClass('text-uppercase btn-danger text-white').html(`<b class="me-1">${total_quantity.toFixed(2)}</b> Exceeded`).attr('disabled', true).removeClass('btn-primary')
+                }
+                else if (ttl_qty > total_quantity) {
+                    $(`.upm_${p} .qtycalc`).text(total_quantity.toFixed(2))
+                }
+            })
+        }
+
+
+        function AddPoData() {
+            $('.append_mat_data').click(function (e) {
+                e.preventDefault()
+
+                $('.append_submit, #purchase_tabel').removeClass('d-none')
+
+                let vm_id = $(this).attr('vm-id')
+                let vm_ls = $(this).attr('vm-ls')
+                let vm_mn = $(this).attr('vm-mn')
+                let vm_qty_type = $(this).attr('vm-qty-type')
+                let vm_qt = $(this).attr('vm-qt')
+                let vm_fop = $(this).attr('vm-fop')
+                console.log(vm_fop)
+                let vm_gst = $(this).attr('vm-gst')
+                let vm_ton = $(this).attr('vm-ton')
+                let vm_moisture = $(this).attr('vm-moisture')
+                vm_moisture = vm_moisture == 'Yes' ? 'false' : 'true'
+                // console.log(vm_moisture)
+                append_id += 1
+
+                // console.log(single_id)
+                $('#mat_append').append(`
+                    <tr class="mat${append_id}">
+                        <td hidden><input type="text" id="mat_id" data-mat="${vm_id}" value="new"></td>
+                        <td><input type="date" id="purchase_date" style="width: 115px;"></td>
+                        <td><div style="width: 140px;" id="location_supply">${vm_ls}</div></td>
+                        <td><div style="width: 40px;" id="site" >At Site</div></td>
+                        <td><div style="width: 100px;" id="matname" >${vm_mn}</div></td>
+                        <td><input type="text" id="cdc" placeholder="CDC" style="width:100px;"></td>
+                        <td><input type="text" id="ldc" placeholder="LDC" style="width:100px;"></td>
+                        <td><input type="text" id="vehicle_no" placeholder="Vehicle No" style="width:100px;"></td>
+                        <td><div id="quantity_type" class="qtytype${append_id}" style="width:40px;" >${vm_qt}</div></td>
+                        <td><input type="text" class="quantity_calculation" mat_id="${append_id}" placeholder="QTY formula" style="width:100px;"></td>
+                        <td><input type="text" class="moisture moisture${append_id}" mat-id="${append_id}" disabeld="${vm_moisture}" placeholder="Moisture" style="width:66px;"></td>
+                        <td><input type="text" class="res${append_id} res" placeholder="QTY Calc" style="width:75px;"></td>
+                        <td><input type="text" id="round_off" class="roundoff${append_id}" placeholder="Round Off" style="width:60px;" ></td>
+                        <td><div style="width:40px;" class="rate${append_id}" id="rate">${vm_fop}</div></td>
+                        <td><input type="text" id="total" class="total${append_id}" placeholder="Total" style="width:60px;" ></td>
+                        <td><div style="width:40px;" class="gst${append_id}" id="gst">${vm_gst}</div></td>
+                        <td><input type="text" id="with_gst" class="withgst${append_id}" placeholder="With GST"  style="width:60px;"></td>
+                        <td><input type="text" id="site_supervisior" placeholder="Site Supervisior"></td>
+                        <td><input type="text" id="qc" placeholder="QC"></td>
+                        <td><input type="text" id="security" placeholder="Security"></td>
+                        <td><input type="text" id="engineer" placeholder="Engineer"></td>
+                        <td><input type="text" id="driver_name" placeholder="Driver Name"></td>
+                        <td><input type="text" id="unloading_supervisior" placeholder="Unloading Supervisior"></td>
+                    </tr>
+                `)
+
+                OnchangeCall(vm_ton)
+
+            })
+        }
+
+
+        function OnchangeCall(vm_ton) {
+
+            $('.quantity_calculation').change(function () {
+                var qty_formula = $(this).val()
+                // console.log(qty_formula)
+                var evaluation = eval(qty_formula).toFixed(2)
+                var mat_id = Number($(this).attr('mat_id'))
+                // console.log(mat_id)
+                // var qty = Number($(`.quantity${mat_id}`).val())
+                // evaluation = evaluation * qty
+                var rate = Number($(`.rate${mat_id}`).text())
+
+                $(`.res${mat_id}`).val(evaluation)
+
+                var total = evaluation * rate
+                // console.log(rate)
+                $(`.total${mat_id}`).val(Number(total).toFixed(0))
+
+                var gst = $(`.gst${mat_id}`).text()
+                var gst_per = gst.replace('%', '')
+                var gst_percentage = Number(gst_per) / 100
+                var with_gst = gst_percentage * total + total
+                with_gst = with_gst.toFixed(2)
+                $(`.withgst${mat_id}`).val(with_gst)
+
+                var strevl = String(evaluation)
+                // console.log(strevl)
+                var round_off = strevl.substring(strevl.indexOf('.') + 1);
+                round_off = Number(round_off)
+                // console.log(round_off)
+                $(`.roundoff${mat_id}`).val(round_off)
+                var qtype = $(`.qtytype${mat_id}`).text()
+                var result = Number($(`.res${mat_id}`).val())
+                QuantityTypeUpdate(qtype, result, vm_ton, mat_id)
+            })
+
+            $('.moisture').change(function (e) {
+                var moisture = $(this).val()
+                var app_id = $(this).attr('mat-id')
+                var qtype = $(`.qtytype${app_id}`).text()
+                var result = Number($(`.res${app_id}`).val())
+                var rate = Number($(`.rate${app_id}`).val())
+                MoistureUpdate(moisture, qtype, result, vm_ton, app_id, rate)
+            })
+
+        }
+
+
+
+
+
+        function QuantityTypeUpdate(type, calc, ton, id) {
+
+            if (type == 'M3') {
+                var cft_cal = 35.31 * calc
+                var roundOff = Math.floor(cft_cal)
+                var mton = roundOff / ton
+                // console.log(mton)
+                $(`.res${id}`).attr('data-m3qty', calc.toFixed(2)).attr('data-cft', roundOff).attr('data-ton', mton.toFixed(2))
+            }
+
+        }
+
+
+        function MoistureUpdate(moisture, type, calc, ton, id) {
+
+            if (type == 'M3') {
+
+                var moist = moisture / 100 * calc
+                var moistureCalc = calc - moist
+                $(`.res${id}`).val(moistureCalc)
+                var mc = String(moistureCalc.toFixed(2))
+                var round_off = mc.substring(mc.indexOf('.') + 1)
+                round_off = Number(round_off)
+                // console.log(round_off)
+
+                $(`.roundoff${id}`).val(round_off)
+                var rate = Number($(`.rate${id}`).text())
+                var total = moistureCalc * rate
+                $(`.total${id}`).val(total)
+                // gst calculation
+                var gst = $(`.gst${id}`).text()
+                var gst_per = gst.replace('%', '')
+                var gst_percentage = Number(gst_per) / 100
+                var with_gst = gst_percentage * total
+                with_gst = with_gst + total
+                with_gst = with_gst.toFixed(2)
+                $(`.withgst${id}`).val(with_gst)
+
+
+            }
+        }
+
+
+        var pe_ids = []
+        var purchase_order = []
+        var po_submit = document.getElementById('po_submit')
+        po_submit.addEventListener('click', async function call() {
+
+            $('.append_submit').addClass('d-none')
+            $('.is').removeClass('d-none')
+            $('#main_po_detail .append_mat_data').attr('disabled', true)
+            // console.log(append_ids)
+
+            var po = purchase_order.map(p => p.mat_id)
+            po = po.filter((v, i, a) => a.findIndex(t => (t === v)) === i)
+            for (var i = 0; i < po.length; i++) {
+                var mat_params = {
+                    Purchase_Entry: true
+                }
+                var mi_url = `${base}post-api/material-info/${po[i]}/`
+                PatchMethod(mat_params, mi_url)
+            }
+
+            for (var i = 0; i < append_id; i++) {
+                var selector = `.mat${i + 1}`
+
+                var qtytypes = $(`${selector} #quantity_type`).html()
+                var moisture = $(`${selector} .moisture`).val()
+
+                var params = {
+                    "p_id": ven_quo,
+                    "mat_id": $(`${selector} #mat_id`).attr('data-mat'),
+                    "PurchaseDate": $(`${selector} #purchase_date`).val(),
+                    "UnloadingSite": $(`${selector} #location_supply`).html(),
+                    "Site": $(`${selector} #site`).html(),
+                    "MaterialName": $(`${selector} #matname`).html(),
+                    "CDC": $(`${selector} #cdc`).val(),
+                    "LDC": $(`${selector} #ldc`).val(),
+                    "VehicleNo": $(`${selector} #vehicle_no`).val(),
+                    "Moisture": $(`${selector} .moisture`).val(),
+                    'QtyFormula': $(`${selector} .quantity_calculation`).val(),
+                    'QtyCalc': $(`${selector} .res`).val(),
+                    "QuantityType": qtytypes,
+                    "RoundOff": $(`${selector} #round_off`).val(),
+                    "Rate": $(`${selector} #rate`).html(),
+                    "Total": $(`${selector} #total`).val(),
+                    "GST": $(`${selector} #gst`).html(),
+                    "WithGST": $(`${selector} #with_gst`).val(),
+                    "SiteSupervisior": $(`${selector} #site_supervisior`).val(),
+                    "QC": $(`${selector} #qc`).val(),
+                    "Security": $(`${selector} #security`).val(),
+                    "Engineer": $(`${selector} #engineer`).val(),
+                    "DriverName": $(`${selector} #driver_name`).val(),
+                    "UnloadingSupervisior": $(`${selector} #unloading_supervisior`).val(),
+                }
+
+
+                if (qtytypes == 'M3') {
+                    // exact m3 -> quantity
+                    // m3 cft => M3CFT
+                    params['M3Cft'] = Number($(`${selector} .res`).attr('data-cft'))
+                    params['M3Ton'] = Number($(`${selector} .res`).attr('data-ton'))
+                }
+
+
+
+                // console.log(params)
+
+                purchase_order.push(params)
+                var p_url = `${base}post-api/purchase-material-entry/`
+                var p_id = await PostData(params, p_url)
+                pe_ids.push(p_id)
+
+                if (i === append_id - 1) {
+                    location.reload()
+                }
+
+            }
+
+
+
+
+        })
+
+
+
+        function purchaseOrderSubmit(purchase_order) {
+
+
+            // console.log(purchase_order)
+
+            for (var i = 0; i < purchase_order.length; i++) {
+
+                var qty = purchase_order[i]?.fields.Quantity
+                var mos = purchase_order[i]?.fields.Moisture
+                // console.log(mos)
+
+                if (mos != '') {
+                    var mois_cls = '#1987540d'
+                    var mois_per = `<span class="text-danger fw-bold">( Moisture ${mos}% )</span>`
+                } else {
+                    var mois_cls = '#fff'
+                    var mois_per = ``
+                }
+
+                var ig = purchase_order[i]?.fields?.ig == false ? 'add_invoice' : ''
+                var igc = purchase_order[i]?.fields?.ig == false ? 'fa-plus' : 'fa-check'
+                var cls = purchase_order[i]?.fields?.ig == false ? 'btn-danger' : 'btn-success'
+
+                // console.log(purchase_order[i]?.fields)
+
+                $('.po_material_list').append(`
+                    <tr class="inv${i}" style="background:${mois_cls}">
+                    <td >${purchase_order[i]?.fields?.MaterialName}</td>
+                    <td class="text-capitalize">
+                        <b class="ms-2">Vehicle No : </b> ${purchase_order[i]?.fields?.VehicleNo} 
+                        <b class="ms-2 text-success">CDC : </b> ${purchase_order[i]?.fields?.CDC}
+                    </td>
+                    <td><b class="ms-2">Total :</b> ${Number(purchase_order[i]?.fields?.Total).toFixed(2)} ${mois_per}</td>
+                    <td><button href="${i}" pk="${purchase_order[i]?.fields?.mat_id}" mat-id="${purchase_order[i]?.pk}" data-quantity="${purchase_order[i]?.fields?.QtyCalc}" data-invoice-gst="${purchase_order[i]?.fields?.WithGST}" data-invoice-total="${purchase_order[i]?.fields?.Total}" class="btn btn-sm py-0 ${cls} ms-2 ${ig}" >
+                        <span class="qtyC"></span><i class="fa fa-12 me-1 ${igc}"></i> ${purchase_order[i]?.fields?.QtyCalc} 
+                        </button>
+                        <a href="${purchase_order[i]?.pk}" class="ms-2 deleteMaterial"><i class="fa fa-trash"></i></a>
+                    </td>
+                    </tr>
+                `)
+
+            }
+            AddInvoice()
+
+
+            deleteMaterial()
+
+        }
+
+
+        var m_id = []
+        var temp_total_quantity = 0
+        var temp_total_price = 0
+        var temp_total_gst_price = 0
+
+        // add invoice section
+        function AddInvoice() {
+            $('.add_invoice').click(function (e) {
+                e.preventDefault()
+                $('#remainder_data')[0].reset()
+                $('.net_remainder #withoutgsttotalamount, .net_remainder #withgsttotalamount, .net_remainder #amountpayyed, .net_remainder #balanceamount').val('')
+                var mat_id = $(this).attr('href')
+                // console.log(m)
+                var mtotal_gst = $(this).attr('data-invoice-gst')
+                var mtotal = $(this).attr('data-invoice-total')
+                var mquantity = $(this).attr('data-quantity')
+
+                temp_total_quantity += Number(mquantity)
+                temp_total_gst_price += Number(mtotal_gst)
+                temp_total_price += Number(mtotal)
+
+                m_id.push(mat_id)
+                $(this).html('<i class="fa fa-check"></i>')
+                $(this).prop('disabled', true);
+
+                $('.quantitys').text(Number(temp_total_quantity).toFixed(0))
+                $('#withoutgsttotalamount').val(Number(temp_total_price).toFixed(2))
+                $('#withgsttotalamount').val(Number(temp_total_gst_price).toFixed(2))
+                $('#gsttotalamount').val(Number(temp_total_gst_price - temp_total_price).toFixed(2))
+
+            })
+            AddPurchase()
+
+        }
+
+        // add purchase section
+        function AddPurchase() {
+            $('#AddPurchaseEntry .btn').click(async function (e) {
+
+                if (m_id.length != 0) {
+                    let GSTFilledInvNo = $('#GSTFilledInvNo').val()
+
+                    if (GSTFilledInvNo) {
+                        $(this).prop('disabled',true)
+                        var pur_id = []
+                        m_id.forEach(p => {
+                            var select = `.inv${p} .add_invoice`
+                            id = $(select).attr('mat-id')
+                            // console.log(id)
+                            pur_id.push(id)
+                            var params = {
+                                ig: true
+                            }
+                            var pur_url = `${base}post-api/purchase-material-entry/${id}/`
+                            PatchMethod(params, pur_url)
+
+                            if (m_id[m_id.length - 1] === p) {
+                                var pk = $(select).attr('pk')
+                                var pk_url = `${base}post-api/material-info/${pk}/`
+                                var pk_param = {
+                                    'Purchase_Entry': true
+                                }
+                                PatchMethod(pk_param, pk_url)
+                            }
+                        })
+
+
+                        var net_id
+                        await PostNetData().then((value) => net_id = value)
+                        var remainder_id
+                        await PostRemainderData().then((value) => remainder_id = value)
+
+                        var single_param = {
+                            vendorId: $('#vendor_name').attr('vendor-id'),
+                            customerId: $('#customer_id').attr('customer-id'),
+                            purchaseMaterial: pur_id,
+                            remainder: remainder_id,
+                            netAmount: net_id,
+                            quotation: $('#quotation_id').text(),
+                        }
+
+                        var single_url = `${base}post-api/single-purchase-entry/`
+
+                        var si_id = await PostData(single_param, single_url)
+
+                        let v_id = $('#vendor_name').attr('vendor-id')
+                        let q_id = $('#quotation_id').text()
+
+                        var pe_url = `${base}post-api/purchase-entry/?quotation=${q_id}&vendorId=${v_id}`
+                        var pe_data = GetData(pe_url)
+
+                        if (pe_data?.count > 0) {
+
+                            var entries = pe_data?.results[0]?.entries
+                            var pe_id = pe_data?.results[0]?.id
+                            entries.push(si_id)
+
+                            var params = {
+                                quotation: $('#quotation_id').text(),
+                                vendorId: $('#vendor_name').attr('vendor-id'),
+                                entries: entries
+                            }
+
+                            var pe_urls = `${base}post-api/purchase-entry/${pe_id}/`
+                            await PatchMethod(params, pe_urls)
+
+                        } else {
+                            var params = {
+                                quotation: $('#quotation_id').text(),
+                                vendorId: $('#vendor_name').attr('vendor-id'),
+                                entries: [si_id]
+                            }
+                            await PostData(params, pe_url)
+                        }
+
+                        location.reload()
+
+                    } else {
+                        alert('Invoice No is must. !!!')
+                    }
+
+                } else {
+                    alert('Select Material Invoice. !!!')
+                }
+
+            })
+        }
+
+        // net function
+        async function PostNetData() {
+            var net_param = {
+                WithOutGSTNetTotalAmount: $('#withoutgsttotalamount').val(),
+                WithGSTNetTotalAmount: $('#withgsttotalamount').val(),
+                AmountPayyed: $('#amountpayyed').val() || 0,
+                Balance: $('#balanceamount').val() || $('#withoutgsttotalamount').val(),
+                GstTotal: $('#gsttotalamount').val(),
+                GstPayyed: $('#gstamountpayyed').val() || 0,
+                GstBalance: $('#gstbalanceamount').val() || $('#gsttotalamount').val(),
+            }
+            var net_url = base + 'post-api/purchase-net-amount/'
+            var net_id = await PostData(net_param, net_url)
+            return net_id
+        }
+
+        // remainder Function
+        async function PostRemainderData() {
+            var form = $("#remainder_data");
+            var formData = new FormData(form[0]);
+            var remainder_url = base + 'post-api/purchase-remainder/'
+            var remainder_id = await PostFormSubmit(formData, remainder_url)
+            return remainder_id
+        }
+
+        // NET AMOUNT PAID
+        $('.amountpayyed').on('input', function (e) {
+
+            var totalamount = $('#withgsttotalamount').val()
+            if (!totalamount) {
+                alert('Amount is empty. !!!')
+            } else {
+                var amount_payyed = $(this).val()
+                let balance = Number(totalamount) - Number(amount_payyed)
+                $('#balanceamount').val(balance)
+            }
+        });
+
+        // GST AMOUNT PAID
+        $('.gstamountpayyed').on('input', function (e) {
+
+            var totalamount = $('#gsttotalamount').val()
+            if (!totalamount) {
+                alert('Amount is empty. !!!')
+            } else {
+                var amount_payyed = $(this).val()
+                let balance = Number(totalamount) - Number(amount_payyed)
+                $('#gstbalanceamount').val(balance)
+            }
+        });
+
+
+        function deleteMaterial() {
+            $('.deleteMaterial').click(function (e) {
+                e.preventDefault()
+                var id = $(this).attr('href')
+                var params = {
+                    id: id
+                }
+                var url = `${base}post-api/purchase-material-entry/${id}/`
+                // console.log(params)
+                // console.log(url)
+                DeleteMethod(params, url)
+            })
+        }
+
+    })
+
+
+</script>
+
+{% endblock %}

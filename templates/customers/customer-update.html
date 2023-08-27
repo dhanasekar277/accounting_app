@@ -1,0 +1,58 @@
+
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}    
+
+{% block content %}
+
+<a href="{% url 'customer' %}" class="btn btn-sm m-2"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</a>
+
+{% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alerts mx-3 alert-{{ message.tags }}" {% endif %}> {{ message }} </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="card p-3 mb-3 mx-3 box-2">
+    <h6 class="fw-bold">Update Customer</h6>
+    <hr class="my-2">
+    {% crispy obj.cm %}
+</div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+
+    <style>
+        #div_id_PAN_Scan_Copy .custom-file-label, #div_id_Scan_Copy .custom-file-label, #div_id_Photo .custom-file-label{
+            display:none !important;
+        }
+        #div_id_PAN_Scan_Copy .custom-file, #div_id_Scan_Copy .custom-file, #div_id_Photo .custom-file{
+            padding: 0 !important;
+        }
+        .alerts{
+        padding: 5px 15px;
+        margin-bottom: 10px;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+    .alert-error{
+        background: #dc3545;
+    }
+    .alert-success{
+        background:#0f5132 !important; 
+    }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+
+            $('.customerMenu').addClass('active')
+
+        })
+    </script>
+{% endblock %}

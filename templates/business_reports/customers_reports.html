@@ -1,0 +1,479 @@
+{% extends "_base.html" %} {% load static %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-2">Customers Reports</h5>
+            <div class="card border-0 shadow p-3">
+                <!-- Calander Form -->
+                <div class="row mb-4">
+                    <div class="col-md-8 ms-auto">
+                        <form id="calendersearch" method="get" action="" novalidate>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="calander_from" class="form-label mb-0">From</label>
+                                    <input required type="date" class="form-control" name="calander_from">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="calander_to" class="form-label mb-0">To</label>
+                                    <input required type="date" class="form-control" name="calander_to">
+                                </div>
+                                <div class="col-md-4 mt-auto mb-1">
+                                    <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                            class="fa fa-search me-2"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <button type="button" class="btn btn-danger btn-sm float-end" data-bs-toggle="modal" data-bs-target="#sundryDebtors">
+                            Sundry Debtors <i class="fa fa-print ms-2"></i>
+                        </button>
+                        <form action="">
+                            <div class="input-group me-3 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="" class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Company Name</th>
+                                <th scope="col">Total amount payable</th>
+                                <th scope="col">Total gst amount payable</th>
+                                <th scope="col">Total amount paid & gst</th>
+                                <th scope="col">Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hari</td>
+                                <td>Hari Agency</td>
+                                <td>200000</td>
+                                <td>220000</td>
+                                <td>100000</td>
+                                <td>
+                                    <a data-bs-toggle="modal" data-bs-target="#customerReports">
+                                        <i class="fa fa-eye fa-lg text-success ms-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% if voucherdetails %}
+
+                {% else %}
+                <!-- <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div> -->
+                {% endif %}
+                <!-- pagination -->
+                {% if voucherdetails.has_other_pages %}
+                <nav class="mt-4" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if voucherdetails.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{voucherdetails.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in voucherdetails.paginator.page_range %}
+                        {% if voucherdetails.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if voucherdetails.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{voucherdetails.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+  
+<!-- Sundry Debtors Modal -->
+<div class="modal fade" id="sundryDebtors" tabindex="-1" aria-labelledby="sundryDebtorsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="sundryDebtorsLabel">Sundry Debtors</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <table class="w-100">
+                <tr>
+                    <td class="text-center">
+                        <div class="fw-bold">MATHI AGENCY</div>
+                        <div>No.16-B, Jeevanantham Street</div>
+                        <div>Moongileari, Pammal,</div>
+                        <div>Chennai-600 075</div>
+                        <div>Contact : 044 3552 3044,9381003281</div>
+                        <p>Fax | 044 2248 1581</p>
+                        <div class="fw-bold">Sundry Debtors</div>
+                        <div>Group Summary</div>
+                        <div>
+                            {% now "y" as current_year %}
+                            {% now "n" as current_month %}
+                            {% if current_month <= 3 %} 
+                            20{{current_year|sub:1}}-20{{current_year}} 
+                            {% else %}
+                            20{{current_year}}-20{{current_year|add:1}}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table class="w-100 mt-3">
+                <thead class="table-bordered">
+                    <tr>
+                        <th width="70%">Particulars</th>
+                        <th width="15%">Closing Balance</td>
+                        <th width="15%"></td>
+                    </tr>
+                    <tr>
+                        <th width="70%"></th>
+                        <th width="15%">Debit</td>
+                        <th width="15%">Credit</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AEDIFICE INFRASTRUCTURE PROJECTS PRIVATE LIMITED</td>
+                        <td>27,140.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ALLIANCE INN (INDIA) PVT LTD (THIRUVALLUR) </td>
+                        <td></td>
+                        <td>47,000.00</td>
+                    </tr>
+                    <tr>
+                        <td>CREATIVE CONSTRUCTION </td>
+                        <td>2,24,905.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>AEDIFICE INFRASTRUCTURE PROJECTS PRIVATE LIMITED</td>
+                        <td>27,140.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ALLIANCE INN (INDIA) PVT LTD (THIRUVALLUR) </td>
+                        <td></td>
+                        <td>47,000.00</td>
+                    </tr>
+                    <tr>
+                        <td>CREATIVE CONSTRUCTION </td>
+                        <td>2,24,905.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>AEDIFICE INFRASTRUCTURE PROJECTS PRIVATE LIMITED</td>
+                        <td>27,140.00</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ALLIANCE INN (INDIA) PVT LTD (THIRUVALLUR) </td>
+                        <td></td>
+                        <td>47,000.00</td>
+                    </tr>
+                    <tr>
+                        <td>CREATIVE CONSTRUCTION </td>
+                        <td>2,24,905.00</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot class="table-bordered">
+                    <td class="fw-bold">Grand Total</td>
+                    <td>2,24,905.00</td>
+                    <td>2,24,905.00</td>
+                </tfoot>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-success">Print <i class="fa fa-print ms-2"></i></button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customers Model -->
+<div class="modal fade" id="customerReports" tabindex="-1" aria-labelledby="customerReportsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="customerReportsLabel">Sundry Debtors</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <table class="w-100">
+                <tr>
+                    <td class="text-center">
+                        <div class="fw-bold">MATHI AGENCY</div>
+                        <div>No.16-B, Jeevanantham Street</div>
+                        <div>Moongileari, Pammal,</div>
+                        <div>Chennai-600 075</div>
+                        <div>Contact : 044 3552 3044,9381003281</div>
+                        <p>Fax | 044 2248 1581</p>
+                        <div class="fw-bold">KEC International Ltd. (KOLAPAKKAM)</div>
+                        <div>Ledger Account</div>
+                        <div>Plot No. 19 & 20,</div>
+                        <div>Indira Priyadharshini Nagar,</div>
+                        <div>Perumbakkam, Chennai, 600100,</div>
+                        <div>India,33-Tamil Nadu</div>
+                        <div>
+                            {% now "y" as current_year %}
+                            {% now "n" as current_month %}
+                            {% if current_month <= 3 %} 
+                            20{{current_year|sub:1}}-20{{current_year}} 
+                            {% else %}
+                            20{{current_year}}-20{{current_year|add:1}}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table class="w-100 mt-3">
+                <thead class="table-bordered">
+                    <tr>
+                        <th>Date</th>
+                        <th>Particulars</th>
+                        <th>Voucher Type</th>
+                        <th>Voucher No</th>
+                        <th>Debit</th>
+                        <th>credit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                    <tr>
+                        <td>18-Nov-22</td>
+                        <td class="fw-bold">SALES GST 5%</td>
+                        <td class="fw-bold">Sales</td>
+                        <td>302/22-23</td>
+                        <td>13,05,011.00</td>
+                    </tr>
+                </tbody>
+                <tfoot class="table-bordered">
+                    <td></td>
+                    <td class="fw-bold">Closing Balance</td>
+                    <td></td>
+                    <td></td>
+                    <td class="fw-bold">2,24,905.00</td>
+                    <td class="fw-bold">2,24,905.00</td>
+                </tfoot>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-success">Print <i class="fa fa-print ms-2"></i></button>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.customersReportsMenu').addClass('active')
+    });
+    // Calander Search Validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+</script>
+{% endblock script %}

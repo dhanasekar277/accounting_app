@@ -1,0 +1,553 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Sales
+
+            </h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if sales %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th width="30%">Company Info</th>
+                            <th>PO Dtails</th>
+                            <th>Sales Invoice</th>
+                            <th>Remainder</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in sales %}
+                        <tr>
+                            <td width="35%">
+                                <div>
+                                    <div>
+                                        <b class="text-capitalize">{{i.orderid.Sales_Company.Company_Name}}</b>
+                                        <a href="tel:{{i.orderid.Sales_Company.Founder_Phone}}"
+                                            class="text-success mx-2"><i class="fa fa-phone"></i></a>
+                                        <a href="mailto:{{i.orderid.Sales_Company.Company_Email}}"
+                                            class="text-danger"><i class="fa fa-envelope"></i></a>
+                                        <span class="float-end small text-capitalize"><i
+                                                class="fa fa-calendar text-blue"></i> :
+                                            {{i.orderid.Sales_Company.Payment_Terms}}</span>
+                                    </div>
+                                    <div class="text-primary text-capitalize">( {{i.orderid.Sales_Company.Founder_Name}}
+                                        )</div>
+
+                                    <div class="text-capitalize"><b>Billing :
+                                        </b><span>{{i.orderid.Billing_Address}}</span></div>
+                                    <div class="text-capitalize"><b>Delivery :
+                                        </b><span>{{i.orderid.Sales_Delivery_Address}}</span></div>
+                                    <div class="text-capitalize">
+                                        <b>Reciever : </b>{{i.orderid.PO_Number.PO_Reciver_Name}}
+                                        <b class="ms-2">Approved : </b>{{i.orderid.PO_Number.PO_Approved_By}}
+                                    </div>
+                                    <div class="text-capitalize">
+                                        <b>Recieved : </b>{{i.orderid.PO_Number.Order_Recieved_Date}}
+                                        <b class="ms-2">Expected : </b>{{i.orderid.PO_Number.Order_Expected_Date}}
+                                    </div>
+                                    {% if i.orderid.PO_Number.PO_Type == 'PA' %}
+                                    <span class="small"><b>PO : </b> Applicable <span class="text-blue fw-bold">(
+                                            {{i.orderid.PO_Number.PO_Number}} )</span></span>
+                                    {% else %}
+                                    <span class="small"><b>PO : </b> Not Applicable </span>
+                                    {% endif %}
+                                    {% if i.orderid.Approved %}
+                                    <span class="float-end badge bg-primary small">Approved</span>
+                                    {% else %}
+                                    <span class="float-end badge bg-danger small">Not Approved</span>
+                                    {% endif %}
+
+                                </div>
+                            </td>
+                            <td width="25%">
+                                <div>
+                                    <div class="mb-2">
+                                        {% if i.orderid.PO_Number.PO_Type == "PA" %}
+                                        <span class="badge bg-primary mb-1">PO Applicable</span>
+                                        <div>
+                                            <b>PO DATE : </b> <span>{{i.orderid.PO_Number.PO_Date}}</span>
+                                        </div>
+                                        <div>
+                                            <b>PO No : </b> <span><a
+                                                    href="{{i.orderid.PO_Number.Scan_Copy}}">{{i.orderid.PO_Number.PO_Number}}</a></span><br>
+                                            <b>Expected Date : </b>
+                                            <span>{{i.orderid.PO_Number.Order_Expected_Date}}</span>
+                                        </div>
+                                        {% else %}
+                                        <span class="badge bg-danger">PO Not Applicable</span>
+                                        <div>
+                                            <b>Recieved : </b>
+                                            <span>{{i.orderid.PO_Number.Order_Recieved_Date}}</span>
+                                        </div>
+                                        <div>
+                                            <b>Expected : </b>
+                                            <span>{{i.orderid.PO_Number.Order_Expected_Date}}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <b class="text-primary">PO Materials : </b>
+                                    <ul class="ps-3 mb-0">
+                                        {% for j in i.orderid.Materials.all %}
+                                        <li>{{j.Material_Name}} - {{j.Quantity}} <b>
+                                                {% if j.Quantity_Type == '0' %}
+                                                NO
+                                                {% elif j.Quantity_Type == '1' %}
+                                                MT
+                                                {% elif j.Quantity_Type == '2' %}
+                                                CFT
+                                                {% elif j.Quantity_Type == '4' %}
+                                                QF
+                                                {% elif j.Quantity_Type == '5' %}
+                                                M3
+                                                {% elif j.Quantity_Type == '6' %}
+                                                QM
+                                                {% elif j.Quantity_Type == '7' %}
+                                                Cage
+                                                {% elif j.Quantity_Type == '8' %}
+                                                KG
+                                                {% endif %}
+                                            </b> <span class="text-danger ">( Rate : {{j.Final_Offer_Price}} )</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </td>
+                            <td width="20%">
+                                <div>
+                                    <b>Sales Invoice :</b><a href="sales-entry/{{i.orderid.id}}"
+                                        class="small text-blue ms-2"><i class="fa fa-plus"></i> Add invoice</a>
+                                    <ul class="ps-3 text-capitalize mb-0">
+                                        {% for z in AutoInvoiceNo %}
+                                        {% if z.orderid.id == i.orderid.id %} 
+                                        <li>
+                                            {{z.InvoiceNo}}  <span class="fw-bold text-danger ">(
+                                                {{z.saleid.remainder.GSTFilledInvReceive}} )</span>
+                                            {% if z.saleid.sale_invoice %}
+                                            <a href="../invoices/sales-invoice/{{i.orderid.id}}?si={{j.id}}"
+                                                class="ms-1 text-blue" title="Invoice"><i class="fa fa-file"></i></a>
+                                            {% endif %}
+                                            {% if z.saleid.remainder.GSTFilledScanCopy %}
+                                            <a download href="/media/{{z.saleid.remainder.GSTFilledScanCopy}}"
+                                                class="ms-1 text-blue" title="Invoice"><i
+                                                    class="fa fa-download"></i></a>
+                                            {% endif %}
+                                        </li>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </td>
+                            <td width="20%">
+                                <div id="salesRemainder{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% for j in i.sales.all %}
+                                        <div class="carousel-item {% if forloop.counter == 1 %} active {% endif %}">
+                                            <div><b>Total w/o gst : </b>Rs.{{j.netAmount.WithOutGSTNetTotalAmount|floatformat:'2'}}
+                                            </div>
+                                            <div><b>Total w gst : </b>Rs.{{j.netAmount.WithGSTNetTotalAmount|floatformat:'2'}}</div>
+                                            <div><b>Total gst : </b>Rs.{{j.netAmount.GstTotal|floatformat:'2'}}</div>
+                                            <div><b>Net Balance : </b>Rs.{{j.netAmount.Balance|floatformat:'2'}}</div>
+                                            <div><b>GST Balance : </b>Rs.{{j.netAmount.GstBalance|floatformat:'2'}}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if i.sales.all|length > 1 %}
+                                    <div class="d-block">
+                                        <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#salesRemainder{{i.id}}" data-bs-slide="prev">
+                                            <i class="fa fa-lg fa-angle-left"></i>
+                                        </button>
+                                        <button class="carousel-control-next float-end" type="button"
+                                            data-bs-target="#salesRemainder{{i.id}}" data-bs-slide="next">
+                                            <i class="fa fa-lg fa-angle-right"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+
+                <!-- pagination -->
+                {% if sales.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if sales.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{sales.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in sales.paginator.page_range %}
+                        {% if sales.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if sales.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{sales.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="invoice" tabindex="-1" aria-labelledby="invoiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body" id="final_invoice">
+                <h6 class="text-center fw-bold mb-3">TAX INVOICE
+                    {% now "Y" as current_year %}
+                    {% now "n" as current_month %}
+                    {% if current_month <= 3 %} {{current_year|sub:1}}-{{current_year}} {% else %}
+                        {{current_year}}-{{current_year|add:1}} {% endif %} </h6>
+                        <p class="position-absolute top-0 end-0 mt-3 me-3">(DUPLICATE FOR TRANSPORTER)</p>
+                        <table class="table table-bordered mb-0">
+                            <tr>
+                                <td width="30%">
+                                    <p class="mb-0">KAVITHA AGENCY</p>
+                                    <p class="mb-0">No. 3/46-C Semman Street,</p>
+                                    <p class="mb-1">C.Pallavaram, Chennai - 600 043.</p>
+                                    <p class="mb-0"><span class="fw-bold">CELL : </span>9791023871</p>
+                                    <p class="mb-0"><span class="fw-bold">GSTIN/UIN : </span>CIHPK2333K1ZD</p>
+                                    <p class="mb-0"><span class="fw-bold">State Name : </span>Tamil Nadu, <span
+                                            class="ms-2 fw-bold">Code : </span>33</p>
+                                    <p class="mb-0"></p>
+                                    <p class="mb-0"><span class="fw-bold">E-Mail : </span>kavithaagency@gmail.com</p>
+                                </td>
+                                <td width="25%" class="px-0">
+                                    <p class="mb-0 mx-2">Invoice No.</p>
+                                    <p class="mb-0 mx-2 fw-bold">105/2021-2022</p>
+                                    <hr class="my-1">
+                                    <p class="mb-0 mx-2">Delivery Note</p>
+                                    <p class="mb-0 mx-2">NIL</p>
+                                    <hr class="my-1">
+                                    <p class="mb-0 mx-2">Supplier's Ref.</p>
+                                    <p class="mb-0 mx-2 fw-bold">LHE/21-22/214</p>
+                                </td>
+                                <td width="25%" class="px-0">
+                                    <p class="mb-0 mx-2">Dated</p>
+                                    <p class="mb-0 mx-2 fw-bold">29-Sep-2021</p>
+                                    <hr class="my-1">
+                                    <p class="mb-0 mx-2">Other Reference(s)</p>
+                                    <p class="mb-0 mx-2">NIL</p>
+                                    <hr class="my-1">
+                                    <p class="mb-0 mx-2">Mode/Terms of Payment</p>
+                                    <p class="mb-0 mx-2 fw-bold">15 Days</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%" style="border-bottom-style: hidden;" class="pb-0">
+                                    <div>Buyer</div>
+                                    <div>ALLIANCE BUSINESS PARKS PVT LTD</div>
+                                    <div>NO.36/1, PLOT NO.A,</div>
+                                    <div>GANDHI MANDAPAM MAIN ROAD</div>
+                                    <div>KOTTURPURAM, CHENNAI,</div>
+                                    <div>TAMIL NADU - 600085.</div>
+                                </td>
+                                <td width="25%" class="px-0">
+                                    <div class="mx-2"><b>Buyer's Order No: </b></div>
+                                    <div class="mx-2">PO2122AGR-441</div>
+                                    <hr class="my-1">
+                                    <div class="mx-2"><b>Despatch Document No : </b>NIL</div>
+                                    <hr class="my-1">
+                                    <div class="mb-0 mx-2"><b>Despatched through : </b>ROAD</div>
+                                </td>
+                                <td width="25%" class="px-0">
+                                    <div class="mx-2"><b>Date :</b> 11-Sep-2021</div>
+                                    <hr class="my-1">
+                                    <div class="mx-2"><b>Delivery Note : </b></div>
+                                    <div class="mx-2">NIL</div>
+                                    <hr class="my-1">
+                                    <div class="mx-2"><b>Destination : </b>NIL</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pt-0">
+                                    <div class="mb-0"><span class="fw-bold me-2">GSTIN/UIN : </span>33AAFCA5595G1ZM
+                                    </div>
+                                    <div class="mb-0"><span class="fw-bold me-2">PAN/IT No : </span>Tamil Nadu</div>
+                                    <div class="mb-0"><span class="fw-bold me-2">State Name : </span>Tamil Nadu, <span
+                                            class="ms-2 fw-bold me-2">Code : </span>33</div>
+                                </td>
+                                <td colspan="2">
+                                    <p class="mb-0 fw-bold">Terms of Delivery</p>
+                                    <p class="mb-0">Alliance Galleria Residences</p>
+                                    <div>Survey No : 200/04, 200 Feet Radial Road, Zamin Pallavaram, Chennai-600 043
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered mb-0 ">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Description of Goods</th>
+                                    <th>HSN/SAC</th>
+                                    <th>Quantity</th>
+                                    <th>Rate</th>
+                                    <th>per</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="mb-4">
+                                    <td>1</td>
+                                    <td>AAC BROKAN BLOCKS</td>
+                                    <td>05050505</td>
+                                    <td>10.440 MT</td>
+                                    <td>2,300.00</td>
+                                    <td>MT</td>
+                                    <td>24,012.00</td>
+                                </tr>
+
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <div class="text-end fw-bold">
+                                            <div>2.5%-CGST-OUTPUT TAX</div>
+                                            <div>2.5%-SGST-OUTPUT TAX</div>
+                                            <div>ROUNDED OFF</div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div>
+                                            <div>2.50</div>
+                                            <div>2.50</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>%</div>
+                                        <div>%</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-end">
+                                            <div>600.30</div>
+                                            <div>600.30</div>
+                                            <div>600.30</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td>10.440 MT</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td> *25,213.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7">
+                                        <div>
+                                            <div><small>Amount Chargeable (in words)</small> <span class="float-end">E &
+                                                    O.E</span></div>
+                                            <div class="fw-bold">INR Twenty Five Thousand Two Hundred Thirteen Only
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered border-top-0 mb-0 table-sm">
+                            <tr class="text-center fw-bold">
+                                <td>HSN/SAC</td>
+                                <td>Taxable Value</td>
+                                <td colspan="2">Central Tax</td>
+                                <td colspan="2">State Tax</td>
+                                <td>Total</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+
+                                <td>Rate</td>
+                                <td>Amount</td>
+                                <td>Rate</td>
+                                <td>Amount</td>
+                                <td>Tax Amount</td>
+                            </tr>
+                            <tr>
+                                <td>8723468723</td>
+                                <td>24,123.00</td>
+                                <td>2.50%</td>
+                                <td>600.30</td>
+                                <td>2.50%</td>
+                                <td>600.30</td>
+                                <td>1,200.60</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-end">Total</td>
+                                <td>24,123.00</td>
+                                <td></td>
+                                <td>600.30</td>
+                                <td></td>
+                                <td>600.30</td>
+                                <td>1,200.60</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div>
+                                        <span>Tax Amount (in words) : </span><b>INR One Thousand Two Hundred Thirteen
+                                            Only</b>
+                                    </div>
+                                    <div>
+                                        <b>Remarks :</b>
+                                        <div>BEING THE INVOICE NUMBER : 105 / 2021-2022 / INVOICE</div>
+                                        <div>DATE : <span>29.09.2021</span> ALLIANCE BUSINESS PARKS PVT LTD</div>
+                                        <div>ACCOUNTED</div>
+                                    </div>
+                                    <div>
+                                        <span>Company's VAT TIN : </span><b>32748324987</b>
+                                    </div>
+                                    <div>
+                                        <span>Buyer's VAT TIN : </span><b>32748324987</b>
+                                    </div>
+                                    <div>
+                                        <span>Company's PAN : </span><b>32748324987</b>
+                                    </div>
+
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="width:50%;">
+                                    <div>
+                                        <u>Declaration</u>
+                                        <div>
+                                            We declare that this invoice shows the actual price of the goods described
+                                            and that all particulars are true and correct.
+                                        </div>
+                                    </div>
+                                </td>
+                                <td colspan="3">
+                                    <div>Company's Bank Details</div>
+                                    <div><b>Bank Name : </b> <span>INDIAN BANK</span></div>
+                                    <div><b>A/C No : </b> <span>673499345</span></div>
+                                    <div><b>Branch & IFSC : </b> <span>PALLAVARAM</span> & <span>IDB98324</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="width:50%;">
+                                    <div>
+                                        Customer's Seal and Signature
+                                    </div>
+                                    <br><br>
+                                </td>
+                                <td colspan="3" class="text-center">
+                                    <div>for KAVITHA AGENCY</div>
+                                    <div class="mt-5">Authorised Signature</div>
+                                </td>
+                            </tr>
+                        </table>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i
+                        class="fa fa-close"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="printDiv('final_invoice')"><i
+                        class="fa fa-print me-2"></i>Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+<script>
+    $('.salesMenu').addClass('active')
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+    }
+
+    window.onafterprint = function () {
+        window.location.reload()
+    }
+</script>
+<style type="text/css" media="print">
+    @media print {
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+</style>
+{% endblock %}

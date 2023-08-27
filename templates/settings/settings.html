@@ -1,0 +1,544 @@
+{% extends "_base.html" %} {% load static %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Settings</h5>
+            <div class="row mb-4">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow p-3">
+                        <h6 class="fw-bold mb-3 text-primary">Profile</h6>
+                        <form method="post" class="superuserformedit" novalidate>
+                            {% csrf_token %}
+                            <div class="alert alert-danger alert-dismissible fade show userwarningalert {{response.classname}}"
+                                role="alert">
+                                <strong>{{response.message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <input type="hidden" name="superuserid" value="{{superuser.0.id}}">
+                                    <label class="form-label">First Name</label>
+                                    <input required type="text" value="{{superuser.0.first_name}}"
+                                        class="form-control superuser_first_name" name="superuser_first_name"
+                                        placeholder="First Name">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input required type="text" value="{{superuser.0.last_name}}"
+                                        class="form-control superuser_last_name" name="superuser_last_name"
+                                        placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Username</label>
+                                    <input required type="text" value="{{superuser.0.username}}"
+                                        class="form-control superuser_username" name="superuser_username"
+                                        placeholder="Username">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Email address</label>
+                                    <input required type="email" value="{{superuser.0.email}}"
+                                        class="form-control superuser_email" name="superuser_email" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">New Password</label>
+                                    <input required type="password" class="form-control superuser_newpassword"
+                                        name="superuser_newpassword" placeholder="New Password">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input required type="password" class="form-control superuser_confirmpassword"
+                                        name="superuser_confirmpassword" placeholder="Confirm Password">
+                                </div>
+
+                            </div>
+                            <!-- <ul>
+                                <li>Your password can’t be too similar to your other personal information.</li>
+                                <li>Your password must contain at least 8 characters.</li>
+                                <li>Your password can’t be a commonly used password.</li>
+                                <li>Your password can’t be entirely numeric.</li>
+                            </ul> -->
+                            <button class="btn btn-sm btn-success float-end mt-2 superuserupdatebtn"
+                                data-id="{{superuser.0.id}}">Update Profile</button>
+                        </form>
+                    </div>
+                    <div class="card border-0 shadow p-3 mt-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <button data-bs-toggle="modal" data-bs-target="#AddSignature"
+                                    class="btn btn-sm btn-success float-end mb-4">Add sign</button>
+                                <h6 class="fw-bold text-primary">Signatures</h6>
+
+                                <table class="table table-bordered signaturetable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Signature</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in signatures %}
+                                        <tr class="signature{{i.id}}">
+                                            <th scope="row">{{forloop.counter}}</th>
+                                            <td>{{i.name}}</td>
+                                            <td>
+                                                <img src="media/{{i.signature}}" width="150" alt="">
+                                            </td>
+                                            <td>
+                                                <a href="#" data-id="{{i.id}}" class="signdelete me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow p-3" style="height:100%">
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-success mb-3" data-bs-toggle="modal"
+                                data-bs-target="#AddUser">Add User</button>
+                        </div>
+                        <div class="accordion" id="accordionExample">
+                            {% if users %}
+                            {% for i in users %}
+                            <div class="accordion-item accordianItem{{i.id}}">
+                                <h2 class="accordion-header" id="heading{{forloop.counter}}">
+                                    <button class="accordion-button {% if forloop.counter > 1 %}collapsed{% endif %}"
+                                        type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false"
+                                        aria-controls="collapse{{forloop.counter}}">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> {{i.first_name}}
+                                        {{i.last_name}}
+                                    </button>
+                                </h2>
+                                <div id="collapse{{forloop.counter}}"
+                                    class="accordion-collapse collapse {% if forloop.counter == 1 %}show{% endif %}"
+                                    aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>{{i.username}}</p>
+                                        <p><b>Email : </b>{{i.email}}</p>
+                                        <div class="text-end">
+                                            <a href="#" data-id="{{i.id}}"
+                                                class="me-2 btn-sm btn-warning userEdit">Edit</a>
+                                            <a href="#" data-id="{{i.id}}"
+                                                class="me-2 btn-sm btn-danger userDelete">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="text-center">
+                                <h6 class="fw-bold text-primary" style="margin-top: 50%;">No Users Available</h6>
+                                <small>Click Add users to add</small>
+                            </div>
+                            {% endif %}
+                            <!-- <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i>Partha
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Partha</p>
+                                        <p><b>Email : </b>partha123@gmail.com</p>
+                                        <p><b>Password : </b>partha@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> Surender
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse"
+                                    aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Surender</p>
+                                        <p><b>Email : </b>surender123@gmail.com</p>
+                                        <p><b>Password : </b>surender@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFour" aria-expanded="false"
+                                        aria-controls="collapseFour">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> Surender
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse"
+                                    aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Surender</p>
+                                        <p><b>Email : </b>surender123@gmail.com</p>
+                                        <p><b>Password : </b>surender@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Signature -->
+<div class="modal fade" id="AddSignature" tabindex="-1" aria-labelledby="AddSignatureLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddSignatureLabel">Add Signature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="AddSignatureForm" novalidate enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input required type="text" name="name" class="form-control" id="" placeholder="Name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Signature</label>
+                        <input required accept="image/png, image/jpeg" name="signature" type="file" class="form-control"
+                            id="">
+                    </div>
+                    <button type="submit" class="btn btn-primary float-end mt-2">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User -->
+<div class="modal fade" id="AddUser" tabindex="-1" aria-labelledby="AddUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddUserLabel">Add User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger alert-dismissible fade show userwarningalert {{response.classname}}"
+                    role="alert">
+                    <strong>{{response.message}}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <form novalidate class="adduserform" method="post">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">First Name</label>
+                            <input required type="text" class="form-control user_first_name" name="user_first_name"
+                                placeholder="First Name">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Last Name</label>
+                            <input required type="text" class="form-control user_last_name" name="user_last_name"
+                                placeholder="Last Name">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Username</label>
+                            <input required type="text" class="form-control user_username" name="user_username"
+                                placeholder="Username">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Email</label>
+                            <input required type="email" class="form-control user_email" name="user_email"
+                                placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">New Password</label>
+                            <input required type="password" class="form-control user_newpassword"
+                                name="user_newpassword" placeholder="New Password">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Confirm Password</label>
+                            <input required type="password" class="form-control user_confirmpassword"
+                                name="user_confirmpassword" placeholder="Confirm Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary float-end mt-2 useraddbutton">Save changes</button>
+                </form>
+                <button type="button" class="btn btn-primary float-end d-none mt-2 usereditbutton">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User -->
+<div class="modal fade" id="EditUser" tabindex="-1" aria-labelledby="AddUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddUserLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger alert-dismissible fade show userwarningalert {{response.classname}}"
+                    role="alert">
+                    <strong>{{response.message}}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <form novalidate class="edituserform" method="post">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">First Name</label>
+                            <input required type="text" class="form-control edituser_first_name"
+                                name="edituser_first_name" placeholder="First Name">
+                            <input type="hidden" class="edituser_userid" name="edituser_userid" value="">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Last Name</label>
+                            <input required type="text" class="form-control edituser_last_name"
+                                name="edituser_last_name" placeholder="Last Name">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Username</label>
+                            <input required type="text" class="form-control edituser_username" name="edituser_username"
+                                placeholder="Username">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Email</label>
+                            <input required type="email" class="form-control edituser_email" name="edituser_email"
+                                placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">New Password</label>
+                            <input required type="password" class="form-control edituser_newpassword"
+                                name="edituser_newpassword" placeholder="New Password">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Confirm Password</label>
+                            <input required type="password" class="form-control edituser_confirmpassword"
+                                name="edituser_confirmpassword" placeholder="Confirm Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary float-end mt-2">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .accordion-button:focus {
+        box-shadow: none;
+        outline: none;
+    }
+</style>
+{% endblock content %} {% block script %}
+<script>
+
+    // Signature add
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#AddSignatureForm')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    if (form.checkValidity()) {
+                        event.preventDefault()
+                        $.ajax({
+                            url: '/api/signature/',
+                            type: 'POST',
+                            data: new FormData(this),
+                            async: false,
+                            headers: {
+                                'X-CSRFToken': csrftoken
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                $('.signaturetable tbody').prepend(`
+                                    <tr class="signature${data.id}">
+                                        <th scope="row">1</th>
+                                        <td>${data.name}</td>
+                                        <td>
+                                            <img src="${data.signature}" width="150" alt="">
+                                        </td>
+                                        <td>
+                                            <a href="#" data-id="${data.id}" class="me-2 text-danger"><i
+                                                    class="fa fa-trash fa-lg"></i></a>
+                                        </td>
+                                    </tr>`)
+                                $('#AddSignature').modal('hide')
+                                $('#AddSignatureForm').trigger('reset')
+                                return DeleteSignature()
+                            },
+                        });
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // signature Delete
+    function DeleteSignature() {
+        $('.signdelete').click(function (event) {
+            event.preventDefault()
+            let signId = $(this).attr('data-id')
+            if (confirm('Are your sure want to delete signature')) {
+                $.ajax({
+                    url: '/api/signature/' + signId,
+                    type: 'DELETE',
+                    data: { 'id': signId },
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (data, status) {
+                        $('.signaturetable tbody .signature' + signId).remove()
+                    }
+                })
+            }
+            event.stopImmediatePropagation()
+        })
+    }
+    DeleteSignature();
+
+    // user add
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.adduserform')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+
+    // user Edit form validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.edituserform')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Edit User
+    $('.userEdit').click(function (event) {
+        event.preventDefault()
+        $('#EditUser').modal('show')
+        let userId = $(this).attr('data-id')
+        $.get('/api/users/' + userId + '/', function (data, status) {
+            $('.edituser_first_name').val(data.first_name)
+            $('.edituser_last_name').val(data.last_name)
+            $('.edituser_username').val(data.username)
+            $('.edituser_email').val(data.email)
+            $('.edituser_userid').val(data.id)
+        })
+    })
+
+    // Delete User
+    $('.userDelete').click(function (event) {
+        event.preventDefault()
+        let userId = $(this).attr('data-id')
+        let person = prompt("Please Enter Your Name ?", "");
+        if (person == '{{request.user.username}}') {
+            $.ajax({
+                type: "PATCH",
+                url: '/api/users/' + userId + '/',
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    "is_active": false
+                }),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (data) {
+                    location.reload()
+                }
+            });
+        } else {
+            alert('Invalid Name. !!!')
+        }
+    });
+
+    // Superuser edit
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.superuserformedit')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+</script>
+
+{% endblock script %}

@@ -1,0 +1,466 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold mb-1">Orders</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3">
+                <div class="col-12">
+                    <div class="row ">
+                        <div class="col-12 mb-2 ">
+                            <a href="{% url 'add-order' %}" class="btn btn-sm btn-primary float-end ms-2" id="agency">
+                                <i class="fa fa-plus me-1"></i> Add</a>
+                            <form action="">
+                                <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                    <input name="orders" type="text" class="form-control" placeholder="Search Here ..."
+                                        aria-label="Search Here ..." aria-describedby="button-addon2">
+                                    <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                            class="fa fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% if obj.order_obj %}
+                <table id="" class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize ">
+                        <tr>
+                            <th width="25%">Orders</th>
+                            <th width="25%">Material Balance</th>
+                            <th>Material</th>
+                            <th>Order Status</th>
+                            <th width="10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in obj.order_obj %}
+                        <tr>
+                            <td width="30%">
+                                <div>
+                                    <b>Sales : </b> <span>{{ order.Sales_Company.Founder_Name }}</span>
+                                    <a href="tel:{{order.Sales_Company.Founder_Phone}}" class="ms-2 text-success"><i
+                                            class="fa fa-phone"></i></a>
+                                    <a href="mailto:{{order.Sales_Company.Founder_Email}}:" class="ms-2"><i
+                                            class="fa fa-envelope"></i></a>
+                                    {% if order.PO_Number.Scan_Copy %}
+                                    <a href="/media/{{order.PO_Number.Scan_Copy}}" class="ms-2" download>
+                                        <i class="fa fa-download text-blue"></i></a>
+                                    {% endif %}    
+                                    <br>
+                                    <span>( {{ order.Sales_Company.Company_Name }} )</span>
+                                </div>
+                                <div>
+                                    <b>Billing : </b> {{ order.Billing_Address }}
+                                </div>
+                                <div>
+                                    {% if order.PO_Number.PO_Type == "NA" %}
+                                    <span class="text-primary fw-bold">PO Not Applicable</span>
+                                    {% else %}
+                                    <b>PO Number : </b><span>{{order.PO_Number.PO_Number}}</span>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <b>Expected Date : </b> {{order.PO_Number.Order_Expected_Date}}
+                                </div>
+                            </td>
+                            <td width="25%">
+                                <ul class="mb-0 ps-3">
+                                    {% for material in order.PO_Number.PO_Material_Info.all %}
+                                    <li>{{material.Material_Name}} (<b>Q : </b>{{material.Quantity}}, <b>P :
+                                        </b>{{material.PO_Rate}})</li>
+                                    {%endfor%}
+                                </ul>
+                            </td>
+                            <td width="25%">
+                                <div id="carouselExampleControls{{order.id}}" class="carousel slide"
+                                    style="width: 340px;" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for material in order.Materials.all %}
+                                        <div
+                                            class="{% if forloop.counter == 1 %}carousel-item active{% else %}carousel-item{% endif %}">
+                                            <div>
+                                                <div class="fw-bold">{{material.Material_Name}}</div>
+                                                <div>
+                                                    <b>Vendor : </b><span>{{material.Vendor.Vendor_Name}} </span><b>(
+                                                        {{material.Vendor.Company_Name}} )
+                                                    </b> <a href="" class="ms-2 text-success"><i
+                                                            class="fa fa-phone"></i></a> <a href="" class="ms-2"><i
+                                                            class="fa fa-envelope"></i></a>
+                                                </div>
+                                                <div>
+                                                    <b>Qty : </b><span>{{ material.Quantity }}</span>
+                                                    <b class="ms-2">Load : </b><span>{{ material.No_Of_Load }}</span>
+                                                    <b class="ms-2">HSN Code : </b><span>{{ material.HSNCode }}</span>
+                                                </div>
+                                                <div>
+                                                    <b>PO : </b><span>Rs.{{ material.Fianl_PO_Price }}</span>
+                                                    <b>Offer : </b><span>Rs.{{ material.Final_Offer_Price }}</span>
+                                                </div>
+                                                <div>
+                                                    <i class="fa fa-map-marker text-success fw-bold"></i> :
+                                                    <span>Taramani, Chennai-113</span>
+                                                </div>
+                                                <div>
+                                                    <i class="fa fa-calendar text-blue fw-bold"></i> : 25-04-2021
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if order.Materials.all|length > 1 %}
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExampleControls{{order.id}}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExampleControls{{order.id}}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td width="10%">
+                                {% if order.Approved == False %}
+                                <span class="badge bg-danger">Not Approved</span>
+                                {% else %}
+                                <span class="badge bg-success">Approved</span>
+                                {% endif %}
+                            </td>
+                            <td width="10%">
+                                <a href="{{order.id}}" class="me-2 orderview text-success"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="edit-order/?order-id={{order.id}}" class="me-2 text-warning add_agency"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+
+                                {% if user.is_superuser %}
+                                <a href="{{order.id}}" class="me-2 text-danger delete_orders"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                {% else %}
+                                <a href="{{order.id}}" class="text-danger deleteForUser" data-method="Delete"
+                                    data-url="orders"><i class="fa fa-lg fa-trash"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Orders Available</h5>
+                    <p>please change your agency</p>
+                </div>
+                {% endif %}
+                {% if obj.order_obj.has_other_pages %}
+                <nav aria-label="...">
+                    <ul class="pagination mb-0 d-flex justify-content-end">
+                        {% if obj.order_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ obj.order_obj.previous_page_number }}"
+                                tabindex="-1">Previous</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %}
+                        {% for i in obj.order_obj.paginator.page_range %}
+                        {% if obj.order_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{ i }}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{i}}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if obj.order_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ obj.order_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete Modal for admin -->
+<div class="modal fade" id="deleteMethod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2 bg-danger text-white">
+                <h5 class="modal-title fw-bold small" id="exampleModalLabel">DELETE PRODUCT</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure you want to delete ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-col="id" data-url="customers" data-id=""
+                    class="btn btn-danger dlt btn-sm">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="orderView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="order_agency">
+
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body border-bottom-0 py-2 order_view_body">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.orderMenu').addClass('active')
+
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var customerName = prompt("Please enter your username ");
+                let username = $('#user_name').attr('data-name')
+                let userid = $('#userid').html()
+
+                if (customerName == username) {
+                    var id = $(this).attr('href')
+                    var _obj = JSON.stringify({ 'id': id, 'model': $(this).attr('data-url') });
+                    var params = {
+                        "Notifications": _obj,
+                        'csrfmiddlewaretoken': csrftoken,
+                        'Types': $(this).attr('data-method'),
+                        'User': userid
+                    }
+                    // console.log(params)
+                    $.post(base + 'post-api/notifications/', params, function (req, res) {
+                        // console.log(req)
+                        // console.log(res)
+                    })
+                    alert('Delete request sended successfully. !!!')
+                    location.reload()
+                } else {
+                    alert('Invalid Name. !!!')
+                }
+            }
+        })
+
+        // order view
+        $('.orderview').click(function (e) {
+            e.preventDefault()
+            let get_id = $(this).attr('href')
+            // console.log()
+            order_url = `${url}orders/${get_id}/`
+            var get_order_data = GetData(order_url)
+            // console.log(get_order_data)
+            $('#order_agency').html(get_order_data?.Agency?.Name)
+
+            $('.order_view_body').html(`
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">PO DETAILS</h6>
+                    <div>
+                        <b>PO : </b> <span>${get_order_data?.PO_Number?.PO_Type == 'PA' ? 'PO Applicable ( ' + get_order_data?.PO_Number?.PO_Number + ' )' : 'Not Applicable'}</span>
+                        <b class="ms-2">Name : </b> <span>${get_order_data?.PO_Number?.PO_Reciver_Name} ( ${get_order_data?.PO_Number?.PO_Reciver_Mail} )</span>
+                        <b class="ms-2">Approved By : </b> <span>${get_order_data?.PO_Number?.PO_Approved_By}</span>
+                    </div>
+                    <div class="mt-1 text-capitalize">
+                        <b >Recieved Date : </b> <span>${get_order_data?.PO_Number?.Order_Recieved_Date}</span>
+                        <b class="ms-2">Expected Date : </b> <span>${get_order_data?.PO_Number?.Order_Expected_Date}</span>
+                    </div>
+                    <div class="mt-1 text-capitalize">
+                        <b >Billing Address : </b> <span>${get_order_data?.Billing_Address}</span>
+                    </div>
+                    <div class="mt-1 text-capitalize">
+                        <b >Delivery Address : </b> <span>${get_order_data?.Sales_Delivery_Address}</span>
+                    </div>
+                    <div class="mt-1 text-capitalize">
+                        <b >Status : </b> <span >${get_order_data?.Approved == true ? 'Approved' : 'Not Approved'}</span>
+                    </div>
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">PO Material</h6>
+                    <table class="table table-sm table-bordered ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Material Name</th>
+                                <th>Quantity</th>
+                                <th>LOAD</th>
+                                <th>Term</th>
+                                <th>Rate</th>
+                                <th>Moisture</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_po_material">
+                            ${POMaterialInfoAppend(get_order_data?.PO_Number?.PO_Material_Info)} 
+                        </tbody>
+                    </table>    
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Materials</h6>
+                    <table class="table table-sm table-bordered ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Vendor</th>
+                                <th>Material Name</th>
+                                <th>GST</th>
+                                <th>Quantity</th>
+                                <th>LOAD</th>
+                                <th>Term</th>
+                                <th>Rate</th>
+                                <th>Moisture</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_material">
+                            ${MaterialInfoAppend(get_order_data?.Materials)} 
+                        </tbody>
+                    </table>    
+                </div>
+            `)
+            $('#orderView').modal('toggle')
+
+            function POMaterialInfoAppend(data) {
+                $('#append_material').html('')
+                i = 1
+
+                po_material = ''
+                data.forEach(el => {
+                    po_material += `
+                        <tr>
+                            <td>${i}</td>   
+                            <td>${el?.Material_Name}</td>   
+                            <td>${el?.Quantity} ${el?.Quantity_Type}</td>   
+                            <td>${el?.Load}</td>   
+                            <td>${el?.PO_Terms}</td>   
+                            <td>${el?.PO_Rate}</td>    
+                            <td>${el?.Moisture == '1' ? 'Yes (' + el?.Moisture_No + ')' : 'No'}</td>    
+                        </tr>
+                    `
+                    i++
+                })
+
+                return po_material
+            }
+
+
+            function MaterialInfoAppend(data) {
+                $('#append_po_material').html('')
+                i = 1
+
+                po_material = ''
+                data.forEach((els) => {
+                    po_material += `
+                        <tr class="text-capitalize">
+                            <td>${i}</td>   
+                            <td>${els?.Vendor?.Vendor_Name}</td>  
+                            <td>${els?.Material_Name}</td>   
+                            <td>${els?.Product_Name?.GST}</td>   
+                            <td>${els?.Quantity} ${els?.Mat_PO_ID?.Quantity_Type}</td>
+                            <td>${els?.Load}</td>   
+                            <td>${els?.Payment_Capability}</td>   
+                            <td>
+                                <div ><b>PO : </b>${els?.Fianl_PO_Price}</div>
+                                <div ><b>OFFER : </b>${els?.Final_Offer_Price}</div>
+                                <div ><b>PURCHASE : </b>${els?.Final_Purchase_Price}</div>
+                            </td>    
+                            <td>${els?.Moisture == '1' ? 'Yes (' + els?.Moisture_Number + '% )' : 'No'}</td>    
+                        </tr>
+                    `
+                    i++
+                })
+
+                return po_material
+            }
+
+        })
+
+        // Orders delete
+        $('.delete_orders').click(function (event) {
+            event.preventDefault()
+            let orderid = $(this).attr('href')
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                $.ajax({
+                    type: "DELETE",
+                    url: '/api/orders/' + orderid,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({ 'id': orderid }),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (data) {
+                        alert('Deleted Successfully. !!!')
+                        location.reload()
+                    }
+                });
+
+            }
+            else {
+                alert('Invalid Name. !!!')
+            }
+        })
+    })
+</script>
+{% endblock %}

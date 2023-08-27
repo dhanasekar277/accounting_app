@@ -1,0 +1,127 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="row mx-2 mb-4">
+    <div class="col-12">
+        <a href="{% url 'quotations' %}" class="btn btn-sm my-2 ps-0"><i class="fa fa-chevron-left"
+                aria-hidden="true"></i>
+            Back</a>
+    </div>
+
+    <div class="col-12  h-100">
+        <div class="card p-3">
+            <h6>Order Info</h6>
+            <hr class="mt-0 mb-2">
+            <div class="messages d-none mb-2 text-success fw-bold">
+                Material Added Successfully. !!!
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <select name="" class="form-control SelectOrders">
+                        <option value="">Select Order</option>
+                        {% for i in obj.order_obj %}
+                        <option value="{{i.id}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row materialtable d-none">
+                <div class="col-12 ">
+                    <h6 class="mt-2">Material List</h6>
+                    <div class="alert alert-success d-none py-2 alert-dismissible fade show" role="alert">
+                        <strong>Quotation</strong> Generated Successfully. !!!
+                        <button type="button" class="btn-close px-3 mt-2 py-1" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div class="mb-2" >
+                        <b>Company Name : </b>
+                        <span id="Company_Name"></span>
+                        <b class="ms-3">Founder Name : </b>
+                        <span id="Founder_Name"></span>
+                        <b class="ms-3">Phone : </b>
+                        <span id="Phone"></span>
+                        <b class="ms-3">Email : </b>
+                        <span id="Email"></span>
+                    </div>
+
+                    <table class="table table-striped mb-2">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>MATERIAL NAME</th>
+                                <th>HSN CODE</th>
+                                <th>QUALITY & RATE</th>
+                                <th>DELIVERY</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small material_list">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-12 total">
+                    <b>Total Price : </b><span id="totalPrice"></span>
+                    <a href="" class="btn btn-primary btn-sm float-end generate_quotation">Generate Quation</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+
+        var url = window.location.href
+        var arr = url.split("/");
+        var host_url = arr[0] + "//" + arr[2]
+        var url = host_url + '/api/'
+        $('.SelectOrders').change(function(){
+
+            var order_id = $(this).val()
+            var total_price = 0
+            $('.materialtable').removeClass('d-none')
+            $.get(url+'orders/'+order_id, function(res){
+
+                var mat = res?.Materials
+                var sales = res?.Sales_Company
+
+                $('#Email').html(sales?.Founder_Email)
+                $('#Founder_Name').html(sales?.Founder_Name)
+                $('#Phone').html(sales?.Founder_Phone)
+                $('#Company_Name').html(sales?.Company_Name)
+
+                for(var i=0; i<mat.length;i++){
+
+                    var quantity = mat[i]?.Quantity
+                    var price = mat[i]?.Final_Offer_Price
+                    var total = Number(quantity) * Number(price)
+                    total_price = total_price + Number(total)
+                    var vendor = mat[i]?.Vendor?.Vendor_Name
+                    $('.material_list').append('<tr><td><div>'+mat[i]?.Material_Name+'</div><div>'+vendor+'</div></td><td>'+mat[i]?.HSNCode+'</td><td><input type="text" style="width:45px;" value="'+quantity+'" > &nbsp; Rs. <input type="text" value="'+total+'"></td><td>'+mat[i]?.Delivery_Site+'</td><td><a href="" class="text-success"><i class="fa fa-check"></i></a><a href="" class="text-danger ms-2"><i class="fa fa-close"></i></a></td></tr>')
+                
+                }
+            }).done(function() { 
+                $('#totalPrice').html(total_price)
+                GenerateQuotation()
+            });
+
+        })
+
+
+        function GenerateQuotation(){
+            $('.generate_quotation').click(function(e){
+                e.preventDefault()
+                $('.alert-success').removeClass('d-none')
+            })
+        }
+    })
+</script>
+{% endblock %}

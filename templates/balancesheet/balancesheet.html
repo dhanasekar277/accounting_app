@@ -1,0 +1,1059 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% block content %}
+<div class="container-fluid" id="balancesheetpage">
+    <div class="row">
+        <!-- Calender Search -->
+        <div class="row mb-4 mt-3">
+            <div class="col-md-4 my-auto">
+                <h5 class="fw-bold mb-0 mt-3">Balance Sheet</h5>
+            </div>
+            <div class="col-md-8">
+                <form id="calendersearch" novalidate>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="calander_from" class="form-label mb-0">From</label>
+                            <input required type="date" class="form-control" name="calander_from">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="calander_to" class="form-label mb-0">To</label>
+                            <input required type="date" class="form-control" name="calander_to">
+                        </div>
+                        <div class="col-md-4 mt-auto mb-1">
+                            <button type="submit" class="btn btn-success btn-sm w-100"><i class="fa fa-search me-2"></i>
+                                Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- BALANCE SHEET STARTS -->
+        <!-- Income Tax Filed -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">Income Tax Filed</h6>
+            <div class="row ">
+                <div class="col-lg-6">
+                    <table class="table">
+                        <tr>
+                            <td><span>Purchase Accounts</span> :</td>
+                            <td class="text-end">{{total_purchase.amount__total_amount__sum|floatformat:"2"}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Direct Expences</span> :
+                            </td>
+                            <td class="text-end">{{total_direct_expences.Amount__sum|floatformat:"2"}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Gross Profit C/O</span> :
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="py-2 text-end">
+                                <span
+                                    class="border-top border-bottom border-dark p-1">{{total_purchase.amount__total_amount__sum|add:total_direct_expences.Amount__sum|floatformat:"2"}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Indirect Expences</span> :
+                            </td>
+                            <td class="text-end">{{total_expences.Amount__sum|floatformat:"2"}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Net Profit</span> :
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td class="pb-2 pt-5">Total :</td>
+                            <td class="pb-2 pt-5 text-end">
+                                <span class="border-top border-bottom border-dark p-1">
+                                    {{total_expences.Amount__sum|floatformat:"2"}}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <span>Sales Accounts</span> :
+                            </td>
+                            <td class="text-end">
+                                {{total_sales.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"2"}}
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table" style="margin-top: 95px;">
+                        <tr>
+                            <td>
+                                <span>Indirect Expences</span> :
+                            </td>
+                            <td class="text-end">{{total_expences.Amount__sum|floatformat:"2"}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Gross Profit b/f</span> :
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td class="pb-2 pt-5">Total :</td>
+                            <td class="pb-2 pt-5 text-end">
+                                <span
+                                    class="border-top border-bottom border-dark p-1">{{total_sales.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|add:total_expences.Amount__sum|floatformat:"2"}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Sales Domestic -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'netsales' %}" class="text-reset">Sales Domestic</a>
+            </h6>
+            {% if total_sales.saleid__sales__netAmount__WithGSTNetTotalAmount__sum %}
+            <table class="table">
+                <tr>
+                    <th width="55%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                    <th width="15%">Closing Balance</th>
+                </tr>
+                <tr>
+                    <td>Opening Balance</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% for i in sales %}
+                {% if i.value.saleid__sales__netAmount__WithGSTNetTotalAmount__sum %}
+                <tr>
+                    <td>
+                        <a class="salesbrief text-reset" data-month="{{i.month_num}}" href="#"
+                            class="text-reset">{{i.month}}</a>
+                    </td>
+                    <td></td>
+                    <td>{{i.value.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td></td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_sales.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"2"}}
+                        </span>
+                    </td>
+                    <td class="pb-2 pt-5">
+                        <span class="border-top border-bottom border-dark p-1"></span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Purchase Domestic -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'netpurchase' %}" class="text-reset">Purchase Domestic</a>
+            </h6>
+            {% if total_purchase.amount__total_amount__sum %}
+            <table class="table">
+                <tr>
+                    <th width="55%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                    <th width="15%">Closing Balance</th>
+                </tr>
+                <tr>
+                    <td>Opening Balance</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% for i in purchase %}
+                {% if i.value.amount__total_amount__sum %}
+                <tr>
+                    <td>
+                        <a class="prchasebrief text-reset" data-month="{{i.month_num}}" href="#"
+                            class="text-reset">{{i.month}}</a>
+                    </td>
+                    <td>{{i.value.amount__total_amount__sum|floatformat:"2"}}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_purchase.amount__total_amount__sum|floatformat:"2"}}
+                        </span>
+                    </td>
+                    <td></td>
+                    <td class="pb-2 pt-5">
+                        <span class="border-top border-bottom border-dark p-1"></span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Direct Expences -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'expences' %}" class="text-reset">Direct Expences</a>
+            </h6>
+            {% if total_direct_expences.Amount__sum %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in direct_expences %}
+                {% if i.value.Amount__sum %}
+                <tr>
+                    <td>
+                        <a class="directexpencebrief text-reset" href="#">{{i.name|upper}}</a>
+                    </td>
+                    <td>{{i.value.Amount__sum|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_direct_expences.Amount__sum|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5"></td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Indirect Expences -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'expences' %}" class="text-reset">Indirect Expences</a>
+            </h6>
+            {% if total_expences.Amount__sum %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in expences %}
+                {% if i.value.Amount__sum %}
+                <tr>
+                    <td>
+                        <a class="expencebrief text-reset" href="#">{{i.name|upper}}</a>
+                    </td>
+                    <td>{{i.value.Amount__sum|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_expences.Amount__sum|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5"></td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Current Assets -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <a class="text-reset" href="{% url 'expences' %}">
+                <h6 class="fw-bold">Current Assets</h6>
+            </a>
+            {% if total_current_assets.Asset_Value__sum %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in currentassets %}
+                <tr>
+                    <td>
+                        <div>{{i.Asset_Name}}</div>
+                    </td>
+                    <td>{{i.Asset_Value|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_current_assets.Asset_Value__sum|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Fixed Assets -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a class="text-reset" href="{% url 'expences' %}">Fixed Assets</a>
+            </h6>
+            {% if total_fixed_assets.Asset_Value__sum %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in fixedassets %}
+                <tr>
+                    <td>
+                        <div>{{i.Asset_Name}}</div>
+                    </td>
+                    <td>{{i.Asset_Value|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{total_fixed_assets.Asset_Value__sum|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Bank Accounts -->
+        <!-- <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="#" class="text-reset">Bank Accounts</a>
+            </h6>
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                <tr>
+                    <td>CASH AT BANK</td>
+                    <td>194,230.00</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>INDIAN BANK</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span class="border-top border-bottom border-dark p-1"></span>
+                    </td>
+                    <td class="pb-2 pt-5"></td>
+                </tr>
+            </table>
+        </div> -->
+        <!-- Sundry Creditors -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'bank_entries' %}" class="text-reset">Sundry Creditors</a>
+            </h6>
+            {% if Total_creditors_balance or creditors_total %}
+            <table class="table">
+                <tr>
+                    <th width="50%">Particulars</th>
+                    <th width="20%">Voucher No</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in sundry_creditors_obj %}
+                <tr>
+                    <td>
+                        <a class="text-reset sd_creditors_brief" data-vouid="{{i.voucherid.0.id}}"
+                            data-total="{{i.total}}" href="">{{i.name}}</a>
+                    </td>
+                    <td>{{i.voucherid.0.VoucherNo}}</td>
+                    {% if i.net_balance == '0' %}
+                    <td></td>
+                    {% else %}
+                    <td>{{i.net_balance|floatformat:"2"}}</td>
+                    {% endif %}
+                    <td>{{i.total|floatformat:"2"}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td></td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{Total_creditors_balance|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{creditors_total|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Sundry Debitors -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="{% url 'bank_entries' %}" class="text-reset">Sundry Debitors</a>
+            </h6>
+            {% if Total_debitors_balance or debitors_total %}
+            <table class="table">
+                <tr>
+                    <th width="50%">Particulars</th>
+                    <th width="20%">Invoice No</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in sundry_debitors_obj %}
+                <tr>
+                    <td>
+                        <p class="comtomeradd1 d-none">{{i.address}}</p>
+                        <a class="text-reset sd_debitors_brief" data-invid="{{i.invoice_details.0.id}}"
+                            data-total="{{i.total}}" href="">{{i.name}}</a>
+                    </td>
+                    <td>{{i.invoice_details.0.InvoiceNo}}</td>
+                    <td>{{i.total|floatformat:"2"}}</td>
+                    {% if i.net_balance == '0' %}
+                    <td></td>
+                    {% else %}
+                    <td>{{i.net_balance|floatformat:"2"}}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td></td>
+                    <td class="pb-2 pt-5">
+                        <span class="border-top border-bottom border-dark p-1">{{debitors_total|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{Total_debitors_balance|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Duties & Taxes -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="#" class="text-reset">Duties & Taxes</a>
+            </h6>
+            {% if input_sgst_cgst_total or output_sgst_cgst_total %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                {% for i in input_sgst_cgst_amt %}
+                <tr>
+                    <td>CGST Input - {{i.sgst_cgst_percent}}%</td>
+                    <td>{{i.sgst_cgst_value|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>SGST Input - {{i.sgst_cgst_percent}}%</td>
+                    <td>{{i.sgst_cgst_value|floatformat:"2"}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                {% for i in output_sgst_cgst_amt %}
+                <tr>
+                    <td>CGST Output {{i.sgst_cgst_percent}}%</td>
+                    <td></td>
+                    <td>{{i.sgst_cgst_value|floatformat:"2"}}</td>
+                </tr>
+                <tr>
+                    <td>SGST Output {{i.sgst_cgst_percent}}%</td>
+                    <td></td>
+                    <td>{{i.sgst_cgst_value|floatformat:"2"}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{input_sgst_cgst_total|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{output_sgst_cgst_total|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Current Liabilities -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">
+                <a href="#" class="text-reset">Current Liabilities</a>
+            </h6>
+            {% if input_sgst_cgst_total or output_sgst_cgst_total or Total_creditors_balance or creditors_total %}
+            <table class="table">
+                <tr>
+                    <th width="70%">Particulars</th>
+                    <th width="15%">Debit</th>
+                    <th width="15%">Credit</th>
+                </tr>
+                <tr>
+                    <td>Duties & Taxes</td>
+                    <td>{{input_sgst_cgst_total|floatformat:"2"}}</td>
+                    <td>{{output_sgst_cgst_total|floatformat:"2"}}</td>
+                </tr>
+                <tr>
+                    <td>Sundry Creditors</td>
+                    <td>{{Total_creditors_balance|floatformat:"2"}}</td>
+                    <td>{{creditors_total|floatformat:"2"}}</td>
+                </tr>
+                <tr>
+                    <td class="pb-2 pt-5">Grand Total</td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{input_sgst_cgst_total|add:Total_creditors_balance|floatformat:"2"}}</span>
+                    </td>
+                    <td class="pb-2 pt-5">
+                        <span
+                            class="border-top border-bottom border-dark p-1">{{output_sgst_cgst_total|add:creditors_total|floatformat:"2"}}</span>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="fa fa-3x fa-lg text-warning fa-folder-open"></i>
+                <h6 class="fw-bold mt-3">No Records Available</h6>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Balance Sheet -->
+        <div class="card p-3 border-0 shadow mb-3">
+            <h6 class="fw-bold">Balance Sheet</h6>
+            <div class="row ">
+                <div class="col-lg-6">
+                    <p class="fa-14 fw-bold">Liabilities</p>
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <span>Current Liabilities</span>
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Profit and Loss Ac</span>
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span>Opening Balence</span>
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Current Period</span>
+                            </td>
+                            <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                            <td class="pb-2 pt-5">Grand Total</td>
+                            <td class="pb-2 pt-5 text-end">
+                                <span class="border-top border-bottom border-dark p-1"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <p class="fa-14 fw-bold">Assets</p>
+
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <span>Fixed Assets</span>
+                            </td>
+                            <td class="text-end">{{total_fixed_assets.Asset_Value__sum|floatformat:"2"}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Current Assets</span>
+                            </td>
+                            <td class="text-end">{{total_current_assets.Asset_Value__sum|floatformat:"2"}}</td>
+                        </tr>
+                    </table>
+                    <table class="table" style="margin-top: 99px;">
+                        <tr>
+                            <td class="py-2">Grand Total</td>
+                            <td class="py-2 text-end">
+                                <span
+                                    class="border-top border-bottom border-dark p-1">{{total_fixed_assets.Asset_Value__sum|add:total_current_assets.Asset_Value__sum|floatformat:"2"}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- BALANCE SHEET END -->
+
+    </div>
+</div>
+
+<!-- Expence Ledger -->
+<div class="modal fade" id="ExpenceLedger" tabindex="-1" aria-labelledby="ExpenceLedgerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ExpenceLedgerLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #balancesheetpage table td,
+    #balancesheetpage table th {
+        border: none;
+        padding: .25rem;
+        font-size: 14px;
+    }
+</style>
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.balsheetMenu').addClass('active')
+    });
+    // CALANDER SEARCH VALIDATION
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Expence Ledger
+    $('.expencebrief').click(function (event) {
+        let expence_category = $(this).text()
+        let fromdate = window.location.search.split('=')[1].replace('&calander_to', '')
+        let todate = window.location.search.split('=')[2]
+        event.preventDefault()
+        $.get(`expence-ledger/${expence_category.toLocaleLowerCase()}/${fromdate}/${todate}`,
+            function (data, status) {
+                data = JSON.parse(data)
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Ledger : ' + data[0]["fields"]["Expence_Category"])
+                $('#ExpenceLedger .modal-body').html(
+                    `<table class="table ExpenceLedgerTable mb-0">
+                        <tr>
+                            <th width="15%">Date</th>
+                            <th width="35%">Particulars</th>
+                            <th width="15%">Vch Type</th>
+                            <th width="10%">Vch No</th>
+                            <th width="10%">Debit</th>
+                            <th width="10%">Credit</th>
+                        </tr>
+                    </table>
+                    <table class="table ExpenceLedgerTotal">
+                       <tr>
+                        <td width="79%">Grand Total</td>
+                        <td class="total"></td>
+               
+                    </tr>
+                    </table>`
+                )
+                total = 0
+                for (var i = 0; i < data.length; i++) {
+                    $('.ExpenceLedgerTable').append(
+                        `<tr>
+                        <td>${data[i]["fields"]["Date"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]} payment</td>
+                        <td></td>
+                        <td>${data[i]["fields"]["Amount"]}</td>
+                        <td></td>
+                    </tr>`)
+                    total += parseInt(data[i]["fields"]["Amount"])
+                    $('.ExpenceLedgerTotal .total').text(total)
+                }
+
+            })
+    })
+
+    // Direct expences
+    $('.directexpencebrief').click(function (event) {
+        let expence_category = $(this).text()
+        let fromdate = window.location.search.split('=')[1].replace('&calander_to', '')
+        let todate = window.location.search.split('=')[2]
+        event.preventDefault()
+        $.get(`direct-expence-ledger/${expence_category.toLocaleLowerCase()}/${fromdate}/${todate}`,
+            function (data, status) {
+                data = JSON.parse(data)
+
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Ledger : ' + data[0]["fields"]["Expence_Category"])
+                $('#ExpenceLedger .modal-body').html(
+                    `<table class="table ExpenceLedgerTable mb-0">
+                        <tr>
+                            <th width="15%">Date</th>
+                            <th width="35%">Particulars</th>
+                            <th width="15%">Vch Type</th>
+                            <th width="10%">Vch No</th>
+                            <th width="10%">Debit</th>
+                            <th width="10%">Credit</th>
+                        </tr>
+                    </table>
+                    <table class="table ExpenceLedgerTotal">
+                       <tr>
+                        <td width="79%">Grand Total</td>
+                        <td class="total"></td>
+               
+                    </tr>
+                    </table>`
+                )
+                total = 0
+                for (var i = 0; i < data.length; i++) {
+                    $('.ExpenceLedgerTable').append(
+                        `<tr>
+                        <td>${data[i]["fields"]["Date"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]} payment</td>
+                        <td></td>
+                        <td>${data[i]["fields"]["Amount"]}</td>
+                        <td></td>
+                    </tr>`)
+                    total += parseInt(data[i]["fields"]["Amount"])
+                    $('.ExpenceLedgerTotal .total').text(total)
+                }
+
+            })
+    })
+
+    // Sales Ledger
+    $('.salesbrief').click(function (event) {
+        event.preventDefault()
+        let month = $(this).attr('data-month')
+        let monthtxt = $(this).text()
+        $.get(`sales-ledger/${month}`,
+            function (data, status) {
+                data = JSON.parse(data)
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Sales on ' + monthtxt)
+                $('#ExpenceLedger .modal-body').html(
+                    `<table class="table salesLedgerTable">
+                        <tr>
+                            <th width="15%">Date</th>
+                            <th width="35%">Particulars</th>
+                            <th width="15%">Inv Type</th>
+                            <th width="15%">Inv No</th>
+                            <th width="10%">Debit</th>
+                            <th width="10%">Credit</th>
+                        </tr>
+                    </table>
+                    <table class="table salesLedgerTotal">
+                       <tr>
+                        <td width="90%">Grand Total</td>
+                        <td class="total salesLedgerTotal"></td>
+                    </tr>
+                    </table>`)
+                total = 0
+                counter = 0
+                for (i of data) {
+                    counter += 1
+                    $('.salesLedgerTable').append(
+                        `<tr>
+                            <td>${i.fields.Date}</td>
+                            <td>${i.fields.saleid__orderid__Sales_Company__Company_Name}</td>
+                            <td>Sales</td>
+                            <td class="multipleinvoice${counter}"></td>
+                            <td></td>
+                            <td class="multisalesprice${counter}"></td>
+                        </tr>`)
+                    for (j of i.fields.invoice) {
+                        $('.multipleinvoice' + counter).append(`<span>${j[0].InvoiceNo}</span><br>`)
+                    }
+                    for (k of i.fields.saleid) {
+                        $('.multisalesprice' + counter).append(`<span>${parseInt(k.WithGSTNetTotalAmount).toFixed(2)}</span><br>`)
+                        total += parseInt(k.WithGSTNetTotalAmount)
+                        $('.salesLedgerTotal .total').text(total)
+                    }
+                }
+            })
+    })
+
+    // purchase Ledger
+    $('.prchasebrief').click(function (event) {
+        event.preventDefault()
+        let month = $(this).attr('data-month')
+        let monthtxt = $(this).text()
+        $.get(`purchase-ledger/${month}`,
+            function (data, status) {
+                data = JSON.parse(data)
+                // console.log(data)
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Purchase on ' + monthtxt)
+                $('#ExpenceLedger .modal-body').html(
+                    `<table class="table purchaseLedgerTable">
+                        <tr>
+                            <th width="15%">Date</th>
+                            <th width="35%">Particulars</th>
+                            <th width="15%">Vch Type</th>
+                            <th width="15%">Vch No</th>
+                            <th width="10%">Debit</th>
+                            <th width="10%">Credit</th>
+                        </tr>
+                    </table>
+                    <table class="table purchaseLedgerTotal">
+                       <tr>
+                        <td width="80%">Grand Total</td>
+                        <td class="total"></td>
+                    </tr>
+                    </table>`)
+                total = 0
+                for (var i = 0; i < data.length; i++) {
+                    $('.purchaseLedgerTable').append(
+                        `<tr>
+                            <td>${data[i].fields.Date}</td>
+                            <td>${data[i].fields.vendorDetail__Name}</td>
+                            <td>purchase</td>
+                            <td class="vch-no${i}"></td>
+                            <td class="vch-amt${i}"></td>
+                            <td></td>
+                        </tr>`)
+                    for (j of data[i].fields.amount) {
+                        $('.vch-no' + i).append(
+                            `<span>${j.VoucherNo}</span><br>`
+                        )
+                        $('.vch-amt' + i).append(
+                            `<span>${parseInt(j.total_amount_withgst).toFixed(2)}</span><br>`
+                        )
+                        total += parseInt(j.total_amount_withgst)
+                    }
+                    $('.purchaseLedgerTotal .total').text(total)
+                }
+            })
+    })
+
+    // Creditors Ledger (Vendors)
+    $('.sd_creditors_brief').click(function (event) {
+        let voucher_id = $(this).attr('data-vouid')
+        let creditor_name = $(this).text()
+        let creditor_total = $(this).attr('data-total')
+        let fromdate = window.location.search.split('=')[1].replace('&calander_to', '')
+        let todate = window.location.search.split('=')[2]
+        event.preventDefault()
+        $.get(`creditors-ledger/vendor/${creditor_name.toLocaleLowerCase()}/${voucher_id}/${fromdate}/${todate}`,
+            function (data, status) {
+                data = JSON.parse(data)
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Creditor Ledger : ' + data[0]["fields"]["Name"])
+                $('#ExpenceLedger .modal-body').html(
+                    `<table class="table CreditorLedgerTable mb-0">
+                        <tr>
+                            <th width="15%">Post Date</th>
+                            <th width="15%">Value Date</th>
+                            <th width="40%">Particulars</th>
+                            <th width="15%">Debit</th>
+                            <th width="15%">Credit</th>
+                        </tr>
+                    </table>
+                    <table class="table CreditorLedgerTotal">
+                       <tr>
+                        <td width="70%">Grand Total</td>
+                        <td width="15%" class="total_debit"></td>
+                        <td width="15%" class="total_credit"></td>
+                    </tr>
+                    </table>`
+                )
+                total_debit = 0
+                total_credit = 0
+                for (var i = 0; i < data.length; i++) {
+                    total_paid = Number(data[i]["fields"]["Net_Balance_Paid"]) + Number(data[i]["fields"]["GST_Balance_Paid"])
+                    $('.CreditorLedgerTable').append(
+                        `<tr>
+                        <td>${data[i]["fields"]["Post_Date"]}</td>
+                        <td>${data[i]["fields"]["Value_Date"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]}</td>
+                        <td>${total_paid.toFixed(2)}</td>
+                        <td>${parseInt(data[i]["fields"]["Total_Amount"]).toFixed(2)}</td>
+                    </tr>`)
+                    total_debit += parseInt(total_paid)
+                    $('.CreditorLedgerTotal .total_debit').text(total_debit)
+                    $('.CreditorLedgerTotal .total_credit').text(data[i]["fields"]["Total_Amount"])
+                }
+            })
+    })
+
+    // Debitors Ledger (Customers)
+    $('.sd_debitors_brief').click(function (event) {
+        let invoice_id = $(this).attr('data-invid')
+        let debitor_name = $(this).text()
+        let debitor_total = $(this).attr('data-total')
+        let fromdate = window.location.search.split('=')[1].replace('&calander_to', '')
+        let todate = window.location.search.split('=')[2]
+        event.preventDefault()
+        $.get(`debitors-ledger/customer/${debitor_name}/${invoice_id}/${fromdate}/${todate}`,
+            function (data, status) {
+                data = JSON.parse(data)
+                // console.log(data)
+                $('#ExpenceLedger').modal('show')
+                $('#ExpenceLedger .modal-title').text('Debitor Ledger : ' + data[0]["fields"]["Name"])
+                $('#ExpenceLedger .modal-body').html(
+                    `
+                    <div id="printstatement">
+                        <div class="text-center mb-2">
+                            <h5 class="fw-bold mb-1">{{active_agency.Name}}</h5>
+                            <div>{{active_agency.Address}}, {{active_agency.City}}-{{active_agency.Zip}}</div>
+                            <div>{{active_agency.State}}, {{active_agency.Country}}</div>
+                            <div><b>Contact :</b>
+                            {% for i in active_agency.Phone.all %}
+                            {{i.Phone}},
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <h5 class="fw-bold mb-1">${data[0]["fields"]["Name"]}</h5>
+                            <div>Ledger Account</div>
+                            <div class="">${$('.comtomeradd1').text()}</div>
+                            {% now "Y" as current_year %}
+                            {% now "n" as current_month %}
+                            {% if current_month <= 3 %}
+                            1-Apr-{{current_year|sub:1}} to 31-Mar-{{current_year}}
+                            {% else %}
+                            1-Apr-{{current_year}} to 31-Mar-{{current_year|add:1}}
+                            {% endif %}
+                        </div>
+                        <table class="table DebitorLedgerTable mb-0">
+                            <tr>
+                                <th width="15%">Post Date</th>
+                                <th width="15%">Value Date</th>
+                                <th width="40%">Particulars</th>
+                                <th width="15%">Debit</th>
+                                <th width="15%">Credit</th>
+                            </tr>
+                        </table>
+                        <table class="table DebitorLedgerTotal">
+                        <tr>
+                            <td width="70%">Grand Total</td>
+                            <td width="15%" class="total_credit"></td>
+                            <td width="15%" class="total_debit"></td>
+                        </tr>
+                        </table>
+                    </div>
+                    <button onclick="printDiv('printstatement')" class="btn btn-am btn-success float-end">print</button>
+                    `
+                )
+                total_debit = 0
+                total_credit = 0
+                for (var i = 0; i < data.length; i++) {
+                    total_paid = Number(data[i]["fields"]["Net_Balance_Paid"]) + Number(data[i]["fields"]["GST_Balance_Paid"])
+                    $('.DebitorLedgerTable').append(
+                        `<tr>
+                        <td>${data[i]["fields"]["Post_Date"]}</td>
+                        <td>${data[i]["fields"]["Value_Date"]}</td>
+                        <td>${data[i]["fields"]["Payment_Mode"]}</td>
+                        <td>${parseInt(data[i]["fields"]["Total_Amount"]).toFixed(2)}</td>
+                        <td>${total_paid.toFixed(2)}</td>
+                    </tr>`)
+                    total_debit += parseInt(total_paid)
+                    $('.DebitorLedgerTotal .total_debit').text(total_debit)
+                    $('.DebitorLedgerTotal .total_credit').text(data[i]["fields"]["Total_Amount"])
+                }
+            })
+    })
+
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+    }
+    window.onafterprint = function () {
+        window.location.reload()
+    }
+
+</script>
+{% endblock script %}

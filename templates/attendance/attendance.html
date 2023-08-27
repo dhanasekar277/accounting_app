@@ -1,0 +1,103 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <div class="row">
+                <div class="col-6 my-auto">
+                    <h5 class="fw-bold">Attendance</h5>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating float-end w-50">
+                        <select class="form-select" id="attendanceMonth" aria-label="Floating label select example">
+                            <option selected>{% now "F" %}</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="October">October</option>
+                            <option value="September">September</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                        <label for="floatingSelect">Select Month</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3">
+                <div class="table-responsive">
+                    <table id="attendanceTable" class="table table-bordered table-striped w-100 mb-0">
+                        <thead class="table-dark text-capitalize">
+                            <tr>
+                                <th><span>Name</span></th>
+                                {% for i in days %}
+                                <th>
+                                    <p class="mb-0">{{i}}</p>
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr class="{{user}}att">
+                                <td><span>{{user}}</span></td>
+                                {% for day in days %}
+                                <td class="{{user}}attdate{{day}}"></td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                            <!-- <td><i class="fa fa-check"></i></td>
+                                <td><i class="fa fa-close"></i></td> -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<style>
+    .fa-check {
+        color: #009587 !important;
+    }
+
+    .fa-close {
+        color: #dc3545 !important
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.attendanceMenu').addClass('active')
+        $('#attendanceMonth').change(function () {
+            $.get('http://127.0.0.1:8000/api/attendances/?format=json',
+                function (data, status) {
+                    const today = new Date();
+                    for (var i = 0; i < data.results.length; i++) {
+                        var punchout = data.results[i].Punch_Out_Time
+                        punchOutTime = new Date(punchout.split("T")[0])
+                        for (var j = 1; j <= today.getDate(); j++) {
+                            if ($('tr').hasClass(data.results[i].User.username + 'att') && j == punchOutTime.getDate()) {
+                                $('.' + data.results[i].User.username + 'attdate' + punchOutTime.getDate()).html('<i class="fa fa-check"></i>')
+                            } else if ($('.' + data.results[i].User.username + 'attdate' + j)[0].childNodes.length == 0) {
+                                $('.' + data.results[i].User.username + 'attdate' + j).html('<td><i class="fa fa-close"></i></td>')
+                            }
+                        }
+                    }
+                })
+        })
+    })
+</script>
+
+{% endblock %})

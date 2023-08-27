@@ -1,0 +1,1077 @@
+{% extends "_base.html" %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Bank Entries</h5>
+            <div class="card border-0 shadow p-3">
+                <!-- Calender Search -->
+                <div class="row mb-4 mt-3">
+                    <div class="col-md-4 my-auto">
+                    </div>
+                    <div class="col-md-8">
+                        <form id="calendersearch" novalidate>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="calander_from" class="form-label mb-0">From</label>
+                                    <input required type="date" class="form-control" name="calander_from">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="calander_to" class="form-label mb-0">To</label>
+                                    <input required type="date" class="form-control" name="calander_to">
+                                </div>
+                                <div class="col-md-4 mt-auto mb-1">
+                                    <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                            class="fa fa-search me-2"></i>
+                                        Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <!-- <button class="btn btn-primary btn-sm float-end" data-bs-toggle="modal"
+                            data-bs-target="#BankEntryModal"><i class="fa fa-plus me-2"></i> Add</button> -->
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- NAV TABS -->
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                            aria-selected="true">PURCHASE</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+                            aria-selected="false">SALES</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- PURCHASE -->
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                        aria-labelledby="pills-home-tab">
+                        {% if voucherdetails %}
+                        <div class="table-responsive">
+                            <table id="" class="table table-bordered table-striped">
+                                <thead class="table-dark">
+                                    <tr class="d-flex">
+                                        <th class="col-2" scope="col">Company Name</th>
+                                        <th class="col-2" scope="col">Voucher Date</th>
+                                        <th class="col-2" scope="col">Voucher Number</th>
+                                        <th class="col-2" scope="col">Total W/O Gst</th>
+                                        <th class="col-2" scope="col">Total With Gst</th>
+                                        <th class="col-2" scope="col">SGST Amount</th>
+                                        <th class="col-2" scope="col">CGST Amount</th>
+                                        <th class="col-2" scope="col">GST %</th>
+                                        <th class="col-2" scope="col">Gst Amount Paid</th>
+                                        <th class="col-2" scope="col">Gst Amount Balance</th>
+                                        <th class="col-2" scope="col">Net Amount Paid</th>
+                                        <th class="col-2" scope="col">Net Amount Balance</th>
+                                        <!-- <th class="col-1" scope="col">Action</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for voucherdetail in voucherdetails %}
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                <li>{{i.VendorId.Company_Name}}</li>
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li>{{j.Info.VoucherDate}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li class="voucid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                    data-voucid="{{j.Info.id}}">{{j.Info.VoucherNo}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li>
+                                                    Rs.{{j.total|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li
+                                                    class="amount-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}">
+                                                    Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li>Rs.{{j.sgst_amount|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.voucher.all %}
+                                            <ul>
+                                                {% for j in i.amount.all %}
+                                                <li>Rs.{{j.cgst_amount|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in voucherdetail.quotation.order.Materials.all|slice:"1" %}
+                                            <div><b class="text-primary">GST :</b>{{i.Product_Name.GST|cut:"%"}}%</div>
+                                            <div><b class="text-primary">SGST & CGST
+                                                    :</b>Rs.{{i.Product_Name.GST|cut:"%"|div:"2"}}%</div>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in voucherdetail.purchase.entries.all %}
+                                                <li
+                                                    class="gstpaid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}">
+                                                    Rs.{{i.netAmount.GstPayyed|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in voucherdetail.purchase.entries.all %}
+                                                <li
+                                                    class="gstamount-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}">
+                                                    Rs.{{i.netAmount.GstBalance|floatformat:"0"}}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in voucherdetail.purchase.entries.all %}
+                                                <li
+                                                    class="netpaid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}">
+                                                    Rs.{{i.netAmount.AmountPayyed|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in voucherdetail.purchase.entries.all %}
+                                                <li>Rs.{{i.netAmount.Balance|floatformat:"0"}}
+                                                    {% if i.netAmount.Balance > '0' or i.netAmount.GstBalance > '0' %}
+                                                    <a class="ms-2 update_voucher_amount" href="#"
+                                                        data-venid="{{i.vendorId.id}}" data-venname="{{i.vendorId}}"
+                                                        data-vou="voucid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                        data-amount="amount-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                        data-gstamou="gstamount-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                        data-gstpid="gstpaid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                        data-netpid="netpaid-{{voucherdetail.id}}-{{voucherdetail.purchase.id}}-{{forloop.counter}}"
+                                                        data-agenid="{{active_agency.id}}"
+                                                        data-netid="{{i.netAmount.id}}"
+                                                        data-netbal="{{i.netAmount.Balance|floatformat:'0'}}">
+                                                        <i class="fa fa-edit text-warning"></i></a>
+                                                    {% endif %}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <!-- <td class="col-1">
+                                            {% for i in voucherdetail.purchase.entries.all|slice:"1" %}
+                                            <a href="#" class="text-success"><i class="fa fa-lg fa-eye"></i></a>
+                                            {% endfor %}
+                                        </td> -->
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class="d-flex">
+                                        <td class="col-2">Grand Total</td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2">
+                                            Rs.{{voutotalwogst.voucher__amount__total__sum|floatformat:'0'}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{voutotalwgst.voucher__amount__total_amount__sum|floatformat:'0'}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{sgstamount.voucher__amount__sgst_amount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{cgstamount.voucher__amount__cgst_amount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2">
+                                            Rs.{{totalgstpaid.purchase__entries__netAmount__GstPayyed__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalgstbalance.purchase__entries__netAmount__GstBalance__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalnetpaid.purchase__entries__netAmount__AmountPayyed__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalnetbalance.purchase__entries__netAmount__Balance__sum|floatformat:"0"}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="p-5 mt-4 border-0 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96"
+                                viewBox="0 0 172 172" style=" fill:#000000;">
+                                <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                                    stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray=""
+                                    stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none"
+                                    text-anchor="none" style="mix-blend-mode: normal">
+                                    <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                                    <g>
+                                        <path
+                                            d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                            fill="#e74c3c" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                            fill="#f5f5f5" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                            fill="#f5f5f5" fill-rule="evenodd"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <h5 class="fw-bold mt-3">No Details Available</h5>
+                        </div>
+                        {% endif %}
+                        <!-- pagination -->
+                        {% if voucherdetails.has_other_pages %}
+                        <nav class="mt-4" aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if voucherdetails.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                        href="?page={{voucherdetails.previous_page_number }}">Previous</a></li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                {% endif %} {% for i in voucherdetails.paginator.page_range %}
+                                {% if voucherdetails.number == i %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="?page={{i}}">{{i}}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                {% endif %} {% endfor %} {% if voucherdetails.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{voucherdetails.next_page_number }}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-disabled="true">Next</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+
+                        <!-- {% if entries %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered bankentriestable">
+                                <thead class="table-dark">
+                                    <tr class="d-flex">
+                                        <th class="col-2" scope="col">Name</th>
+                                        <th class="col-2" scope="col">Post Date</th>
+                                        <th class="col-2" scope="col">Value Date</th>
+                                        <th class="col-2" scope="col">Remitance Branch</th>
+                                        <th class="col-2" scope="col">Transaction Type</th>
+                                        <th class="col-2" scope="col">Transaction Amount</th>
+                                        <th class="col-2" scope="col">Cheque No</th>
+                                        <th class="col-2" scope="col">GST Type</th>
+                                        <th class="col-2" scope="col">Expence Type</th>
+                                        <th class="col-2" scope="col">Net Balance Amount</th>
+                                        <th class="col-2" scope="col">GST Balance Amount</th>
+                                        <th class="col-2" scope="col" width="9%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in entries %}
+                                    <tr class="d-flex bankentry{{entry.id}}">
+                                        <td class="col-2">{{entry.Name}}</td>
+                                        <td class="col-2">{{entry.Post_Date}}</td>
+                                        <td class="col-2">{{entry.Value_Date}}</td>
+                                        <td class="col-2">{{entry.Remitance_Branch}}</td>
+                                        <td class="col-2">{{entry.Transaction_Type}}</td>
+                                        <td class="col-2">Rs.{{entry.Transaction_Amount}}
+                                            {% if entry.Transaction_Type == 'Debit' %}
+                                            <i class="fa fa-long-arrow-up ms-2 text-danger"></i>
+                                            {% else %}
+                                            <i class="fa fa-long-arrow-down ms-2 text-success"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="col-2">{{entry.Cheque_No}}</td>
+                                        <td class="col-2">{{entry.GST_Type}}</td>
+                                        <td class="col-2">{{entry.Expence_Type}}</td>
+                                        <td class="col-2">Rs.{{entry.Net_Balance_Amount}}</td>
+                                        <td class="col-2">Rs.{{entry.GST_Balance_Amount}}</td>
+                                        <td class="col-2">
+                                            <a role="button" data-id="{{entry.id}}" class="bankentryview">
+                                                <i class="fa fa-lg fa-eye text-success"></i>
+                                            </a>
+                                            <a role="button" class="bankentryedit" data-id="{{entry.id}}">
+                                                <i class="fa fa-lg fa-edit ms-1 text-warning"></i>
+                                            </a>
+                                            <a role="button" data-id="{{entry.id}}" class="bankentrydelete">
+                                                <i class="fa fa-lg fa-trash ms-1 text-danger"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="p-5 mt-4 border-0 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96"
+                                viewBox="0 0 172 172" style=" fill:#000000;">
+                                <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                                    stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray=""
+                                    stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none"
+                                    text-anchor="none" style="mix-blend-mode: normal">
+                                    <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                                    <g>
+                                        <path
+                                            d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                            fill="#333333" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                            fill="#e74c3c" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                            fill="#f5f5f5" fill-rule="nonzero"></path>
+                                        <path
+                                            d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                            fill="#f5f5f5" fill-rule="evenodd"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <h5 class="fw-bold mt-3">No Details Available</h5>
+                        </div>
+                        {% endif %} -->
+                        <!-- pagination -->
+                        <!-- {% if entries.has_other_pages %}
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if entries.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                        href="?page={{entries.previous_page_number }}">Previous</a></li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                {% endif %} {% for i in entries.paginator.page_range %}
+                                {% if entries.number == i %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="?page={{i}}">{{i}}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                {% endif %} {% endfor %} {% if entries.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{entries.next_page_number }}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-disabled="true">Next</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} -->
+                    </div>
+                    <!-- SALES -->
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="table-responsive">
+                            {% if salesinvoices %}
+                            <table class="table table-bordered w-100 table-striped netsalestable">
+                                <thead class="table-dark">
+                                    <tr class="d-flex">
+                                        <th class="col-2" scope="col">Company Name</th>
+                                        <th class="col-2" scope="col" width="12%">Invoice Number</th>
+                                        <th class="col-2" scope="col" width="11%">Invoice Date</th>
+                                        <th class="col-2" scope="col">Total W/O Gst</th>
+                                        <th class="col-2" scope="col">Total Incl Gst</th>
+                                        <th class="col-2" scope="col">SGST</th>
+                                        <th class="col-2" scope="col">CGST</th>
+                                        <th class="col-2" scope="col">GST %</th>
+                                        <th class="col-2" scope="col">GST Amount Paid</th>
+                                        <th class="col-2" scope="col">GST Amount Balance</th>
+                                        <th class="col-2" scope="col">Net Amount Paid</th>
+                                        <th class="col-2" scope="col">Net Amount Balance</th>
+                                        <!-- <th class="col-1" scope="col">Action</th> -->
+                                    </tr>
+                                </thead> 
+                                <tbody>
+                                    {% for salesinvoice in salesinvoices %}
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                            {{i.customer.customerid.Company_Name}}
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.invoice.all %}
+                                                <li data-invid="{{i.id}}"
+                                                    class="sainvid-{{salesinvoice.id}}-{{salesinvoice.saleid.id}}-{{forloop.counter}}">
+                                                    {{i.InvoiceNo}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.invoice.all %}
+                                                <li>{{i.InvoiceDate}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>
+                                                    Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>
+                                                    Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% with sgst=gst.0.0|cut:"%"|div:2 %}
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li> Rs.{{sgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                                </li>
+                                                {% endfor %}
+                                                {% endwith %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% with cgst=gst.0.0|cut:"%"|div:2 %}
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                                </li>
+                                                {% endfor %}
+                                                {% endwith %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                            {% for j in i.orderid.Materials.all|slice:"1" %}
+                                            <div><b class="text-primary">GST : </b>{{j.Product_Name.GST|cut:"%"}}%</div>
+                                            <div><b class="text-primary">SGST & CGST
+                                                    : </b>{{j.Product_Name.GST|cut:"%"|div:2}}%</div>
+                                            {% endfor %}
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>
+                                                    Rs.{{i.netAmount.GstPayyed|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>Rs.{{i.netAmount.GstBalance|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>
+                                                    Rs.{{i.netAmount.AmountPayyed|floatformat:"0"}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="col-2">
+                                            <ul>
+                                                {% for i in salesinvoice.saleid.sales.all %}
+                                                <li>Rs.{{i.netAmount.Balance|floatformat:"0"}}
+                                                    <a class="ms-2 update_invoice_amount" href="#"
+                                                        data-cusid="{{i.customer.customerid.id}}"
+                                                        data-cusname="{{i.customer.customerid.Company_Name}}"
+                                                        data-inv="sainvid-{{salesinvoice.id}}-{{salesinvoice.saleid.id}}-{{forloop.counter}}"
+                                                        data-amount="{{i.netAmount.WithGSTNetTotalAmount|floatformat:'0'}}"
+                                                        data-gstamou="{{i.netAmount.GstBalance|floatformat:'0'}}"
+                                                        data-gstpid="{{i.netAmount.GstPayyed|floatformat:'0'}}"
+                                                        data-netpid="{{i.netAmount.AmountPayyed|floatformat:'0'}}"
+                                                        data-agenid="{{active_agency.id}}"
+                                                        data-netid="{{i.netAmount.id}}"
+                                                        data-netbal="{{i.netAmount.Balance|floatformat:'0'}}">
+                                                        <i class="fa fa-edit text-warning"></i></a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class="d-flex">
+                                        <td class="col-2">Grand Total</td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2">
+                                            Rs.{{totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:totalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                                        </td>
+                                        <td class="col-2"></td>
+                                        <td class="col-2">
+                                            Rs.{{totalgstamountpaid.saleid__sales__netAmount__GstBalance__sum|floatformat:'0'}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalgstamount.saleid__sales__netAmount__GstTotal__sum|floatformat:'0'}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalnetamountpaid.saleid__sales__netAmount__AmountPayyed__sum|floatformat:'0'}}
+                                        </td>
+                                        <td class="col-2">
+                                            Rs.{{totalnetamount.saleid__sales__netAmount__Balance__sum|floatformat:"0"}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <div class="p-5 mt-4 border-0 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96"
+                                    viewBox="0 0 172 172" style=" fill:#000000;">
+                                    <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                                        stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray=""
+                                        stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none"
+                                        text-anchor="none" style="mix-blend-mode: normal">
+                                        <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                                        <g>
+                                            <path
+                                                d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                                fill="#333333" fill-rule="nonzero"></path>
+                                            <path
+                                                d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                                fill="#333333" fill-rule="nonzero"></path>
+                                            <path
+                                                d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                                fill="#333333" fill-rule="nonzero"></path>
+                                            <path
+                                                d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                                fill="#e74c3c" fill-rule="nonzero"></path>
+                                            <path
+                                                d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                                fill="#f5f5f5" fill-rule="nonzero"></path>
+                                            <path
+                                                d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                                fill="#f5f5f5" fill-rule="evenodd"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <h5 class="fw-bold mt-3">No Details Available</h5>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- pagination -->
+                        {% if salesinvoices.has_other_pages %}
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if salesinvoices.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                        href="?page={{salesinvoices.previous_page_number }}">Previous</a></li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                {% endif %} {% for i in salesinvoices.paginator.page_range %}
+                                {% if salesinvoices.number == i %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="?page={{i}}">{{i}}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                {% endif %} {% endfor %} {% if salesinvoices.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{salesinvoices.next_page_number }}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-disabled="true">Next</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Update Vendor Amount Modal -->
+<div class="modal fade" id="customerstateent" tabindex="-1" aria-labelledby="customerstateentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerstateentLabel">Statement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="printstatement">
+                    <div class="text-center mb-2">
+                        <h5 class="fw-bold mb-1">{{active_agency.Name}}</h5>
+                        <div>{{active_agency.Address}}, {{active_agency.City}}-{{active_agency.Zip}}</div>
+                        <div>{{active_agency.State}}, {{active_agency.Country}}</div>
+                        <div><b>Contact : </b>
+                        {% for i in active_agency.Phone.all %}
+                        {{i.Phone}},
+                        {% endfor %}
+                        </div>
+                    </div>
+                    <div class="customer_details">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Bank Entry Modal -->
+<div class="modal fade" id="BankEntryModal" tabindex="-1" aria-labelledby="BankEntryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="BankEntryModalLabel">Add Bank Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addbankentryform" novalidate>
+                    <input type="hidden" class="Name" value="">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="mb-2">
+                                <label for="Post Date" class="form-label">Post Date</label>
+                                <input required type="date" class="form-control Post_Date" placeholder="Post Date">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-2">
+                                <label for="Value Date" class="form-label">Value Date</label>
+                                <input required type="date" class="form-control Value_Date" placeholder="Value Date">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-2">
+                                <label for="Gst Type" class="form-label">Gst Type</label>
+                                <select required class="form-select GST_Type" aria-label="Default select example">
+                                    <option selected disabled value="">Select Type</option>
+                                    <option value="Registerd">Registerd</option>
+                                    <option value="Un Registerd">Un Registerd</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="mb-2">
+                                <label for="Cheque No" class="form-label">Cheque No</label>
+                                <input required type="text" class="form-control Cheque_No" id="Cheque No"
+                                    placeholder="Cheque No">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <label for="Remitance Branch" class="form-label">Remitance Branch</label>
+                                <input required type="text" class="form-control Remitance_Branch"
+                                    placeholder="Remitance Branch">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Remarks" class="form-label">Remarks</label>
+                                <input type="text" class="form-control Remarks" placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-2">
+                                <label for="Mode of Payment" class="form-label">Mode of Payment</label>
+                                <select required class="form-select Mode_of_Payment" aria-label="Default select example">
+                                    <option selected disabled value="">Mode of Payment</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Card">Card</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Net Banking">Net Banking</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label for="Net Amount Paid" class="form-label">Net Amount Paid</label>
+                                <input required type="number" max="" class="form-control Net_Amount_Paid"
+                                    placeholder="Net Amount Paid">
+                                <div class="invalid-feedback net_feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="Amount" class="form-label">GST Amount Paid</label>
+                            <input required type="number" max="" class="form-control GST_Amount_Paid"
+                                placeholder="Amount">
+                            <div class="invalid-feedback gst_feedback">
+                                Rrequired Field
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <label>Description</label>
+                        <textarea class="form-control Description" name="" id="" rows="2"
+                            placeholder="Description"></textarea>
+                    </div>
+                    <div class="mt-3 text-end">
+                        <button type="submit" class="btn btn-primary bankentrysubmitbtn">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #pills-tab .active {
+        background-color: #DC3545;
+        color: white;
+    }
+</style>
+{% endblock content %} {% block script %}
+<script>
+    var csrftoken = $('meta[name="csrf-token"]').attr('content');
+
+
+    $(document).ready(function () {
+        $('.bankMenu').addClass('active')
+    });
+    // Calander Search Validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    /////// PURCHASE //////
+    // Add bank entry and update purchase net amount
+    $('.update_voucher_amount').click(function (event) {
+        event.preventDefault()
+        $('#BankEntryModal').modal('show');
+        let vendorId = $(this).attr('data-venid');
+        let vendorName = $(this).attr('data-venname');
+        let agencyId = $(this).attr('data-agenid');
+        let voucherId = $(this).attr('data-vou');
+        let total_amount_wgst = $(this).attr('data-amount');
+        let total_gst_bal = $(this).attr('data-gstamou');
+        let total_net_bal = $(this).attr('data-netbal');
+        let net_amount_id = $(this).attr('data-netid');
+        let net_amount_paid = $(this).attr('data-netpid')
+        let gst_amount_paid = $(this).attr('data-gstpid')
+
+        gst_amount_paid = $('.' + gst_amount_paid).text().split('Rs.')[1];
+        net_amount_paid = $('.' + net_amount_paid).text().split('Rs.')[1];
+        total_amount_wgst = $('.' + total_amount_wgst).text().split('Rs.')[1];
+        total_gst_bal = $('.' + total_gst_bal).text().split('Rs.')[1];
+        voucherId = $('.' + voucherId).attr('data-voucid');
+
+
+        // set max values for inputs
+        $('.Net_Amount_Paid').attr('max', total_net_bal);
+        $('.net_feedback').text(`Value must be less than equal to Rs.${total_net_bal}`);
+        $('.GST_Amount_Paid').attr('max', Number(total_gst_bal));
+        $('.gst_feedback').text(`Value must be less than equal to Rs.${total_gst_bal}`);
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('#addbankentryform')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        if (form.checkValidity()) {
+                            event.preventDefault()
+                            if (!event.detail || event.detail == 1) {
+                                $('.bankentrysubmitbtn').prop('disabled', true)
+                                var params = {
+                                    'agency': agencyId,
+                                    'voucherId': voucherId,
+                                    'vendorId': vendorId,
+                                    'Post_Date': $('.Post_Date').val(),
+                                    'Value_Date': $('.Value_Date').val(),
+                                    'Name': vendorName,
+                                    'Remitance_Branch': $('.Remitance_Branch').val(),
+                                    'Total_Amount': total_amount_wgst,
+                                    'Cheque_No': $('.Cheque_No').val(),
+                                    'GST_Type': $('.GST_Type').val(),
+                                    'Person_Type': 'vendor',
+                                    'Transaction_Type': 'debit',
+                                    "Payment_Mode": $('.Mode_of_Payment').val(),
+                                    "Net_Balance_Paid": $('.Net_Amount_Paid').val(),
+                                    "GST_Balance_Paid": $('.GST_Amount_Paid').val(),
+                                    'Remarks': $('.Remarks').val(),
+                                    'Description': $('.Description').val(),
+                                    'csrfmiddlewaretoken': csrftoken,
+                                }
+                                $.post('/post-api/bank-entries/', params, function (data, status) {
+                                    let net_params = {
+                                        'AmountPayyed': Number(data.Net_Balance_Paid) + Number(net_amount_paid),
+                                        'Balance': total_net_bal - Number(data.Net_Balance_Paid),
+                                        'GstPayyed': Number(data.GST_Balance_Paid) + Number(gst_amount_paid),
+                                        'GstBalance': total_gst_bal - Number(data.GST_Balance_Paid),
+                                    }
+                                    Update_Function(`/post-api/purchase-net-amount/${net_amount_id}/`, net_params)
+                                    event.stopImmediatePropagation()
+                                    location.reload()
+                                })
+                            }
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+    });
+
+
+    // Delete Bank Entry
+    function DeleteBankEntry() {
+        $('.bankentrydelete').click(function (event) {
+            event.preventDefault()
+            var bankid = $(this).attr('data-id')
+            if (confirm("Are You Sure Want to Delete")) {
+                var params = {
+                    'id': bankid
+                }
+                $.ajax({
+                    url: "/post-api/bank-entries/" + bankid,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function (data, status) {
+                        $('.bankentry' + bankid).remove()
+                    }
+                })
+            }
+        })
+    }
+    DeleteBankEntry();
+
+
+    ////// SALES //////
+    $('.update_invoice_amount').click(function (event) {
+        event.preventDefault()
+        $('#BankEntryModal').modal('show');
+        let customerId = $(this).attr('data-cusid');
+        let customerName = $(this).attr('data-cusname');
+        let agencyId = $(this).attr('data-agenid');
+        let invoiceId = $(this).attr('data-inv');
+        let total_amount_wgst = $(this).attr('data-amount');
+        let total_gst_bal = $(this).attr('data-gstamou');
+        let total_net_bal = $(this).attr('data-netbal');
+        let net_amount_id = $(this).attr('data-netid');
+        let net_amount_paid = $(this).attr('data-netpid')
+        let gst_amount_paid = $(this).attr('data-gstpid')
+
+        invoiceId = $('.' + invoiceId).attr('data-invid');
+
+        // set max values for inputs
+        $('.Net_Amount_Paid').attr('max', total_net_bal);
+        $('.net_feedback').text(`Value must be less than equal to Rs.${total_net_bal}`);
+        $('.GST_Amount_Paid').attr('max', Number(total_gst_bal));
+        $('.gst_feedback').text(`Value must be less than equal to Rs.${total_gst_bal}`);
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('#addbankentryform')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        if (form.checkValidity()) {
+                            event.preventDefault()
+                            var params = {
+                                'agency': agencyId,
+                                'InvoiceId': invoiceId,
+                                'CustomerId': customerId,
+                                'Post_Date': $('.Post_Date').val(),
+                                'Value_Date': $('.Value_Date').val(),
+                                'Name': customerName,
+                                'Remitance_Branch': $('.Remitance_Branch').val(),
+                                'Total_Amount': total_amount_wgst,
+                                'Cheque_No': $('.Cheque_No').val(),
+                                'GST_Type': $('.GST_Type').val(),
+                                'Person_Type': 'customer',
+                                'Transaction_Type': 'debit',
+                                "Payment_Mode": $('.Mode_of_Payment').val(),
+                                "Net_Balance_Paid": $('.Net_Amount_Paid').val(),
+                                "GST_Balance_Paid": $('.GST_Amount_Paid').val(),
+                                'Remarks': $('.Remarks').val(),
+                                'Description': $('.Description').val(),
+                                'csrfmiddlewaretoken': csrftoken,
+                            }
+                            $.post('/post-api/bank-entries/', params, function (data, status) {
+                                let net_params = {
+                                    'AmountPayyed': Number(data.Net_Balance_Paid) + Number(net_amount_paid),
+                                    'Balance': total_net_bal - Number(data.Net_Balance_Paid),
+                                    'GstPayyed': Number(data.GST_Balance_Paid) + Number(gst_amount_paid),
+                                    'GstBalance': total_gst_bal - Number(data.GST_Balance_Paid),
+                                }
+                                Update_Function(`/post-api/purchase-net-amount/${net_amount_id}/`, net_params)
+                                location.reload()
+                                event.stopImmediatePropagation()
+                            })
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+    });
+
+    function Update_Function(action_url, params) {
+        $.ajax({
+            type: 'PATCH',
+            url: action_url,
+            data: JSON.stringify(params),
+            processData: false,
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            success: function (response) {
+                // console.log(response)
+            },
+            error: function (response) {
+                // console.log(response);
+            }
+        });
+    }
+
+    // bank entry view functionality
+    $('.bank-sales-view').click(function (event) {
+        event.preventDefault()
+        $('#customerstateent').modal('show')
+        $('.customer_details').html(``)
+    })
+</script>
+{% endblock script %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - Customers
+{% endblock %}
+{% block content %}
+
+
+<!-- contact-us starts here -->
+<section class="services">
+    <div class="row px-lg-5 px-4 mb-4">
+        <div class="col-lg-6 my-auto px-0 px-lg-2">
+            <h1 class="fw-bold mb-4">Contact Us</h1>
+            <p>Reach Us For Your Tax Filing & Accounting Needs</p> 
+            <ul class="list-group">
+                <li class="list-unstyled mb-3"><i class="fa fa-lg text-blue fa-phone me-2"></i> Phone - <a class="text-blue text-decoration-none" href="tel:416-289-2000">416-289-2000</a></li>
+                <li class="list-unstyled mb-3"><i class="fa fa-lg text-blue fa-fax me-2"></i> Fax - <a class="text-blue text-decoration-none" href="fax:416-439-7500">416-439-7500</a></li>
+            </ul>
+            <p class="mb-3"><i class="fa fa-lg text-blue fa-map-marker me-2"></i> Our Locations </p>
+            <ul>
+                <li class="list-unstyled mb-2">
+                    <a class="text-blue text-decoration-none" href="https://g.co/kgs/xcoZhH" target="_blank">3495 Lawrence Ave E, Scarborough, ON M1H 1B3, Canada</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6 order-first order-lg-last mb-4 mb-lg-0 px-0 px-lg-2">
+            <img src="https://static.wixstatic.com/media/nsplsh_8763303d0ef14aafbd3f52f3a2230afb~mv2.jpg/v1/fill/w_656,h_570,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/Image%20by%20Julian%20Hochgesang.jpg" class="w-100" alt="">
+        </div>
+    </div>
+</section>
+<!-- contact-us ends here -->
+
+<div class="container-fluid">
+    <div class="row mb-4 pt-lg-5">
+        <div class="col-12 p-0">
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11526.918517870037!2d-79.2285656!3d43.757711!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x8c9c047b8aecbfa1!2sBarosa%20Tax%20and%20Accounting%20Services!5e0!3m2!1sen!2sus!4v1666133780754!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+       </div>
+    </div>
+</div>
+
+<!-- contact-us starts here -->
+<section class="contact-us mb-4 mt-3 py-lg-5">
+    <div class="container-fluid" style="display:none">
+        <div class="row px-4">
+            <div class="col-md-6 mx-auto">
+                <h2 class="h1 fw-bold">Fill In Your Info!</h2>
+                <form action="" class="mt-3">
+                    <div class="row">
+                        <div class="col-6 mb-3 form-group">
+                            <label class="small mb-1" for="FirstName">First Name</label>
+                            <input type="text" class="form-control" id="FirstName" name="FirstName">
+                        </div>
+                        <div class="col-6 mb-3 form-group">
+                            <label class="small mb-1" for="LastName">Last Name</label>
+                            <input type="text" class="form-control" id="LastName" name="LastName">
+                        </div>
+                        <div class="col-6 mb-3 form-group">
+                            <label class="small mb-1" for="Email">Email</label>
+                            <input type="email" class="form-control" id="Email" name="Email">
+                        </div>
+                        <div class="col-6 mb-3 form-group">
+                            <label class="small mb-1" for="Phone">Phone</label>
+                            <input type="text" class="form-control" id="Phone" name="Phone">
+                        </div>
+                        <div class="col-12 mb-3 form-group">
+                            <label class="small mb-1" for="Service">Select a Service</label>
+                            <select class="form-control" id="" required="">
+                                <option selected="" value="" disabled="" class="">Choose one</option>
+                                <option value="Personal Tax" class="">Personal Tax</option>
+                                <option value="Self Employement Tax Filing" class="">Self Employement Tax Filing</option>
+                                <option value="Corporate Tax" class="">Corporate Tax</option>
+                                <option value="Business Incorporation Services" class="">Business Incorporation Services</option>
+                                <option value="Additional Corporate Services" class="">Additional Corporate Services</option>
+                                <option value="US Tax" class="">US Tax</option>
+                                <option value="Business Advisory" class="">Business Advisory</option>
+                                <option value="Accounting and Book Keeping" class="">Accounting and Book Keeping</option>
+                                <option value="Others" class="">Others</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3 form-group">
+                            <label class="small mb-1" for="Message">Message</label>
+                            <textarea class="form-control" id="Message" name="Message"></textarea>
+                        </div>
+                        <div class="col-12 my-2 form-group">
+                            <input type="submit" class="btn btn-danger float-end" id="" value="Submit">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- contact-us ends here -->
+
+<script>
+    $('.contactusmenu').addClass('active')
+</script>
+{% endblock %}

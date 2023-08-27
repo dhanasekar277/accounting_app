@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - About Us
+{% endblock %}
+{% block content %}
+{% load static %}
+
+<!-- about us starts here -->
+<section class="about_us">
+    <div class="row px-lg-5 px-4">
+        <div class="col-lg-6 my-auto px-0 px-lg-2">
+            <h1 class="fw-bold mb-4">About BarosaTax</h1>
+            <p>Barosatax is a Canadian owned Tax and Accounting firm in Toronto, with dedicated services for Individuals and Businesses.</p>
+            <p>Ever-Changing Tax laws determine Individuals Tax Obligations and their benefits. We are geared up with the state-of-the-art technology and the updated software as per the specifications of CRA. Hence, we deliver satisfactory results by optimizing the parameters to attain the maximum returns from the Tax filing. Our expertise in various Industry verticals and the tax obligations have clearly given us a cutting edge for enhanced and effective results.</p>
+        </div>
+        <div class="col-lg-6 order-first order-lg-last mb-4 mb-lg-0 px-0 px-lg-2">
+            <img src="{% static 'img/Business_Woman_Smiling.jpg' %}" class="w-100" alt="">
+        </div>
+    </div>
+</section>
+<!-- about us ends here -->
+
+
+
+
+<!-- stand_out starts here -->
+<section class="stand_out my-4 py-lg-5 px-lg-5 px-4">
+    <div class="row">
+        <div class="col-lg-3">
+            <h2 class="h1 fw-bold">Why We Stand Out in the Crowd</h2>
+        </div>
+        <div class="col-lg-3">
+            <p>We are the most sought out consultants for small business in our area and all across Greater Toronto. We help small business with tailor-made solutions for their tax filing requirements.</p>    
+        </div>
+        <div class="col-lg-3">
+            <p>Our thousands of repeat clients are proof of our performance and their trust bestowed upon us.</p>    
+        </div>
+        <div class="col-lg-3">
+            <p>We are known for our competitive prices and quality services.</p>    
+        </div>
+    </div>
+</section>
+<!-- stand_out ends here -->
+
+
+
+{% include 'snippets/testimonials.html' %}
+{% include 'snippets/call_back.html' %}
+
+
+<hr>
+<script>
+    $('.aboutusmenu').addClass('active')
+</script>
+{% endblock %}

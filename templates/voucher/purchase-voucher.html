@@ -1,0 +1,524 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Purchase Voucher
+                <div class="btn-group float-end" role="group" aria-label="Basic example">
+                    <a href="{% url 'purchase' %}" class="btn btn-sm btn-danger">Purchase</a>
+                </div>
+            </h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <a href="{% url 'purchase-voucher-add' %}" class="btn btn-sm btn-primary float-end " id="agency"><i
+                        class="fa fa-plus me-1"></i> Add</a>
+                <table id="example" class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col">Voucher</th>
+                            <th scope="col">Account Details</th>
+                            <th scope="col">Materials</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div><b>Date : </b><span>19-12-2021</span></div>
+                                <div><b>No : </b><span>Mathi.urd/2021</span></div>
+                                <div><b>SL No : </b><span>2</span></div>
+                                <div><b>Debit No : </b><span>241</span></div>
+                            </td>
+                            <td>
+                                <div><b>Name : </b><span>K.S.Ashwin</span><a href="" class="ms-2"><i
+                                            class="fa fa-phone"></i></a></div>
+                                <div><b>A/C No : </b><span>98237849032</span></div>
+                                <div><b>Bank : </b><span>ICIC Bank</span><b class="ms-2">Branch :
+                                    </b><span>Velachery</span></div>
+                                <div><b>IFSC : </b><span>ICIC0001</span></div>
+                            </td>
+                            <td>
+
+                                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{{i.id}}" class="me-2 text-success add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#quotation" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="{{i.id}}" class="me-2 text-warning add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#add_agency" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                                <a href="{{i.id}}" class="text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div><b>Date : </b><span>19-12-2021</span></div>
+                                <div><b>No : </b><span>Mathi.urd/2021</span></div>
+                                <div><b>SL No : </b><span>2</span></div>
+                                <div><b>Debit No : </b><span>241</span></div>
+                            </td>
+                            <td>
+                                <div><b>Name : </b><span>K.S.Ashwin</span><a href="" class="ms-2"><i
+                                            class="fa fa-phone"></i></a></div>
+                                <div><b>A/C No : </b><span>98237849032</span></div>
+                                <div><b>Bank : </b><span>ICIC Bank</span><b class="ms-2">Branch :
+                                    </b><span>Velachery</span></div>
+                                <div><b>IFSC : </b><span>ICIC0001</span></div>
+                            </td>
+                            <td>
+
+                                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{{i.id}}" class="me-2 text-success add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#quotation" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="{{i.id}}" class="me-2 text-warning add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#add_agency" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                                <a href="{{i.id}}" class="text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div><b>Date : </b><span>19-12-2021</span></div>
+                                <div><b>No : </b><span>Mathi.urd/2021</span></div>
+                                <div><b>SL No : </b><span>2</span></div>
+                                <div><b>Debit No : </b><span>241</span></div>
+                            </td>
+                            <td>
+                                <div><b>Name : </b><span>K.S.Ashwin</span><a href="" class="ms-2"><i
+                                            class="fa fa-phone"></i></a></div>
+                                <div><b>A/C No : </b><span>98237849032</span></div>
+                                <div><b>Bank : </b><span>ICIC Bank</span><b class="ms-2">Branch :
+                                    </b><span>Velachery</span></div>
+                                <div><b>IFSC : </b><span>ICIC0001</span></div>
+                            </td>
+                            <td>
+
+                                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div><b>Materials Name</b> <span class="ms-2 text-blue">Sales Inv
+                                                    No</span><span class="float-end">AT SITE</span></div>
+                                            <div>BLK <span class="text-danger"><i class="fa fa-calendar ms-2"
+                                                        aria-hidden="true"></i> : 09-11-21</span> </div>
+                                            <div><i class="fa fa-truck" aria-hidden="true"></i> : TN42378934 <b
+                                                    class="ms-2">C.DC</b> : <span>2737</span></div>
+                                            <div><b>MT</b> : <span>1475</span><b class="ms-2">Rate</b> :
+                                                <span>1475</span><b class="ms-2">Total</b> : <span>62,372</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{{i.id}}" class="me-2 text-success add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#quotation" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="{{i.id}}" class="me-2 text-warning add_agency" data-bs-toggle="modal"
+                                    data-bs-target="#add_agency" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                                <a href="{{i.id}}" class="text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase Voucher Modal -->
+<div class="modal fade" id="quotation" tabindex="-1" aria-labelledby="quotationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg ">
+        <div class="modal-content">
+            <div class="modal-body" id="final_quotation">
+                <table class="table table-sm text-center table-bordered w-100 mb-0">
+                    <thead>
+                        <tr>
+                            <th>PAYMENT VOUCHER - 2021 TO 2022</th>
+                        </tr>
+                        <tr class="border-bottom-0">
+                            <th>MATHI AGENCIES</th>
+                        </tr>
+                    </thead>
+                </table>
+
+                <table class="table table-sm table-bordered w-100 mb-0">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" class="fw-bold">ACCOUNT DETAILS</td>
+                            <td class="fw-bold">VOUCHER DATE</td>
+                            <td>16-11-2021</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">NAME</td>
+                            <td>K.S.ASHWIN</td>
+                            <td class="fw-bold">VOUCHER NO</td>
+                            <td>Mathi.urs.2021/nov-18</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">A/C NO</td>
+                            <td>00032473248</td>
+                            <td class="fw-bold">VOUCHER SL NO</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">BANK</td>
+                            <td>ICICI</td>
+                            <td class="fw-bold">DEBIT VOU NO</td>
+                            <td>241</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">BRANCH</td>
+                            <td>ALWARPET</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">IFSC CODE</td>
+                            <td>ICIC000032423</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="border-bottom-0">
+                            <td class="fw-bold">CELL</td>
+                            <td>ICIC000032423</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <table class="table table-sm mb-0 table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>S.NO</th>
+                            <th>DATE</th>
+                            <th>COM NAME</th>
+                            <th>SITE</th>
+                            <th>MATERIAL</th>
+                            <th>CDC</th>
+                            <th>VEHICLE NO</th>
+                            <th>MT</th>
+                            <th>RATE</th>
+                            <th>AMOUNT</th>
+                            <th>SALES IN NO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>20-12-21</td>
+                            <td>Sukra</td>
+                            <td>At Site</td>
+                            <td>12MM material</td>
+                            <td>982348734</td>
+                            <td>324327893</td>
+                            <td>213123</td>
+                            <td>2,345</td>
+                            <td>3,000</td>
+                            <td>2348723498</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>20-12-21</td>
+                            <td>Sukra</td>
+                            <td>At Site</td>
+                            <td>12MM material</td>
+                            <td>982348734</td>
+                            <td>324327893</td>
+                            <td>213123</td>
+                            <td>2,345</td>
+                            <td>3,000</td>
+                            <td>2348723498</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>20-12-21</td>
+                            <td>Sukra</td>
+                            <td>At Site</td>
+                            <td>12MM material</td>
+                            <td>982348734</td>
+                            <td>324327893</td>
+                            <td>213123</td>
+                            <td>2,345</td>
+                            <td>3,000</td>
+                            <td>2348723498</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-sm table-bordered w-100 mb-0">
+                    <thead>
+                        <tr class="border-top-0">
+                            <th>PREPARED</th>
+                            <th>APPROVED BY</th>
+                            <th>PASSED BY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><br><br></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-primary" onclick="printDiv('final_quotation')"><i
+                        class="fa fa-print me-2"></i>Print</button>
+                <button type="button" class="btn btn-sm btn-danger quo_download"><i
+                        class="fa fa-download me-2"></i>Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete Modal for admin -->
+<div class="modal fade" id="deleteMethod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2 bg-danger text-white">
+                <h5 class="modal-title fw-bold small" id="exampleModalLabel">DELETE PRODUCT</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure you want to delete ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-col="id" data-url="vendors" data-id=""
+                    class="btn btn-danger dlt btn-sm">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        $('.purchaseMenu').addClass('active')
+        var base = 'http://127.0.0.1:8000/'
+        var url = 'http://127.0.0.1:8000/api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        $('#example').DataTable()
+
+        // print option using quotations
+        $('#print').click(function () {
+            $("#quotations").printThis({
+                debug: false,
+                importCSS: true,
+                importStyle: true,
+                printContainer: true,
+                loadCSS: "../css/style.css",
+                pageTitle: false,
+                removeInline: false,
+                printDelay: 200,
+                header: false,
+                formValues: true
+            });
+        })
+
+
+
+        // delete method
+        var deleteProduct = document.getElementById('deleteMethod')
+        deleteProduct.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var id = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            $('#deleteMethod .dlt').attr('data-id', id)
+            DELETEMethod()
+        })
+
+        function DELETEMethod() {
+            $('#deleteMethod .dlt').click(function () {
+                var customurl = $(this).attr('data-url')
+                var key = $(this).attr('data-col')
+                var value = $(this).attr('data-id')
+                var baseurl = url + customurl + '/' + value
+                var params = { [key]: value };
+                $.ajax({
+                    type: "DELETE",
+                    url: baseurl,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                });
+                $('.row_' + value).remove()
+                $('#deleteMethod').modal('toggle');
+            })
+        }
+
+
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var _obj = JSON.stringify({ 'id': $(this).attr('href'), 'model': $(this).attr('data-url') });
+                var params = {
+                    "Notifications": _obj,
+                    'csrfmiddlewaretoken': csrftoken,
+                    'Types': $(this).attr('data-method'),
+                    'User': $('#userid').html()
+                }
+                // console.log(params)
+                $.post(base + 'post-api/notifications/', params, function (req, res) {
+                    // console.log(req)
+                    // console.log(res)
+                })
+
+            }
+        })
+
+    })
+</script>
+{% endblock %})

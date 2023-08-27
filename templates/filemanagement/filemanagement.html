@@ -1,0 +1,520 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <div>
+        <h5 class="my-3 title"><b>File Management</b>
+            <span class="float-end">
+                <a href="" class="file" data-bs-toggle="modal" data-bs-target="#uploadfile"><i
+                        class="fa fa-file"></i></a>
+                <a href="" class="createfoldermodel" data-bs-toggle="modal" data-bs-target="#createfolder"><i
+                        class="fa fa-folder"></i></a>
+            </span>
+        </h5>
+        <div class="root_access">
+            <a href="">Home</a>
+            <i class="fa fa-chevron-right fa-12 mx-1"></i>
+        </div>
+    </div>
+
+    <div class="row mt-2 dir_list">
+
+        <!-- <form class="needs-validation" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-group files">
+                <label class="h5 fw-bold text-secondary">Upload Your File Here</label>
+                <input type="file" name="filemanage" class="form-control" multiple required>
+            </div>
+            <div class="invalid-feedback">
+                Upload Your Files !
+            </div>
+            <div class="col-12 text-center mt-3">
+                <button class="btn btn-primary" type="submit">Upload</button>
+            </div>
+        </form>
+        <div class="row mt-4 mx-0 px-0">
+            {% for i in filedata %}
+            <div class="col-2">
+                {% if i.File|make_list|slice:"-3:"|cut:"'"|cut:","|cut:"["|cut:"]"|cut:" " == 'xslx' %}
+                <img src="https://icons.iconarchive.com/icons/carlosjj/microsoft-office-2013/256/Excel-icon.png" alt=""
+                    width="160" height="160">
+                {% elif i.File|make_list|slice:"-3:"|cut:"'"|cut:","|cut:"["|cut:"]"|cut:" " == 'zip' %}
+                <img src="https://www.cedarville.edu/images/default-source/insights/zip-file-icon.jpg?sfvrsn=d34468_0"
+                    alt="" width="160" height="160">
+                {% elif i.File|make_list|slice:"-3:"|cut:"'"|cut:","|cut:"["|cut:"]"|cut:" " == 'docs' %}
+                <img src="https://findicons.com/files/icons/2795/office_2013_hd/2000/word.png" alt="" width="160"
+                    height="160">
+                {% elif i.File|make_list|slice:"-3:"|cut:"'"|cut:","|cut:"["|cut:"]"|cut:" " == 'pdf' %}
+                <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="" width="160" height="160">
+                {% elif i.File|make_list|slice:"-3:"|cut:"'"|cut:","|cut:"["|cut:"]"|cut:" " == 'sql' %}
+                <img src="https://previews.123rf.com/images/dxinerz/dxinerz1509/dxinerz150901435/45612332-sql-file-icon.jpg"
+                    alt="" width="160" height="160">
+                {% else %}
+                <img src="../../media/{{i.File}}" width="160" height="160" alt="">
+                {%endif%}
+                <p class="mt-1 small text-center">{{i.File|cut:"files/"}}</p>
+            </div>
+            {% endfor %}
+        </div> -->
+    </div>
+</div>
+</div>
+
+<!-- Create folder -->
+<div class="modal fade" id="createfolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 py-2">
+                <h6 class="modal-title fw-bold" id="exampleModalLabel">Create Folder</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <input type="hidden" name="folder-name" id="folder_path">
+                <input type="text" placeholder="Folder Name" id="folder_name" class="form-control">
+            </div>
+            <div class="modal-footer border-top-0 py-2">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i
+                        class="fa fa-close"></i></button>
+                <button type="button" class="btn btn-sm btn-primary savefolder">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Upload File -->
+<div class="modal fade" id="uploadfile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="upload-file" class="post-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header border-bottom-0 py-2">
+                    <h6 class="modal-title fw-bold" id="exampleModalLabel">Upload File</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body mt-2 py-0">
+                    <input type="hidden" placeholder="Folder Name" name="file_path" id="file_path" class="form-control">
+                    <input type="file" placeholder="Folder Name" name="file_name" id="folder_name" class="form-control"
+                        required>
+                </div>
+                <div class="modal-footer border-top-0 py-2">
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i
+                            class="fa fa-close"></i></button>
+                    <button type="submit" class="btn btn-sm btn-primary uploadFile">Upload</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .title .createfoldermodel {
+        background: #ececec;
+        padding: 2px 5px;
+        border-radius: 5px;
+        margin-left: .5rem;
+    }
+
+    .title .file {
+        background: #ececec;
+        padding: 3.8px 8px;
+        border-radius: 5px;
+        margin-left: 1rem;
+        font-size: 16px;
+        position: relative;
+        top: -1px;
+    }
+
+    .dir_list .card .images img {
+        width: 35%;
+        background: #f3f3f3;
+        padding: 5px;
+        height: 50px;
+        border-radius: 5px;
+    }
+
+    .dir_list .card .fa-trash {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .dir_list .card small {
+        color: #afafaf !important;
+    }
+
+    .dir_list .card small {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+</style>
+<!-- <style>
+    .files input {
+        outline: 2px dashed #92b0b3;
+        outline-offset: -10px;
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        padding: 120px 0px 85px 35%;
+        text-align: center !important;
+        margin: 0;
+        width: 100% !important;
+    }
+
+    .files input:focus {
+        outline: 2px dashed #92b0b3;
+        outline-offset: -10px;
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        border: 1px solid #92b0b3;
+    }
+
+    .files {
+        position: relative
+    }
+
+    .files:after {
+        pointer-events: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 50px;
+        right: 0;
+        height: 56px;
+        content: "";
+        background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
+        display: block;
+        margin: 0 auto;
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+
+    .color input {
+        background-color: #f1f1f1;
+    }
+
+    .files:before {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        pointer-events: none;
+        width: 100%;
+        right: 0;
+        height: 57px;
+        content: " or drag it here. ";
+        display: block;
+        margin: 0 auto;
+        color: #2ea591;
+        font-weight: 600;
+        text-transform: capitalize;
+        text-align: center;
+    }
+</style> -->
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.fileMenu').addClass('active')
+    })
+    var root_access = ['Home']
+    var folderName = 'file-manager'
+
+    var folder_list = GetData(`${base}folders`)
+    var dirName = folder_list?.file_name
+    var dirLoc = folder_list?.dir
+    // console.log(dirName)
+
+    var file_formats = [
+        { name: 'zip', file: 'https://www.computerhope.com/jargon/z/zip.png' },
+        { name: 'jpg', file: '' },
+        { name: 'jpeg', file: '' },
+        { name: 'png', file: '' },
+        { name: 'pdf', file: 'https://store-images.s-microsoft.com/image/apps.34961.13510798887621962.47b62c4c-a0c6-4e3c-87bb-509317d9c364.a6354b48-c68a-47fa-b69e-4cb592d42ffc?mode=scale&q=90&h=300&w=300' },
+        { name: 'sql', file: 'https://hackr.io/tutorials/sql/logo-sql.svg?ver=1555309685' },
+        { name: 'xlsx', file: 'https://windowsfileviewer.com/images/types/xlsx.png' },
+        { name: 'docx', file: 'https://play-lh.googleusercontent.com/l-JVRfLKIS3VhM-iJ_4W_-kzCdd2uwTWr5eNtBiejB5yZNPqdUWxgzcwwqAAeAtxCuo' }
+    ]
+
+    for (var i = 0; i < dirName.length; i++) {
+        // console.log(dirName[i])
+        var dir = dirName[i].split('.').pop()
+        var dir_check = file_formats.filter(p => p.name == dir)
+        // console.log(dir_check)
+        var dir_img = dir_check[0]?.file
+        // console.log(dir)
+
+        dir_check = dir_check.length
+        if (dir_check == 0) {
+            $('.dir_list').append(`<div class="col-2 mb-3 px-2 folder pointer" folder_name="${dirName[i]}"><div class="card p-2 pb-1 small" title="${dirName[i]}"><div class="images mb-1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/OneDrive_Folder_Icon.svg/2048px-OneDrive_Folder_Icon.svg.png" ></div>${dirName[i]}</div></div>`)
+        } else {
+            if (dir == 'jpeg' || dir == 'jpg' || dir == 'png') {
+                dir_img = dirLoc[i]
+                // console.log(dir_img)
+                dir_img = dir_img.split('agencies/')[1]
+                dir_img
+            }
+            $('.dir_list').append(`<div class="col-2 mb-3 px-2 file file${i}"><div class="card p-2 pb-1 downloadFile pointer" downloadLoc="${dirLoc[i]}"><div class="images"><img src="${dir_img}" ></div><small title="${dirName[i]}" class="mt-1">${dirName[i]}</small><div class="text-end pointer Delete_Files" cls-attr="file${i}" location="${dirLoc[i]}" name="${dirName[i]}"><i class="fa text-danger fa-trash"></i></div></div></div>`)
+        }
+    }
+
+    FolderClick()
+    saveFolder()
+    DeleteFiles()
+    DownloadFile()
+    FileUpload()
+
+
+    // file upload
+    function FileUpload() {
+        // console.log(root_access)
+        let rootPath = ''
+
+        root_access.forEach(e => {
+            e = e == 'Home' ? 'file-manager' : e
+            rootPath += e + '___'
+        })
+        // console.log(rootPath)
+        $('#file_path').val(rootPath)
+    }
+
+
+    // download file
+    function DownloadFile() {
+        $('.downloadFile').dblclick(function (e) {
+            var down_loc = $(this).attr('downloadloc')
+            down_loc = down_loc.split('agencies/')
+            // console.log(down_loc[1])
+            window.open(down_loc[1], '_blank')
+        })
+    }
+
+
+    // delete file
+    function DeleteFiles() {
+        $('.Delete_Files').click(function (e) {
+
+            var username = $('#user_name').attr('data-name')
+
+            let person = prompt("Please enter your name ?");
+            // console.log(person)
+            if (person == username) {
+                // console.log('w')
+                var loc = $(this).attr('location')
+                // console.log(loc)
+                var location = loc.replaceAll(':', '_-_-_')
+                // console.log(location)
+                location = location.replaceAll('/', '--')
+                location = location.replaceAll('\\', '--')
+                // console.log(location)
+                var del = GetData(`${base}delete-file/${location}`)
+                // console.log(del)
+                alert(del?.success)
+                var cls_attr = $(this).attr('cls-attr')
+                $(`.${cls_attr}`).remove()
+
+            } else {
+                alert('Invalid username. !!!')
+            }
+
+
+
+        })
+    }
+
+
+
+    function FolderClick() {
+        // console.log('folder before')
+        $('.folder').click(function (e) {
+            e.preventDefault()
+            var folder_name = $(this).attr('folder_name')
+            // console.log(folder_name)
+            folderName = folder_name
+
+            folderName = folderName == 'Home' ? 'file-manager' : folderName
+            var d = root_access.filter(p => p == folderName)
+            if (d.length == 0) {
+                if (folderName != 'file-manager') {
+                    root_access.push(folderName)
+                }
+            }
+
+            // root access
+            // console.log(root_access)
+            rootAccess(root_access, folderName)
+
+            foldername = ''
+            root_access.forEach((e) => {
+                foldername += e + '-'
+            })
+            foldername = foldername.substr(0, foldername.length - 1)
+            // console.log(foldername)
+            // 
+            var folder_data = GetData(`${base}path-files/${foldername}`)
+            // get folder directories
+            folderDirs(folder_data)
+            FileUpload()
+        })
+
+        $('.rmv_folder').click(function (e) {
+            removeFolder(root_access, folderName)
+        })
+
+        // DeleteFiles()
+    }
+
+
+    // create folder model
+    $('.createfoldermodel').click(function (e) {
+        // console.log(folderName)
+        $('#folder_path').val(folderName)
+    })
+
+    // create folder submit
+    function saveFolder() {
+        $('.savefolder').click(function (e) {
+            e.preventDefault()
+            // root access
+            folderName = $('#folder_name').val()
+            // folderPath = $('#folder_path').val()
+            folderPath = ''
+            root_access.forEach((e) => {
+                folderPath += e + '-'
+            })
+            // console.log(root_access)
+            folderPath = folderPath.substr(0, folderPath.length - 1)
+            // console.log(folderPath)
+            var data = GetData(`${base}create-folder/${folderName}/${folderPath}`)
+            // console.log(data)
+            $('.emptyfolder').remove()
+            $('#folder_name').val('')
+            $('#createfolder').modal('toggle')
+            $('.dir_list').append(`
+            <div class="col-2 mb-3 px-2 folder pointer" folder_name="${data?.name}">
+                <div class="card p-2 pb-1 small" title="${data?.name}">
+                    <div class="images mb-1">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/OneDrive_Folder_Icon.svg/2048px-OneDrive_Folder_Icon.svg.png">
+                    </div>${data?.name}
+                </div>
+            </div>`)
+            FolderClick()
+            rootAccess(root_access, folderName)
+        })
+
+    }
+
+    // root access
+    function rootAccess(data, folderName) {
+        // console.log('wor')
+        $('.root_access').html('')
+        // console.log(data)
+        data.forEach((e) => {
+            $('.root_access').append(`
+                <a href="${e}" class="folder rmv_folder" remove_data="${e}" folder_name="${e}">${e}</a>
+                <i class="fa fa-chevron-right fa-12 mx-1"></i>
+            `)
+        })
+        FolderClick()
+    }
+
+
+    // remove folder
+    function removeFolder(data, folder_name) {
+        // console.log(data)
+        // console.log(folder_name)
+        var folder_name = folder_name == 'file-manager' ? 'Home' : folder_name
+        let i = data.indexOf(folder_name)
+        // console.log(data.length-1)
+        var sl = data.splice(i + 1, data.length - 1)
+        // console.log(sl)
+    }
+
+
+    // folder directory
+    function folderDirs(data) {
+        $('.dir_list').html('')
+        var filename = data?.file_name
+        if (filename.length == 0) {
+            $('.dir_list').append(`<div class="col-12 mt-3 emptyfolder"><div class="fw-bold text-center p-3">Folder Is Empty. !!!</div></div>`)
+        } else {
+
+            var dirName = data?.file_name
+            var dirLoc = data?.dir
+            for (var i = 0; i < dirName.length; i++) {
+                // console.log(dirName[i])
+                var dir = dirName[i].split('.').pop()
+                var dir_check = file_formats.filter(p => p.name == dir)
+                // console.log(dir_check)
+                var dir_img = dir_check[0]?.file
+                // console.log(dir)
+
+                dir_check = dir_check.length
+                if (dir_check == 0) {
+                    $('.dir_list').append(`<div class="col-2 mb-3 px-2 folder pointer" folder_name="${dirName[i]}">
+                        <div class="card p-2 pb-1 small" title="${dirName[i]}">
+                            <div class="images mb-1">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/OneDrive_Folder_Icon.svg/2048px-OneDrive_Folder_Icon.svg.png" >
+                            </div>${dirName[i]}
+                        </div></div>`)
+                } else {
+                    if (dir == 'jpeg' || dir == 'jpg') {
+                        // console.log(dirLoc[i])
+                        dir_img = dirLoc[i]
+
+                        dir_img = dir_img.split('agencies')[1]
+                        // console.log(dir_img)
+                    }
+                    $('.dir_list').append(`
+
+                    <div class="col-2 mb-3 px-2 file file${i}">
+                        <div class="card p-2 pb-1 downloadFile pointer" downloadLoc="${dirLoc[i]}">
+                            <div class="images">
+                                <img src="${dir_img}" >
+                            </div>
+                            <small title="${dirName[i]}" class="mt-1">${dirName[i]}</small>
+                            <div class="text-end pointer Delete_Files" cls-attr="file${i}" location="${dirLoc[i]}" name="${dirName[i]}">
+                                <i class="fa text-danger fa-trash"></i>
+                            </div>
+                        </div>
+                    </div>
+                    `)
+                }
+            }
+        }
+        FolderClick()
+        saveFolder()
+        DeleteFiles()
+        DownloadFile()
+        FileUpload()
+    }
+
+
+</script>
+
+<!-- <script>
+    $('.fileMenu').addClass('active');
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script> -->
+
+{% endblock %}

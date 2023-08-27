@@ -1,0 +1,72 @@
+
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<a href="{% url 'vendors' %}" class="btn btn-sm m-2"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</a>
+
+{% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alerts mx-3 alert-{{ message.tags }}" {% endif %}> {{ message }} </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="card p-3 mb-3 mx-3 box-2">
+    <h6 class="fw-bold">Add Vendor</h6>
+    <hr class="my-2">
+    {% crispy obj.vendor_form %} 
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+
+    <style>
+        #div_id_Vendor_Certificate_Scan_Copy .custom-file-label{
+            display:none !important;
+        }
+        #div_id_Vendor_Certificate_Scan_Copy .custom-file{
+            padding: 0 !important;
+        }
+        .alerts{
+        padding: 5px 15px;
+        margin-bottom: 10px;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+    .alert-error{
+        background: #dc3545;
+    }
+    .alert-success{
+        background:#0f5132 !important; 
+    }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+
+            $('.vendorMenu').addClass('active')
+            $('#div_id_Photo .custom-file').addClass('p-0')
+            $('#div_id_Photo .custom-file-input').addClass('form-control')
+            $('#div_id_Photo .custom-file-label').addClass('d-none')
+
+            var userid = $('#user-id').attr('data-id')
+            var agencyid = $('#user-id').attr('data-id')
+            $('#id_User').val(userid)
+
+
+            $('#id_Company_Name, #id_Vendor_Company_Name').change(function(){
+                var vn = $('#id_Company_Name').val()
+                $('#id_Company_Name, #id_Vendor_Company_Name').val(vn)
+            })
+
+
+           
+        })
+    </script>
+{% endblock %})

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - Customers
+{% endblock %}
+{% block content %}
+
+<!-- blog-view-section starts here -->
+<section class="blog-view-section my-4 my-lg-5">
+   <div class="container">
+    <div class="row px-lg-5">
+        {% for i in blog %}
+            <div class="col-md-12 mb-5">
+                <div class="card p-4">
+                    <div class="d-flex">
+                        <h1 class="avatar">{{i.author|make_list|first}}</h1>
+                        <div>
+                            <h5 class="fw-bold text-capitalize">{{i.author}}</h5>
+                            <p><small class="text-muted">Posted on {{i.created_on}}</small></p>
+                        </div>
+                    </div>
+                    <h2 class="h1 mt-2"><a href="./blog/{{i.slug}}" class="text-decoration-none text-capitalize text-blue" target="_blank">{{i.title}}</a></h2>
+                    <div >{{i.description.html|safe}}</div>
+                    <hr>
+                    <div>
+                        <a href="" class="mx-2"><i class="fa text-blue fa-facebook"></i></a>
+                        <a href="" class="mx-2"><i class="fa text-blue fa-twitter"></i></a>
+                        <a href="" class="mx-2"><i class="fa text-blue fa-linkedin"></i></a>
+                        <a href="" class="mx-2"><i class="fa text-blue fa-link"></i></a>
+                    </div>
+                    <hr>
+                    <div>
+                        <span>{{i.views}} views</span>
+                        <span class="ms-3">{{i.comments.all.count}} comments</span>
+                        <!-- <span class="float-end text-danger"><i class="fa fa-heart-o"></i></span> -->
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="col-md-12 mb-5">
+            <div class="row">
+                <h6 class="mb-3">Recent Posts 
+                    <a href="{% url 'blogs' %}" class="float-end text-blue">See All</a>
+                </h6>
+                {% for i in featured %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4">
+                            <h5><a href="./{{i.slug}}" class="text-decoration-none text-blue" target="_blank">{{i.title}}</a></h5>
+                            <div>
+                                {{i.description.html|safe|truncatewords:5}}
+                            </div>
+                            <hr>
+                            <div>
+                                <span><i class="fa fa-eye me-1"></i> {{i.views}} </span>
+                                <span class="ms-2"><i class="fa fa-comment me-1"></i>{{i.comments.all.count}} </span>
+                                <!-- <span class="float-end text-danger"><i class="fa fa-heart-o"></i></span> -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-12 ">
+            <div class="card p-4 ">
+                <div class="w-75 mx-auto">
+                    <h5 class="mb-1 ">Comments</h5>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-1 mb-lg-0 mb-3 text-center text-lg-start">
+                            <img
+                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                            alt="John Doe"
+                            class="me-3 rounded-circle"
+                            style="width: 60px; height: 60px;"
+                            />
+                        </div>
+                        <div class="col-md-11 mb-3">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control mb-3" placeholder="Enter name" name="cmt_name">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="email" class="form-control mb-3" placeholder="Enter email" name="cmt_email">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control mb-3" placeholder="Enter phone" name="cmt_phone">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <textarea class="form-control mb-3" name="cmt_message" placeholder="Write a comment..."></textarea>
+                                    </div>
+                                    <div class="col-md-12 text-center text-lg-end">
+                                        <input type="submit" class="btn btn-danger"  name="submit" value="Publish">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <hr>
+                        {% for i in blog %}
+                        {% if i.comments.count == 0 %}
+                            <span> No comments found.</span>
+                        {% else %}
+                            {% for j in i.comments.all %}
+                            <div class="d-flex p-3 mt-3">
+                                <div class="flex-shrink-0">
+                                  <img
+                                    src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000"
+                                    style="
+                                      padding: 5px;
+                                      background: #e3e3e3;
+                                      width: 45px;
+                                      border-radius: 50%;
+                                    "
+                                    alt="Sample Image"
+                                  />
+                                </div>
+                                <div class="flex-grow-1 ms-2 ps-1">
+                                  <h6 class="fw-bold mb-1 text-capitalize">
+                                    {{j.name}}
+                                    <small class="text-muted small"
+                                      ><i>Posted on {{j.created_on}}</i></small
+                                    >
+                                  </h6>
+                                  <div class="text-capitalize">{{j.message}}</div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div>
+</section>
+<!-- stand_out ends here -->
+
+<script>
+    $('.blogsmenu').addClass('active')
+</script>
+{% endblock %}

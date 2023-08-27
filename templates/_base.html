@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="en">
+<title>MKHM GROUP</title>
+
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- font awesome css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- data table cdn -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    {% if request.user.is_authenticated %}
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+    <meta id="user_name" data-name="{{request.user.username}}">
+    <meta id="permission" admin="{{user.is_superuser}}">
+    {% endif %}
+</head>
+
+<body>
+
+    {% if request.user.is_authenticated %}
+    <div class="container-fluid">
+        <div id="userid" class="d-none">{{request.user.id}}</div>
+        <div class="row">
+            {% include '_sidebar.html' with company_name=obj.agency_obj %}
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-0">
+                <div
+                    class="d-flex bg-danger px-4 justify-content-between flex-wrap flex-md-nowrap align-items-center py-2 border-0">
+                    <h1 class="h4 heading mb-0 fw-bold text-white text-uppercase">
+                        <span class="agency"></span> <b class="text-primary fa-12">( <span></span> ) </b>
+                    </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        {% if user.is_superuser %}
+                        <a class="text-white mt-2 me-4" href="{% url 'settings' %}"><i class="fa fa-cogs fa-lg"></i></a>
+                        <div class="dropdown notification_panel me-2">
+                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                class="btn dropdown-toggle btn-sm btn-default ps-0 pe-2 notification">
+                                <i class="fa fa-bell text-white"></i><span class="badge bg-success "></span>
+                            </button>
+                            <ul class="dropdown-menu px-2 notificationscroll" style="overflow-y: scroll;height: 400px;"
+                                aria-labelledby="dropdownMenuButton1">
+                                <h3 class="fw-bold mb-3" style="font-size: 18px;">Notifications</h3>
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <form action="{% url 'logout' %}" method="post">{% csrf_token %}
+                            <button name="logut_form" class="btn" type="submit">
+                                <i class="fa fa-sign-out fa-lg text-white"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Order Modal -->
+                <div class="modal fade" id="orderModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                    aria-labelledby="orderModelLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header py-2 border-0">
+                                <h5 class="modal-title" id="orderModelLabel">Order Approval</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+
+                                <form action="">
+                                    <table class="table w-100 table-sm">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th scope="col" style="width:10%;">Material</th>
+                                                <th scope="col">Vendor</th>
+                                                <th>Moisture</th>
+                                                <th style="width: 6%;">Qty</th>
+                                                <th style="width: 9%;">Current Price</th>
+                                                <th style="width: 9%;">Purchase Price</th>
+                                                <th style="width: 8%;">Sale Price</th>
+                                                <th style="width: 12%;">Final Current Price</th>
+                                                <th style="width: 12%;">Final Purchase Price</th>
+                                                <th style="width: 10%;">Final Sale Price</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="order_list">
+
+                                        </tbody>
+                                    </table>
+                                    <button type="submit" class="btn float-end order-approved fw-bold btn-primary"
+                                        id="save_changes">Save changes</button>
+                                    <button type="submit"
+                                        class="btn float-end order-declined fw-bold btn-danger me-2">Decline</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer and vendor show Modal -->
+                <div class="modal fade" id="customershow" tabindex="-1" aria-labelledby="customershowLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header py-2 border-0">
+                                <h5 class="modal-title"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- vendor and customer quotation modal -->
+                <div class="modal fade" id="quotation" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-body">
+
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#home">Customer</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " data-bs-toggle="tab" href="#menu1">Vendor</a>
+                                    </li>
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div class="tab-pane container active px-0 pt-3" id="home">
+                                        <div id="quotationprintdiv">
+                                            <div class="letterpadheader"></div>
+                                            <div class="float-end" id="customer_quotation_date"></div>
+                                            <div id="quotation_customer_info"></div>
+
+                                            <div class="mt-3"><b>Subject : </b> <span>QUOTATION for your enquiry for
+                                                    supply
+                                                    of building basic material.</span></div>
+
+                                            <div class="mt-2">
+                                                <b>Dear Sir ,</b>
+                                                <div>We are pleased to provide following quote of various material
+                                                    requirements for your site.</div>
+                                            </div>
+
+                                            <table class="table table-bordered mt-3 mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>MATERIAL</th>
+                                                        <th>HSN CODE</th>
+                                                        <th>QUANTITY</th>
+                                                        <th>RATE</th>
+                                                        <th>DELIVERY</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="customerQuotation">
+
+                                                </tbody>
+                                            </table>
+                                            <div class="mt-2"><b>Other terms and conditions</b></div>
+
+                                            <div class="input-group othertermGST mt-2 w-25">
+                                                <select name="" id="GstCheck" class="form-control form-control-sm w-25">
+                                                    <option value="">-------</option>
+                                                    <option value="0">Plus GST</option>
+                                                    <option value="1">Including GST</option>
+                                                </select>
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" id="OtherTermCheck">
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- other terms and conditiond -->
+                                            <div class="otherterms mt-2"></div>
+
+                                            <div class="my-5 text-end">
+                                                Thank You,
+                                                <div class="my-4"></div>
+                                            </div>
+                                            <div class="letterpadfooter">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="text-center action_button my-3"></div>
+                                    </div>
+                                    <div class="tab-pane container fade px-0 pt-3" id="menu1">
+                                        <div class="vendor_quotation">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- customer phone number view -->
+                <div class="modal fade" id="customerPhoneNumber" tabindex="-1"
+                    aria-labelledby="customerPhoneNumberLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="customerPhoneNumberLabel"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div><b>Founder_Phone : </b><span id="Founder_Phone"></div>
+                                </div>
+                                <hr class="my-1">
+                                <b>Customer Staff Account : </b>
+                                <div id="Customer_Staff_Account"></div>
+                                <hr class="my-1">
+                                <b>Bank Account : </b>
+                                <div id="Bank_Account" class="text-capitalize"></div>
+                                <hr class="my-1">
+                                <b>GST No : </b>
+                                <div id="GST_No" class="text-capitalize"></div>
+                                <hr class="my-1">
+                                <b>Branches :</b>
+                                <div id="delivery_address">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="container px-5" id="loginpage">
+        <div class="card mx-5 border-0 shadow-lg">
+            <div class="row mx-0">
+                <div class="col-md-6 p-3">
+                    {% if not request.user.is_authenticated %}
+                    <div class="mt-2 fw-bold text-center">
+                        <p class="mb-1 text-secondary">Welcome To</p>
+                        <h3 class="fw-bold text-uppercase text-primary">MKHM Group</h3>
+                        <small class="text-secondary fw-normal">log in to get the moment updates that intrests
+                            you</small>
+                    </div>
+                    <form class="needs-validation w-75 mx-auto" method="post" novalidate>
+                        {% csrf_token %}
+                        {% if error %}
+                        <div class="alert alert-danger py-2 mt-3 alert-dismissible fade show" role="alert">
+                            <strong>{{error}}</strong>
+                            <button type="button" class="btn-close pt-3 pb-2 small" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+                        <div class="form-floating mb-3 mt-4">
+                            <input type="text" class="form-control" name="username" id="Email" placeholder="Username"
+                                required>
+                            <label for="floatingInput">Username</label>
+                            <div class="invalid-feedback">
+                                Username is required.
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" name="password" id="password"
+                                placeholder="Password" required>
+                            <label for="floatingPassword">Enter password</label>
+                            <div class="invalid-feedback">
+                                Password is required.
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="Rememberme">
+                            <label class="form-check-label" for="Rememberme">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-danger shadow rounded-pill w-100">SIGN IN</button>
+                        <div class="mt-3 mb-2 text-center">
+                            <a class="text-primary fw-bold text-decoration-none"
+                                href="{% url 'forgetpassword' %}">Forget Password ?</a>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="fw-bold text-center mt-5 pt-5">
+                        <p class="mb-1 text-secondary">Log out</p>
+                        <h3 class="fw-bold text-uppercase text-primary">MKHM Group</h3>
+                        <small class="text-secondary fw-normal">You already logged in. You want to logout ?</small>
+                    </div>
+                    <div class="text-center">
+                        <a class="btn btn-danger shadow rounded-pill w-75 mt-4" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 loginimg text-white">
+                    <div class="text-center text">
+                        <h3 class="fw-bold text-uppercase">MKHM Group</h3>
+                        <div class="row ">
+                            <div class="col-sm-4">
+                                <img src="{% static 'img/hari 1.png' %}" alt="" width="100%">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <img src="{% static 'img/kaviS.png' %}" alt="" width="100%">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <img src="{% static 'img/mathi 1.png' %}" alt="" width="100%">
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    <div id="preLoader" hidden>
+        <div class="loadingio-spinner-blocks-iuigpwxe4re">
+            <img src="{% static 'img/loader.svg' %}" alt="">
+        </div>
+
+    </div>
+
+    <style type="text/css">
+        #preLoader {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8)
+        }
+
+        #preLoader .loadingio-spinner-blocks-iuigpwxe4re img {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <!-- chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    <!-- jquery cdn -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- data table cdn js -->
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js"
+        integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/printThis.js' %}"></script>
+    <!-- CK Editor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <!-- custom js -->
+    <script src="{% static 'js/index.js' %}"></script>
+
+    {% if request.user.is_authenticated %}
+    <meta id="user-id" data-id="{{request.user.id}}">
+    <meta id="agencyid" data-id="">
+    <script src="{% static 'js/quotation.js' %}"></script>
+    {% endif %}
+</body>
+
+<script>
+    var base = window.location.protocol + "//" + window.location.host + '/';
+    var url = base + 'api/'
+    var page = 1
+    var csrftoken = $('meta[name="csrf-token"]').attr('content')
+    $(document).ready(function () {
+        // $(function () {
+        //     $('.carousel').each(function () {
+        //         $(this).carousel({
+        //             interval: false
+        //         });
+        //     });
+        // });
+
+        $.get(url + 'agency', function (data, status) {
+            var active_agency = data.results.filter(p => p.Active == true)
+            // console.log(active_agency)
+
+            if (active_agency[0].Name == 'Hari Agency') {
+                $('.letterpadheader').html(`<img src="{% static 'img/Hari header.png' %}" width="100%" alt="">`)
+                $('.letterpadfooter').html(`<img src="{% static 'img/Hari Bottom.png' %}" width="100%" alt="">`)
+            } else if (active_agency[0].Name == 'Mathi Agency') {
+                $('.letterpadheader').html(`<img src="{% static 'img/Mathi Header.png' %}" width="100%" alt="">`)
+                $('.letterpadfooter').html(`<img src="{% static 'img/Mathi Bottom.png' %}" width="100%" alt="">>`)
+            } else if (active_agency[0].Name == 'Mathi Agency') {
+                $('.letterpadheader').html(`<img src="{% static 'img/Kavitha Header.png' %}" width="100%" alt="">`)
+                $('.letterpadfooter').html(`<img src="{% static 'img/Kavitha Bottom.png' %}" width="100%" alt="">"">`)
+            }
+
+            $('#agencyid').attr('data-id', active_agency[0].id)
+        })
+
+        $('#SelectCompany').change(function () {
+            // store it in session
+            var id = $(this).val()
+            $.get(base + 'agencies/update-agencies/' + id, function (res) {
+                if (res.status == 200) {
+                    $('#agencyupdatestatus').text(res.message)
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                }
+            })
+        })
+    })
+    function Enc_QuantityType(qty) {
+        var text
+        switch (qty) {
+            case '0':
+                text = "NO";
+                break;
+            case '1':
+                text = "MT";
+                break;
+            case '2':
+                text = "CFT";
+                break;
+            case '4':
+                text = "QF";
+                break;
+            case '5':
+                text = "M3";
+                break;
+            case '6':
+                text = "QM";
+                break;
+            case '7':
+                text = "Cage";
+                break;
+            case '8':
+                text = 'KG';
+        }
+
+        return text
+    }
+    function Quotation_View() {
+        $('.quotation_view').click(function (e) {
+            var order_id = $(this).attr('data-id')
+            var action_url = base + 'post-api/quotations/?order=' + order_id
+            var data = GetData(action_url)
+            // quotation view by id
+            QuotationView(data?.results[0]?.id)
+            $('#quotation').modal('toggle')
+        })
+    }
+    Quotation_View()
+
+</script>
+
+{% if user.is_superuser %}
+<script>
+    $.get('/notifications-count', function (res) {
+        res = JSON.parse(res)
+        console.log(res.length)
+        $('.notification .badge').text(res.length)
+    })
+
+    NotificationsAppend(1)
+
+    function NotificationsAppend(id) {
+        $.get(url + 'notifications/?page=' + id, function (res) {
+            // console.log(res)
+            for (var i = 0; i < res.results.length; i++) {
+                var result = res?.results[i]
+                var notification = result?.Notifications.replace(/'/g, '"');
+                var notification = JSON.parse(notification)
+
+                status = res.results[i]?.Change == true ? 'active' : '';
+
+
+                if (result?.Types == 'Add') {
+                    if (notification['model'] == 'customers') {
+                        console.log(notification)                        
+                        var app = status == 'active'
+                            ? `<div class="small py-1 px-2">
+                                <a class="text-decoration-none pointer customer_view" data-id="${notification['id']}"> Customer Added . !!! </a>
+                                </div>`
+                            : `<div class="small py-1 px-2" notification-id="${result?.id}" data-url="${notification['model']}" data-id="${notification['id']}">
+                                    <a class="text-decoration-none" notification-id="${result?.id}" href="${notification['id']}" data-url="${notification['model']}">
+                                        <a href="" class="customer_view" data-id="${notification['id']}">${notification['model']}</a>
+                                        <span class="float-end">
+                                        <i class="fa text-success me-1 fa-check pointer notification_alert" action="check" data-id="${notification['id']}" data-operation="add" not-id="${result?.id}" data-url="${notification['model']}"></i> 
+                                        <i class="fa fa-close text-danger pointer notification_alert" action="cancel" data-id="${notification['id']}" not-id="${result?.id}" data-operation="add"  data-url="${notification['model']}"></i>
+                                    </span>
+                                    </a>
+                                </div>`;
+
+                        $('.notification_panel ul').append(`
+                            <li class="text-capitalize ${status}">
+                                <div class="text-dark px-2 fw-bold small" >${notification['model']}
+                                    <span class="text-success">
+                                        ${res.results[i]?.Types}ed
+                                    </span>
+                                    by ${res?.results[i]?.User?.username}
+                                </div>
+                                ${app}
+                            </li>`)
+                    }
+
+                    if (notification['model'] == 'vendors') {
+
+                        var app = status == 'active'
+                            ? `<div class="small py-1 px-2">
+                                <a class="text-decoration-none pointer vendor_view" data-id="${notification['id']}"> Vendor Added . !!! </a>
+                                </div>`
+                            : `<div class="small py-1 px-2" notification-id="${result?.id}" data-url="${notification['model']}" data-id="${notification['id']}">
+                                    <a class="text-decoration-none" notification-id="${result?.id}" href="${notification['id']}" data-url="${notification['model']}">
+                                        <a href="" class="vendor_view" data-id="${notification['id']}">${notification['model']}</a>
+                                        <span class="float-end">
+                                        <i class="fa text-success me-1 fa-check pointer notification_alert" action="check" data-id="${notification['id']}" data-operation="add" not-id="${result?.id}" data-url="${notification['model']}"></i> 
+                                        <i class="fa fa-close text-danger pointer notification_alert" action="cancel" data-id="${notification['id']}" not-id="${result?.id}" data-operation="add"  data-url="${notification['model']}"></i>
+                                    </span>
+                                    </a>
+                                </div>`;
+
+                        $('.notification_panel ul').append(`
+                            <li class="text-capitalize ${status}">
+                                <div class="text-dark px-2 fw-bold small" >${notification['model']}
+                                    <span class="text-success">
+                                        ${res.results[i]?.Types}ed
+                                    </span>
+                                    by ${res?.results[i]?.User?.username}
+                                </div>
+                                ${app}
+                            </li>`)
+                    }
+
+                    if (notification['model'] == 'orders') {
+                        if (status == 'active') {
+                            var app = `<div class="small px-2 py-1">
+                            <a class="text-decoration-none" > Order Approved. !!! </a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#quotation_view" data-id="${notification?.id}" class="text-success quotation_view"><i class="fa fa-eye"></i> Quotation</a>
+                            </div>`
+                        } else {
+                            var app = `<div class="small get_notification px-2 py-1" notification-id="${result?.id}" data-url="${notification['model']}" data-id="${notification['id']}">
+                                <a class="text-decoration-none" notification-id="${result?.id}" href="${notification['id']}" data-url="${notification['model']}">
+                                    ${notification['model']}
+                                </a>
+                            </div>`
+                        }
+                        $('.notification_panel ul').append(`
+                        <li class="text-capitalize ${status}">
+                            <div class="text-dark px-2 fw-bold small" >${notification['model']}
+                                <span class="text-success">
+                                    ${res.results[i]?.Types}ed
+                                </span>
+                                by ${res?.results[i]?.User?.username}
+                            </div>
+                            ${app}
+                        </li>`)
+                    }
+                }
+
+
+                if (result?.Types == 'Delete') {
+
+                    if (notification['model'] == 'orders') {
+                        $('.notification_panel ul').append(`
+                        <li class="${status} text-capitalize">
+                            <div class="text-dark px-0 fw-bold small" >
+                                <span class="text-danger">${res.results[i]?.Types}</span> request send by 
+                                ${res?.results[i]?.User?.username} 
+                            </div>
+                            <div class="small px-0 py-1" data-url="${notification['model']}" data-id="${notification['id']}">
+                                <a class="text-decoration-none" href="${notification['id']}" data-url="${notification['model']}">${notification['model']}</a>
+                                <span class="float-end">
+                                    <i class="fa pointer text-success me-1 fa-check pointer notification_alert" data-operation="delete" action="check" not-id="${result?.id}" data-id="${notification['id']}" data-url="${notification['model']}"></i> 
+                                    <i class="fa pointer fa-close text-danger pointer notification_alert"  data-operation="delete"  action="cancel" not-id="${result?.id}" data-id="${notification['id']}" 
+                                data-url="${notification['model']}"></i></span>
+                            </div>
+                        </li>`)
+                    }
+
+                    if (notification['model'] == 'customers') {
+
+                        $('.notification_panel ul').append(`
+                        <li class="${status} text-capitalize">
+
+                            <div class="text-dark px-0 fw-bold small" >
+                                <span class="text-danger">${res.results[i]?.Types}</span> request send by 
+                                ${res?.results[i]?.User?.username} 
+                            </div>
+
+                            <div class="small px-0 py-1" data-url="${notification['model']}" data-id="${notification['id']}">
+
+                                <a class="text-decoration-none" href="${notification['id']}" data-url="${notification['model']}">${notification['model']}</a>
+                                <span class="float-end">
+                                    <i class="fa text-success pointer me-1 fa-check pointer notification_alert" action="check" data-id="${notification['id']}" not-id="${result?.id}" data-operation="delete" data-url="${notification['model']}"></i> 
+                                    <i class="fa fa-close pointer text-danger pointer notification_alert" action="cancel" data-id="${notification['id']}" not-id="${result?.id}" data-operation="delete" data-url="${notification['model']}"></i>
+                                </span>
+
+                            </div>
+
+                        </li>`)
+
+                    }
+
+                    if (notification['model'] == 'vendors') {
+
+                        $('.notification_panel ul').append(`
+                        <li class="${status} text-capitalize">
+                            <div class="text-dark px-0 fw-bold small" >
+                                <span class="text-danger">${res.results[i]?.Types}</span> request send by 
+                                ${res?.results[i]?.User?.username} 
+                            </div>
+                            <div class="small px-0 py-1" data-url="${notification['model']}" data-id="${notification['id']}">
+                                <a class="text-decoration-none" href="${notification['id']}" data-url="${notification['model']}">${notification['model']}</a>
+                                <span class="float-end">
+                                    <i class="fa text-success me-1 fa-check pointer notification_alert" action="check" data-id="${notification['id']}" data-operation="delete" not-id="${result?.id}" data-url="${notification['model']}"></i> 
+                                    <i class="fa fa-close text-danger pointer notification_alert" action="cancel" data-id="${notification['id']}" not-id="${result?.id}" data-operation="delete" data-url="${notification['model']}"></i>
+                                </span>
+                            </div>
+                        </li>`)
+                    }
+
+                }
+            }
+            notifications()
+            Quotation_View()
+            CustomerView()
+            VendorView()
+        })
+    }
+
+    function CustomerView() {
+        $('.customer_view').click(function (event) {
+            event.preventDefault()
+            let customerid = $(this).attr('data-id')
+            $('#customershow').modal('show')
+            $('#customershow .modal-title').text('Customer Details')
+            $.get('/api/customers/' + customerid, function (data, status) {
+                // console.log(data)
+                $('#customershow .modal-body').html(`
+                    <h6 class="fw-bold">${data.Company_Name}</h6>
+                    <p><b>Email : </b>${data.Company_Email}</p>
+                    <p><b>Address : </b>${data.Company_Address}, ${data.Company_City} - ${data.Company_Zip}, ${data.Company_State}, ${data.Company_Country}</p>
+                    <hr>
+                    <p><b>Founder : </b>${data.Founder_Name}</p>
+                    <p><b>Founder Email : </b>${data.Founder_Email}</p>
+                    <p><b>Founder Address : </b>${data.Founder_Address}, ${data.Founder_City} - ${data.Founder_Zip}, ${data.Founder_State}, ${data.Founder_Country}</p>
+                    `)
+            })
+            var myModalEl = document.getElementById('customershow')
+            myModalEl.addEventListener('hidden.bs.modal', function (event) {
+                $('#customershow .modal-title').text('')
+                $('#customershow .modal-body').html('')
+            })
+        })
+    } CustomerView()
+
+    function VendorView() {
+        $('.vendor_view').click(function (event) {
+            event.preventDefault()
+            let vendorid = $(this).attr('data-id')
+            $('#customershow').modal('show')
+            $('#customershow .modal-title').text('Vendor Details')
+            $.get('/api/vendors/' + vendorid, function (data, status) {
+                // console.log(data)
+                $('#customershow .modal-body').html(`
+                <h6 class="fw-bold">${data.Company_Name}</h6>
+                <p><b>Vendor Name : </b>${data.Vendor_Name}</p>
+                <p><b>Email : </b>${data.Email}</p>
+                <p><b>Phone : </b>${data.Phone}</p>
+                <p><b>Address : </b>${data.Address}, ${data.City}-${data.Zip}, ${data.State}, ${data.Country}</p>
+                `)
+            })
+            var myModalEl = document.getElementById('customershow')
+            myModalEl.addEventListener('hidden.bs.modal', function (event) {
+                $('#customershow .modal-title').text('')
+                $('#customershow .modal-body').html('')
+            })
+        })
+    } VendorView()
+
+
+    $(".notificationscroll").scroll(function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            page = page + 1
+            NotificationsAppend(page)
+        }
+    });
+    function notifications() {
+        $('.notification_alert').click(function (e) {
+            e.preventDefault()
+            var action = $(this).attr('action')
+            var data_url = $(this).attr('data-url')
+            var data_id = $(this).attr('data-id')
+            var operation = $(this).attr('data-operation')
+            // console.log('w')
+
+            var notification_id = $(this).attr('not-id')
+            let action_url = `${url}${data_url}/${data_id}/`
+            let notification_url = `${url}notifications/${notification_id}/`
+            if (action == 'check') {
+                if (confirm('Are you sure ?')) {
+                    // console.log(operation)
+                    if (operation == 'delete') {
+                        var params = {
+                            'id': data_id
+                        }
+                        DeleteMethod(params, action_url)
+                        var params = {
+                            'id': notification_id
+                        }
+
+                        DeleteWithOutValidation(params, notification_url)
+                        // location.reload()
+                    }
+                    if (operation == 'add') {
+                        var params = {
+                            is_active: true
+                        }
+                        // console.log(action_url)
+
+                        var notification_params = {
+                            "Status": true,
+                            "Change": true,
+                        }
+                        // console.log(notification_url)
+                        PatchMethod(params, action_url)
+                        PatchMethod(notification_params, notification_url)
+
+                        var params = {
+                            'id': notification_id
+                        }
+
+                        DeleteWithOutValidation(params, notification_url)
+
+                        setTimeout(() => {
+                            location.reload()
+                        }, 500)
+
+                    }
+
+                }
+            } else {
+                // working fine
+                if (confirm('Are you sure you want to cancel?')) {
+
+
+                    if (operation == 'delete') {
+                        var params = {
+                            is_active: true
+                        }
+                        PatchMethod(params, action_url)
+                    }
+
+
+                    if (operation == 'add') {
+                        var params = {
+                            id: data_id
+                        }
+                        // console.log(params)
+                        // console.log(action_url)
+                        DeleteMethod(params, action_url)
+                    }
+
+                    var params = {
+                        'id': notification_id
+                    }
+                    let notification_url = `${url}notifications/${notification_id}/`
+                    DeleteWithOutValidation(params, notification_url)
+                    location.reload()
+                }
+            }
+
+        })
+
+        // order confirmation
+        $('.get_notification').click(function (e) {
+
+            e.preventDefault()
+            $('#orderModel').modal('toggle')
+            var _id = $(this).attr('data-id')
+            var _url = $(this).attr('data-url')
+            var notification_id = $(this).attr('notification-id')
+
+            if (_url == 'orders') {
+                // order model functions
+                OrderModel(_url, _id, notification_id)
+            }
+
+        })
+    }
+
+    // order model functions
+    function OrderModel(geturl, id, notification_id) {
+        // $('#orderModel').modal('toggle')
+        var mt_id = []
+        var materialList = []
+
+        $.get(url + geturl + '/' + id + '/', function (res) {
+            var material_list = res?.Materials
+            materialList.push(res)
+            var po = res?.PO_Number
+            $('#po_number').val(po?.PO_Number)
+            $('#order_recieved_date').val(po?.Order_Recieved_Date)
+            $('#PO_Type').val(po?.PO_Type)
+            $('#po_date').val(po?.PO_Date)
+            $('#PO_Recived_From_Mail').val(po?.PO_Recived_From_Mail)
+            $('#PO_Recived_From_Name').val(po?.PO_Recived_From_Name)
+            $('#order_list').html('')
+            for (var i = 0; i < material_list.length; i++) {
+                let mat_id = material_list[i]?.id
+                mt_id.push(mat_id)
+                let mat_name = material_list[i]?.Material_Name
+                let v_name = material_list[i]?.Vendor?.Vendor_Name
+                let v_type = material_list[i]?.Vendor?.Vendor_Type == '0' ? 'Quary Transport' : 'Crusher'
+                let qty = material_list[i]?.Quantity
+
+                if (material_list[i]?.Moisture_Number != '') {
+                    var mois_no = '<b>Moisture : </b>' + material_list[i]?.Moisture_Number
+                    var mat_term = '<b>Term : </b>' + material_list[i]?.Material_Term
+                } else {
+                    var mois_no = '<b>Moisture : </b>No'
+                    var mat_term = ''
+                }
+
+                let capability = material_list[i]?.Payment_Capability
+                let current_price = material_list[i]?.Current_Price
+                let sale_price = material_list[i]?.Sale_Price
+                let purchase_price = material_list[i]?.Purchase_Price
+                let final_po_price = material_list[i]?.Fianl_PO_Price == null ? '' : material_list[i]?.Fianl_PO_Price
+                let final_offer_price = material_list[i]?.Final_Offer_Price == null ? '' : material_list[i]?.Final_Offer_Price
+                let final_purchase_price = material_list[i]?.Final_Purchase_Price == null ? '' : material_list[i]?.Final_Purchase_Price
+
+                $('#order_list').append(`
+                        <tr>
+                            <td>${mat_name}</td>
+                            <td><p class="mb-0 text-primary">${v_name}</p><p class="mb-0 small">${v_type}<span class="text-primary"> (${capability})</span></p></td>
+                            <td><div class="text-capitalize small"><span>${mois_no}</span><br>${mat_term}</div></td>
+                            <td><input type="text" class="form-control qty_${mat_id}" value="${qty}"></td>
+                            <td><input type="text" class="form-control cp_${mat_id}" value="${current_price}"></td>
+                            <td><input type="text" class="form-control pp_${mat_id}" value="${purchase_price}"></td>
+                            <td><input type="text" class="form-control sp_${mat_id}" value="${sale_price}"></td>
+                            <td><input type="text" class="form-control fpo_${mat_id}" value="${final_po_price}"></td>
+                            <td><input type="text" class="form-control fpu_${mat_id}" value="${final_purchase_price}"></td>
+                            <td><input type="text" class="form-control fsp_${mat_id}" value="${final_offer_price}"></td>
+                        </tr>`);
+
+
+            }
+
+            $('.order-approved, .order-declined').attr('notification-id', notification_id)
+
+        }).done(function () {
+            OrderApproval(mt_id, materialList)
+        })
+
+        // QuotationView(6)
+    }
+
+    // order approval modal
+    function OrderApproval(id, data) {
+
+        var agency_id = data[0]?.Agency?.id
+        var approved_status = data[0]?.Approved
+        var billingAddress = data[0]?.Billing_Address
+        var deliveryaddress = data[0]?.Sales_Delivery_Address
+        var materials = data[0]?.Materials
+        var po_number = data[0]?.PO_Number
+        var customer_id = data[0]?.Sales_Company?.id
+
+        if (approved_status != true) {
+            // console.log('need to do approval task in orders api')
+        }
+
+        var mat_po = []
+        for (var i = 0; i < materials.length; i++) {
+            mat_po.push(materials[i]?.Mat_PO_ID)
+        }
+
+        // to filter unique po from material orders 
+        // for customer (sales)
+        const unique_po = mat_po.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i)
+        const po_ids = unique_po.map(value => value.id);
+        var sales_params = {
+            customer: customer_id,
+            po: po_number?.id,
+            po_materials: po_ids,
+            'csrfmiddlewaretoken': csrftoken
+        }
+
+        // to filter unique po from material orders 
+        // for vendor (purchase)
+        const total_materials = materials.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i)
+        const mat_id = total_materials.map(value => value.id);
+        var purchase_params = {
+            material: mat_id,
+            'csrfmiddlewaretoken': csrftoken
+        }
+
+        $('#save_changes').click(function (e) {
+            e.preventDefault()
+            $(this).prop('disabled', true)
+            var notification_id = $(this).attr('notification-id')
+
+            var params = {
+                Status: true,
+                Change: true
+            }
+
+            var action_url = base + 'post-api/notifications/' + notification_id + '/'
+            QuotationPatchData(params, action_url)
+
+            for (var i = 0; i < id.length; i++) {
+                var qty = $('.qty_' + id[i]).val()
+                var cp = $('.cp_' + id[i]).val()
+                var pp = $('.pp_' + id[i]).val()
+                var sp = $('.sp_' + id[i]).val()
+                var fpo = $('.fpo_' + id[i]).val()
+                var fpu = $('.fpu_' + id[i]).val()
+                var fsp = $('.fsp_' + id[i]).val()
+                var action_url = base + 'post-api/material-info/' + id[i] + '/'
+                var final_price_params = {
+                    Current_Price: cp,
+                    Sale_Price: sp,
+                    Purchase_Price: pp,
+                    Fianl_PO_Price: fpo,
+                    Final_Offer_Price: fsp,
+                    Final_Purchase_Price: fpu,
+                    Quantity: qty
+                }
+                // console.log(final_price_params)
+
+                QuotationPatchData(final_price_params, action_url)
+            }
+
+
+            // quotation generated functions
+            var quotations_params = {
+                agency: agency_id,
+                purchase: QuotationPostData(purchase_params, url + 'purchase-quotations/'),
+                sales: QuotationPostData(sales_params, url + 'sales-quotations/'),
+                order: data[0]?.id
+            }
+            // console.log(quotations_params)
+
+            var order_id = QuotationPostData(quotations_params, base + 'post-api/quotations/')
+            $('#orderModel').modal('toggle')
+            QuotationView(order_id)
+            $('#quotation').modal('toggle')
+
+        })
+
+    }
+
+    function Quotation_View() {
+        $('.quotation_view').click(function (e) {
+            var order_id = $(this).attr('data-id')
+            var action_url = base + 'post-api/quotations/?order=' + order_id
+            var data = GetData(action_url)
+            // quotation view by id
+            QuotationView(data?.results[0]?.id)
+            $('#quotation').modal('toggle')
+        })
+    }
+
+    // function Enc_QuantityType(qty) {
+    //     var text
+    //     switch (qty) {
+    //         case '0':
+    //             text = "NO";
+    //             break;
+    //         case '1':
+    //             text = "MT";
+    //             break;
+    //         case '2':
+    //             text = "CFT";
+    //             break;
+    //         case '4':
+    //             text = "QF";
+    //             break;
+    //         case '5':
+    //             text = "M3";
+    //             break;
+    //         case '6':
+    //             text = "QM";
+    //             break;
+    //         case '7':
+    //             text = "Cage";
+    //             break;
+    //         case '8':
+    //             text = 'KG';
+    //     }
+
+    //     return text
+    // }
+
+</script>
+
+<style>
+    .notification_panel .active {
+        background: #f4f4f4;
+    }
+
+    .notification_panel li {
+        border-bottom: 2px solid #e6e6e6;
+    }
+
+    .notification_panel {
+        position: relative;
+        top: 4px;
+    }
+
+    .notification_panel .badge {
+        position: absolute;
+        font-size: 10px;
+        padding: 4px;
+        top: -5px;
+        left: 5px;
+        border-radius: 30px;
+    }
+
+    .notification_panel .fw-bold {
+        font-size: 10px;
+        position: relative;
+        top: 5px;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .notification_panel ul {
+        min-width: 15rem !important;
+        margin-top: .5rem !important;
+    }
+
+    .tab-content input:disabled {
+        background: unset;
+    }
+</style>
+{% endif %}
+
+
+{% block script %}
+{% endblock %}
+
+</html>

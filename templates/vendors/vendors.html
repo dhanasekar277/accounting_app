@@ -1,0 +1,1751 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Vendors</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <a class="btn btn-sm btn-primary float-end mb-3" href="{% url 'add-vendor' %}"><i
+                                class="fa fa-plus me-1"></i> Add</a>
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if obj.vendor_obj %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col" style="width:20%">Vendor Name</th>
+                            <th scope="col" style="width:20%">Vendor Staff</th>
+                            <th scope="col" style="width:30%">GST </th>
+                            <th scope="col" style="width:30%">Material Suplying </th>
+                            <th scope="col" style="width:1%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in obj.vendor_obj %}
+                        <tr class="row_{{i.id}}">
+                            <td class="text-capitalize">
+                                {% if i.Vendor_Type == '0' %}
+                                <div>GST User</div>
+                                {% else %}
+                                <div>Unregistered User</div>
+                                {% endif %}
+                                <b class="small">Name : </b>{{i.Vendor_Name}} <a href="tel:{{i.Phone}}"
+                                    class="ms-2 text-success"><i class="fa fa-phone"></i></a><a
+                                    href="mailto:{{i.Email}}" class="text-danger ms-2"><i
+                                        class="fa fa-envelope"></i></a><br>
+                                <b class="small">Company Name : </b>( {{i.Company_Name}} )
+                                <b class="small">Address : </b>{{i.Address}}, {{i.City}}-{{i.Zip}}, {{i.State}}
+
+                                <div><i class="fa fa-truck"></i> : {{i.No_Of_Trucks}}</div>
+                            </td>
+                            <td>
+                                <ul class="ps-3 mb-1">
+                                    {% for j in i.Vendor_Staff_Detail.all %}
+                                    <li>
+                                        <div>
+                                            <a href="" class="text-blue" data-bs-toggle="modal"
+                                                data-bs-whatever="{{j.id}}" data-name="{{j.Name}}"
+                                                data-phone="{{j.Phone}}" data-email="{{j.Email}}"
+                                                data-position="{{j.Position}}" data-avatar="{{j.Photo}}"
+                                                data-address="{{j.Address}}, {{j.City}}-{{j.Zip}}, {{j.State}}, {{j.Country}}"
+                                                data-bs-target="#viewStaff">{{j.Name}}</a>
+                                            <b>({{j.Position}})</b>
+                                            <a href="tel:{{j.Phone}}" class="fa-12"><i
+                                                    class="ms-1 fa fa-phone text-success"></i></a>
+                                            <a href="mailto:{{j.Email}}" class="fa-12"><i
+                                                    class="ms-1 fa fa-envelope text-danger"></i></a>
+                                            <a href="" vendor-id="{{i.id}}" data-bs-toggle="modal"
+                                                data-bs-target="#EditStaffModal" data-action="edit"
+                                                data-bs-whatever="{{j.id}}" class="fa-12 ms-1" data-name="{{j.Name}}"
+                                                data-position="{{j.Position}}" data-email="{{j.Email}}"
+                                                data-phone="{{j.Phone}}" data-address="{{j.Address}}"
+                                                data-city="{{j.City}}" data-state="{{j.State}}" data-zip="{{j.Zip}}"
+                                                data-country="{{j.Country}}">
+                                                <i class="ms-1 fa fa-edit text-warning fw-bold"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <a href="" class="btn btn-primary btn-sm px-1 py-0 fa-12" vendor-id="{{i.id}}"
+                                    data-bs-toggle="modal" data-bs-target="#EditStaffModal" data-action="add"
+                                    data-bs-whatever="{{i.id}}"><i class="fa fa-12 fa-plus px-0"></i></a>
+                            </td>
+                            <td>
+                                {% if i.GST_No.all %}
+                                <div id="CustomerGST{{i.id}}" class="carousel slide"
+                                    data-bs-ride="carousel" data-bs-interval="false">
+                                    {% if i.GST_No.all|length > 1 %}
+                                    <div class="d-block">
+                                        <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#CustomerGST{{i.id}}" data-bs-slide="prev">
+                                            <i class="fa fa-lg fa-angle-left"></i>
+                                        </button>
+                                        <button class="carousel-control-next float-end" type="button"
+                                            data-bs-target="#CustomerGST{{i.id}}" data-bs-slide="next">
+                                            <i class="fa fa-lg fa-angle-right"></i>
+                                        </button>
+                                    </div> 
+                                    {% endif %}
+                                    <div class="carousel-inner">
+                                        {% for k in i.GST_No.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <div>
+                                                    <b>GST No : </b>
+                                                    {{k.GST_No}}
+                                                    <a href="" class="btn btn-warning btn-sm px-1 py-0 position-absolute bottom-0 end-0" gst-id="{{k.id}}"
+                                                        data-leggal-name={{k.Leggal_Name}}
+                                                        data-trade-name={{k.Trade_Name}}
+                                                        data-holder-name={{k.Holder_Name}} data-gst-no={{k.GST_No}}
+                                                        data-phone={{k.Phone}} data-name={{k.Name}}
+                                                        data-email={{k.Email}} data-bank-account={{k.Bank_Account}}
+                                                        data-account-no={{k.Account_Number}} data-ifsc={{k.IFSC}}
+                                                        data-branch={{k.Branch}} data-address={{k.Address}}
+                                                        data-city={{k.City}} data-state={{k.State}} data-zip={{k.Zip}}
+                                                        data-country={{k.Country}} data-bs-toggle="modal"
+                                                        data-bs-target="#addgst" data-action="edit"><i
+                                                            class="fa fa-pencil"></i> Edit</a>
+                                                </div>
+                                                <div><span class="text-capitalize">{{k.Name}}</span><a
+                                                        href="tel:{{k.Phone}}"><i
+                                                            class="fa fa-phone text-success ms-1"></i></a> <a
+                                                        href="mailto:{{k.Email}}"><i
+                                                            class="fa fa-envelope text-danger ms-1"></i></a></div>
+                                                <div class="text-capitalize"><b>Legal Name : </b> {{k.Leggal_Name}}
+                                                </div>
+                                                <div class="text-capitalize"><b>Trade Name : </b> {{k.Trade_Name}}</div>
+                                                <div>
+                                                    <b>Bank Detail : </b>
+                                                    <hr class="mt-0 mb-1">
+                                                    <div><b>AC NO : </b><span>{{k.Account_Number}}</span></div>
+                                                    <div><b>IFSC : </b><span>{{k.IFSC}}</span></div>
+                                                    <div><b>Branch :</b><span>{{k.Branch}}</span></div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+
+                                        {% endif %}
+
+                                        <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12 mt-1 float-end"
+                                            data-bs-toggle="modal" data-bs-target="#addgst" data-action="add"
+                                            vendor-id="{{i.id}}"><i class="fa fa-plus me-1"></i> GST</a>
+                            </td>
+                            <td>
+                                {% if i.Material_Supplying.all %}
+                                <div id="carouselExampleContross{{i.id}}" class="carousel slide" data-bs-ride="carousel"
+                                    data-bs-interval="false">
+                                    <div class="carousel-inner">
+                                        {% if i.Material_Supplying.all|length > 1 %}
+                                        <div class="d-block">
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#carouselExampleContross{{i.id}}" data-bs-slide="prev">
+                                                <i class="fa fa-lg fa-angle-left"></i>
+                                            </button>
+                                            <button class="carousel-control-next float-end" type="button"
+                                                data-bs-target="#carouselExampleContross{{i.id}}" data-bs-slide="next">
+                                                <i class="fa fa-lg fa-angle-right"></i>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                        {% for k in i.Material_Supplying.all %}
+                                        {% if forloop.counter == 1 %}
+                                        <div class="carousel-item active">
+                                            {% else %}
+                                            <div class="carousel-item">
+                                                {% endif %}
+                                                <div class="text-capitalize">
+                                                    {{k.Material_Name}}( {{k.Material_Type}} )
+                                                    <a href="" class="ms-2 editmaterialsuplyingbtn text-warning"
+                                                        data-bs-toggle="modal" data-bs-target="#editmaterialsupplying"
+                                                        data-action="edit" material-id="{{k.id}}"><i
+                                                            class="fa fa-edit"></i></a>
+                                                </div>
+                                                <div><b>GST : </b><span>{{k.Material_GST}}</span></div>
+                                                <b>Quality : </b>
+                                                <ul>
+                                                    {% for j in k.Quality.all %}
+                                                    <li>{{j.Quality}} - (Rs.{{j.Price}})</li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <b>Materia From : </b>
+                                                <ul class="mb-0">
+                                                    {% for j in k.Material_From.all %}
+                                                    <li>
+                                                        <b>Origin : </b>{{j.Type}} <br>
+                                                        {{j.Location}}
+                                                        <a href="" class="text-warning fa-12 ms-1"
+                                                            data-bs-toggle="modal" data-bs-target="#materialfrom"
+                                                            data-action="edit" vendor-id="{{i.id}}"
+                                                            data-phone="{{j.Phone}}" data-location="{{j.Location}}"
+                                                            data-type="{{j.Type}}" data-email="{{j.Email}}"
+                                                            data-name="{{j.Name}}" data-bs-whatever="{{j.id}}"><i
+                                                                class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <div class="mat_from mt-2">
+                                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12 mt-0 ms-3"
+                                                        data-bs-toggle="modal" data-bs-target="#materialfrom"
+                                                        data-action="add" matsu-id="{{k.id}}" vendor-id="{{i.id}}"><i
+                                                            class="fa fa-plus me-2"></i>From
+                                                    </a>
+                                                </div>
+                                                <b>Materia To : </b>
+                                                <ul class="mb-0">
+                                                    {% for j in k.Material_To.all %}
+                                                    <li>{{j.District}}
+                                                        <a href="" class="text-danger ms-1 deletesublocation"
+                                                            data-bs-target="#materialto" data-action="delete"
+                                                            vendor-id="{{j.id}}"><i class="fa fa-trash"></i></a> <br>
+                                                        <b>Sub Loc : </b>{% for k in j.SubLocation.all %}
+                                                        {{k}}{{ forloop.last|yesno:",&#44;"|safe }}
+                                                        {% endfor %}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <div class="mat_to mt-2">
+                                                    <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12 mt-0 ms-3"
+                                                        data-bs-toggle="modal" data-bs-target="#materialto"
+                                                        data-action="add" matsu-id="{{k.id}}" vendor-id="{{i.id}}"><i
+                                                            class="fa fa-plus me-2"></i>To
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <a href="" class="btn btn-sm btn-primary px-1 py-0 fa-12 mt-2 float-end"
+                                            data-bs-toggle="modal" data-bs-target="#materialsupplying" data-action="add"
+                                            vendor-id="{{i.id}}"><i class="fa fa-plus me-2"></i> Material
+                                        </a>
+                            </td>
+                            <td>
+                                <a href="view-vendor" data-id="{{i.id}}" class="me-2 text-success veiwvendor"><i
+                                        class="fa fa-lg fa-eye"></i></a>
+                                <a href="update-vendor/{{i.id}}" class="me-2 text-warning add_agency"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                                {% if user.is_superuser %}
+                                <a href="{{i.id}}" class="text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="{{i.id}}"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                {% else %}
+                                <a href="{{i.id}}" class="text-danger deleteForUser" data-method="Delete"
+                                    data-url="vendors"><i class="fa fa-lg fa-trash"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if obj.vendor_obj.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if obj.vendor_obj.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{obj.vendor_obj.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in obj.vendor_obj.paginator.page_range %}
+                        {% if obj.vendor_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if obj.vendor_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{obj.vendor_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- vendorView -->
+<div class="modal fade" id="vendorviewmodel" tabindex="-1" aria-labelledby="vendorviewmodelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vendorviewmodelLabel">Vendor Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- view staff  -->
+<div class="modal fade" id="viewStaff" tabindex="-1" aria-labelledby="viewStaff" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 py-2">
+                <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="text-center mb-3">
+                    <img src="" id="image" alt="" class="w-25 img-thumbnail">
+                </div>
+                <div class="text-center">
+                    <h5 id="name">Surendar</h5>
+                    <p id="position" class="mb-1">( Super Visior )</p>
+                    <div>
+                        <a href=""><i class="fa fa-envelope"></i> :
+                            <span id="email"></span>
+                        </a>
+                        <a href="" class="ms-2"><i class="fa fa-phone"></i> :
+                            <span id="phone"></span>
+                        </a>
+
+                    </div>
+                    <div class="mt-2 mb-4">
+                        <i class="fa fa-map"></i> :
+                        <span id="address"></span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- edit and delete model -->
+<div class="modal fade" id="EditStaffModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Staff </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <form id="StaffForm" method="post" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" id="agency_id">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 alertMessage">
+                            <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                            </div>
+                        </div>
+                        <div class="col-6 my-1">
+                            <label for="Vendor Type" class="form-label mb-1 ">Vendor Type</label>
+                            <select class="form-select" aria-label="Default select example" name="Position"
+                                id="vendor_type">
+                                <option selected disabled value="">Staff Position</option>
+                                <option value="Account">Account</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Purchase">Purchase</option>
+                                <option value="Supervisior">Supervisior</option>
+                                <option value="Qc">Qc</option>
+                                <option value="Bill Delivery">Bill Delivery</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <label for="Name" class="form-label mb-1">Name</label>
+                            <input type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Name" name="Name">
+                        </div>
+                        <div class="col-md-4 my-1">
+                            <label for="Mobile" class="form-label mb-1 ">Mobile</label>
+                            <input type="text" class="form-control" id="Mobile" pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" name="Phone">
+                        </div>
+                        <div class="col-md-4 my-1">
+                            <label for="Email" class="form-label mb-1 ">Email</label>
+                            <input type="email" class="form-control" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" id="Email" name="Email">
+                        </div>
+                        <div class="col-md-4 my-1">
+                            <label for="Photo" class="form-label mb-1 ">Photo</label>
+                            <input type="file" class="form-control" id="Photo" name="Photo">
+                        </div>
+                        <div class="col-md-12 my-1">
+                            <label for="Address" class="form-label mb-1 ">Address</label>
+                            <input class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-md-3 my-1">
+                            <label for="Address" class="form-label mb-1">City</label>
+                            <input class="form-control" id="city" pattern="^[A-Za-z_ ]+"
+                                title="City contains alphabets only" name="City">
+                        </div>
+                        <div class="col-md-3 my-1">
+                            <label for="Address" class="form-label mb-1 ">State</label>
+                            <input class="form-control" pattern="^[A-Za-z_ ]+" title="State contains alphabets only"
+                                id="state" name="State">
+                        </div>
+                        <div class="col-md-3 my-1">
+                            <label for="Address" class="form-label mb-1 ">Zip</label>
+                            <input class="form-control" pattern="^\d{6}$" title="Zip contains six numbers only" id="zip"
+                                name="Zip">
+                        </div>
+                        <div class="col-md-3 my-1">
+                            <label for="Address" class="form-label mb-1 ">Country</label>
+                            <input class="form-control" id="country" pattern="^[A-Za-z_ ]+"
+                                title="Country contains alphabets only" name="Country">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end my-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete me-2  my-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- add material From -->
+<div class="modal fade" id="materialfrom" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="materialFrom">
+                    <input type="hidden" class="form-control" id="recipient-name">
+                    <div class="my-1">
+                        <label for="message-text" class="col-form-label pt-1">Origin Type</label>
+                        <input type="text" class="form-control" id="origin_type" name="Type">
+                    </div>
+                    <!-- <div class="my-1">
+                        <label for="message-text" class="col-form-label">Material Name</label>
+                        <input type="text" class="form-control" name="Name" id="name">
+                    </div> -->
+                    <!-- <div class="row my-1">
+                        <div class="col-6 pe-1">
+                            <label for="message-text" class="col-form-label">Phone</label>
+                            <input type="text" pattern="^\d{10}$" title="Enter your valid 10 digit mobile number"
+                                class="form-control" id="phone" name="Phone">
+                        </div>
+                        <div class="col-6 ps-1">
+                            <label for="message-text" class="col-form-label">Email</label>
+                            <input type="email" class="form-control" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" id="email" name="Email">
+                        </div>
+                    </div> -->
+                    <div class="my-1 mb-3">
+                        <label for="message-text" class="col-form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="Location">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end my-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete me-2  my-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- add material To -->
+<div class="modal fade" id="materialto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Material To</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="materialtoform">
+                    <div class="my-1">
+                        <label for="message-text" class="col-form-label">District</label>
+                        <input type="text" class="form-control" name="district" id="location">
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationTagsNew" class="form-label">Sub Location</label>
+                        <select class="form-select materialtomultitag" id="validationTagsNew" name="tags_new[]" multiple
+                            data-allow-new="true" data-allow-clear="true">
+                            <option disabled hidden value="">Choose a tag...</option>
+                        </select>
+                        <small>Please hit enter to add next sub location</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end mt-0 mb-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete me-2 mt-0 mb-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Material Supplying Model -->
+<div class="modal fade" id="materialsupplying" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Add Material Supplying</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="materialmodel">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <input type="hidden" class="form-control" id="recipient-name">
+                            <div class="my-1">
+                                <label for="message-text" class="col-form-label">Material Type</label>
+                                <select class="form-select" id="mat_type" aria-label="Default select example">
+
+                                    <option value="N">Natural</option>
+                                    <option value="M">Manufactured</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-8 pe-2">
+                            <label for="message-text" class="col-form-label pt-1">Material Name</label>
+                            <input required type="text" class="form-control" id="mat_name">
+                        </div>
+                        <div class="col-2 px-1">
+                            <label for="message-text" class="col-form-label pt-1">HSNC</label>
+                            <input required type="number" class="form-control" id="hsn_code">
+                        </div>
+                        <div class="col-2 ps-2">
+                            <label for="message-text" class="col-form-label pt-1">GST</label>
+                            <input required type="number" class="form-control" id="gst">
+                        </div>
+                        <div class="col-6 ">
+                            <label for="message-text" class="col-form-label pt-1">Quality Type</label>
+                            <input type="text" class="form-control" id="qu_type">
+                        </div>
+                        <div class="col-5 ps-0">
+                            <label for="message-text" class="col-form-label pt-1">Price</label>
+                            <input type="number" class="form-control" id="price">
+                        </div>
+                        <div class="col-1 ps-0 mt-2">
+                            <button class="btn btn-primary btn-sm mt-4" id="add_to_price"><i
+                                    class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col-12">
+                            <table class="table mb-0 table-sm table-bordered mt-2 table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Quality</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="material_qu">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="btn btn-primary btn-sm action float-end onlyclickbtn mb-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete me-2 mb-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Material Supplying Model -->
+<div class="modal fade" id="editmaterialsupplying" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Material Supplying</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form id="editmaterialmodel">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <input type="hidden" class="form-control" id="recipient-name">
+                            <div class="my-1">
+                                <label for="message-text" class="col-form-label">Material Type</label>
+                                <select class="form-select" id="mat_type" aria-label="Default select example">
+
+                                    <option value="N">Natural</option>
+                                    <option value="M">Manufactured</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-8 pe-2">
+                            <label for="message-text" class="col-form-label pt-1">Material Name</label>
+                            <input required type="text" class="form-control" id="mat_name">
+                        </div>
+                        <div class="col-2 px-1">
+                            <label for="message-text" class="col-form-label pt-1">HSNC</label>
+                            <input required type="number" class="form-control" id="hsn_code">
+                        </div>
+                        <div class="col-2 ps-2">
+                            <label for="message-text" class="col-form-label pt-1">GST</label>
+                            <input required type="number" class="form-control" id="gst">
+                        </div>
+                        <div class="col-6 ">
+                            <label for="message-text" class="col-form-label pt-1">Quality Type</label>
+                            <input type="text" class="form-control" id="qu_type">
+                        </div>
+                        <div class="col-5 ps-0">
+                            <label for="message-text" class="col-form-label pt-1">Price</label>
+                            <input type="number" class="form-control" id="price">
+                        </div>
+                        <div class="col-1 ps-0 mt-2">
+                            <button class="btn btn-primary btn-sm mt-4" id="add_to_price"><i
+                                    class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col-12">
+                            <table class="table mb-0 table-sm table-bordered mt-2 table-striped materialqualitytable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Quality</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="material_qu">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm action float-end  mb-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete me-2 mb-3 float-end materialdeletebtn"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add gst detail -->
+<div class="modal fade" id="addgst" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="alertMessage mt-2">
+                    <div class="alert alert-success d-none alert-dismissible fade show mb-0 py-2" role="alert">
+
+                    </div>
+                </div>
+                <form class="my-2" id="addgstbank">
+                    <div class="row">
+                        <input type="hidden" class="form-control" id="agency_id" name="agency_id">
+                        <div class="col-4 my-1 pe-1">
+                            <label for="GST_No">GST No</label>
+                            <input required type="text" class="form-control" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="Gst number does not contain special charecters and space" id="GST_No"
+                                name="GST_No">
+                        </div>
+                        <div class="col-4 my-1 px-1">
+                            <label for="Name">GST Name</label>
+                            <input required type="text" pattern="^[A-Za-z_ ]+" title="Name contains alphabets only"
+                                class="form-control" id="Name" name="Name">
+                        </div>
+                        <div class="col-4 ps-1 my-1">
+                            <label for="Phone">GST Phone No</label>
+                            <input required type="text" class="form-control" pattern="^\d{10}$"
+                                title="Enter your valid 10 digit mobile number" id="Phone" name="Phone">
+                        </div>
+                        <div class="col-4 my-1 pe-1">
+                            <label for="Email">GST Email</label>
+                            <input required type="email" class="form-control" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+                                title="Please enter valid email address" id="Email" name="Email">
+                        </div>
+                        <div class="col-4 my-1 px-1">
+                            <label for="Trade_Name">Trade Name</label>
+                            <input required type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Trade_Name" name="Trade_Name">
+                        </div>
+                        <div class="col-4 my-1 ps-1">
+                            <label for="Leggal_Name">Legal Name</label>
+                            <input required type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Leggal_Name" name="Leggal_Name">
+                        </div>
+                        <h6 class="mb-1 fw-bold mt-2">GST Bank</h6>
+                        <div class="col-3 my-1 pe-1">
+                            <label for="Bank_Account">GST Bank Acc</label>
+                            <input required type="text" class="form-control" id="Bank_Account" name="Bank_Account">
+                        </div>
+                        <div class="col-3 my-1 px-1">
+                            <label for="Account_Number">ACC No</label>
+                            <input required type="number" class="form-control" id="Account_Number" name="Account_Number">
+                        </div>
+                        <div class="col-3 my-1 px-1">
+                            <label for="IFSC">IFSC Code</label>
+                            <input required type="text" class="form-control" pattern="^[a-zA-Z0-9_.-]*$"
+                                title="IFSC code does not contain special charecters and space" id="IFSC" name="IFSC">
+                        </div>
+                        <div class="col-3 my-1 ps-1">
+                            <label for="Branch">Branch</label>
+                            <input required type="text" class="form-control" id="Branch" name="Branch">
+                        </div>
+                        <div class="col-6 pe-1">
+                            <label for="Holder_Name">Acc Holder Name</label>
+                            <input required type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="Name contains alphabets only" id="Holder_Name" name="Holder_Name">
+                        </div>
+                        <div class="col-6 ps-1">
+                            <label for="Address">Address</label>
+                            <input required type="text" class="form-control" id="Address" name="Address">
+                        </div>
+                        <div class="col-3 pe-1">
+                            <label for="City">City</label>
+                            <input required type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="City contains alphabets only" id="City" name="City">
+                        </div>
+                        <div class="col-3 px-1">
+                            <label for="State">State</label>
+                            <input required type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="City contains alphabets only" id="State" name="State">
+                        </div>
+                        <div class="col-3 px-1">
+                            <label for="Zip">Zip</label>
+                            <input required type="text" class="form-control" pattern="^\d{6}$" id="Zip"
+                                title="Zip contains six numbers only" name="Zip">
+                        </div>
+                        <div class="col-3 ps-1">
+                            <label for="Country">Country</label>
+                            <input type="text" class="form-control" pattern="^[A-Za-z_ ]+"
+                                title="City contains alphabets only" id="Country" name="Country">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm action float-end my-3">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm delete deletegst me-2 my-3 float-end"><i
+                            class="fa fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<style>
+    #materialto>div>div>div.modal-body.py-0>form>div.mb-3>div:nth-child(3) {
+        display: none;
+    }
+</style>
+
+<script type="module">
+    import Tags from "{% static 'js/tags.min.js' %}";
+    Tags.init("select[multiple]:not(#regular)");
+    // Multiple inits should not matter
+    Tags.init("select[multiple]:not(#regular)");
+
+    // Reset does not fire a change input
+    document.getElementById("regular").addEventListener("change", function (ev) {
+        // console.log(this.selectedOptions);
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.vendorMenu').addClass('active')
+        var base = window.location.protocol + "//" + window.location.host + '/';
+        var url = base + 'api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+        $('#example').DataTable()
+
+        // View Vendor
+        $('.veiwvendor').click(function (event) {
+            event.preventDefault()
+            let vendorid = $(this).attr('data-id')
+            $.get('/api/vendors/' + vendorid, function (data) {
+                // console.table(data)
+                $('#vendorviewmodel').modal('show')
+                $('#vendorviewmodel .modal-body').html(`
+                <div class="row">
+                    <h6 class="fw-bold text-primary mb-1">Vendor Details</h6>
+                    <div class="col-4">
+                        <div><b>User Type : </b>${data.Vendor_Type}</div>
+                        <div><b>Vendor Name : </b>${data.Vendor_Name}</div>
+                        <div><b>Vendor Category : </b>${data.Vendor_Category}</div>
+                    </div>
+                    <div class="col-4">
+                        <div><b>Company Name : </b>${data.Company_Name}</div>
+                        <div><b>Phone : </b>${data.Phone}</div>
+                        <div><b>Email : </b>${data.Email}</div>
+                    </div>
+                    <div class="col-4">
+                        <div><b>Payment Capabilities : </b>${data.Payment_Capabilities}</div>
+                        <div><b>No Of Trucks : </b>${data.No_Of_Trucks}</div>
+                        <div><b>Address : </b>${data.Address}, ${data.City}, ${data.Zip}, ${data.State}, ${data.Country}</div>
+                    </div>
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Material Supplying</h6>
+                    <table class="table table-sm table-bordered materialsuplying">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Material Name</th>
+                                <th>Material Type</th>
+                                <th>HSN Code</th>
+                                <th>GST</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_po_material">
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Gst Details</h6>
+                    <div class="table-responsive">
+                    <table class="table table-sm table-bordered gstDetails ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Bank Account</th>
+                                <th>Branch</th>
+                                <th>Holder Name</th>
+                                <th>Leggal Name</th>
+                                <th>Trade Name</th>
+                                <th>Account Number</th>
+                                <th>IFSC</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_po_material">
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                <hr my-2/>
+                <div>
+                    <h6 class="fw-bold text-primary mb-1">Staff Details</h6>
+                    <table class="table table-sm table-bordered satffDetails ">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>  
+                        <tbody id="append_po_material">
+                            
+                        </tbody>
+                    </table>    
+                </div>
+                `)
+                for (let i = 0; i < data.GST_No.length; i++) {
+                    $('.gstDetails tbody').append(`
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data.GST_No[i].Bank_Account}</td>
+                            <td>${data.GST_No[i].Branch}</td>
+                            <td>${data.GST_No[i].Holder_Name}</td>
+                            <td>${data.GST_No[i].Leggal_Name}</td>
+                            <td>${data.GST_No[i].Trade_Name}</td>
+                            <td>${data.GST_No[i].Account_Number}</td>
+                            <td>${data.GST_No[i].IFSC}</td>
+                            <td>${data.GST_No[i].Phone}</td>
+                            <td>${data.GST_No[i].Email}</td>
+                            <td>${data.GST_No[i].Address}, ${data.GST_No[i].City}, ${data.GST_No[i].Zip}, ${data.GST_No[i].State}, ${data.GST_No[i].Country}</td>
+                        </tr>
+                    `)
+                }
+                for (let i = 0; i < data.Vendor_Staff_Detail.length; i++) {
+                    $('.satffDetails tbody').append(`
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data.Vendor_Staff_Detail[i].Name}</td>
+                            <td>${data.Vendor_Staff_Detail[i].Position}</td>
+                            <td>${data.Vendor_Staff_Detail[i].Phone}</td>
+                            <td>${data.Vendor_Staff_Detail[i].Email}</td>
+                            <td>${data.Vendor_Staff_Detail[i].Address}, ${data.Vendor_Staff_Detail[i].City}, ${data.Vendor_Staff_Detail[i].Zip}, ${data.Vendor_Staff_Detail[i].State}, ${data.Vendor_Staff_Detail[i].Country}</td>
+                        </tr>
+                    `)
+                }
+                for (let i = 0; i < data.Material_Supplying.length; i++) {
+                    $('.materialsuplying tbody').append(`
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data.Material_Supplying[i].Material_Name}</td>
+                            <td>${data.Material_Supplying[i].Material_Type == 'M' ? 'Manufactured' : 'Natural'}</td>
+                            <td>${data.Material_Supplying[i].HSNCode}</td>
+                            <td>${data.Material_Supplying[i].Material_GST}%</td>
+                        </tr>
+                    `)
+
+                }
+            })
+        })
+
+        // view staff
+        var viewStaff = document.getElementById('viewStaff')
+        viewStaff.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var name = button.getAttribute('data-name')
+            var email = button.getAttribute('data-email')
+            var phone = button.getAttribute('data-phone')
+            var position = button.getAttribute('data-position')
+            var avatar = button.getAttribute('data-avatar')
+            var address = button.getAttribute('data-address')
+
+            $('#viewStaff #name').text(name)
+            $('#viewStaff #position').text('( ' + position + ' )')
+            $('#viewStaff #email').text(email)
+            $('#viewStaff #phone').text(phone)
+            $('#viewStaff #address').text(address)
+            var img_src = base + 'media/' + avatar
+            $('#viewStaff #image').attr('src', img_src)
+        })
+
+        // edit staff
+        var editStaff = document.getElementById('EditStaffModal')
+        editStaff.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var _action = button.getAttribute('data-action')
+            var _staff_id = button.getAttribute('data-bs-whatever')
+            var vendor_id = button.getAttribute('vendor-id')
+
+            if (_action == 'add') {
+
+                $('#EditStaffModal #Name, #EditStaffModal #vendor_type, #EditStaffModal #Email, #EditStaffModal #Mobile, #EditStaffModal #Address, #EditStaffModal #city, #EditStaffModal #state, #EditStaffModal #zip, #EditStaffModal #country').val('')
+                $('#EditStaffModal .delete').addClass('d-none')
+                $('#EditStaffModal .action').text('Add').attr('data-action', 'add').attr('vendor-id', vendor_id)
+                $('#EditStaffModal #exampleModalLabel').text('Add Staff Modal')
+                CU_Function('add')
+
+            } else if (_action == 'edit') {
+                let posi = button.getAttribute('data-position')
+                // console.log(posi)
+                var _staffid = button.getAttribute('data-bs-whatever')
+                $('#EditStaffModal #Name').val(button.getAttribute('data-name'))
+                $('#EditStaffModal #vendor_type').val(posi)
+                $('#EditStaffModal #Email').val(button.getAttribute('data-email'))
+                $('#EditStaffModal #Mobile').val(button.getAttribute('data-phone'))
+                $('#EditStaffModal #Address').val(button.getAttribute('data-address'))
+                $('#EditStaffModal #city').val(button.getAttribute('data-city'))
+                $('#EditStaffModal #state').val(button.getAttribute('data-state'))
+                $('#EditStaffModal #zip').val(button.getAttribute('data-zip'))
+                $('#EditStaffModal #country').val(button.getAttribute('data-country'))
+                $('#EditStaffModal .delete').removeClass('d-none').attr('data-staff-id', _staff_id).attr('data-action', 'delete')
+                $('#EditStaffModal .action').text('Edit').attr('data-action', 'edit').attr('staff-id', _staffid)
+                $('#EditStaffModal #exampleModalLabel').text('Edit Staff Modal')
+                CU_Function('edit')
+            }
+            D_Function('vendor-staff')
+        })
+
+        // material from
+        var materialFrom = document.getElementById('materialfrom')
+        materialFrom.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var _action = button.getAttribute('data-action')
+            var vendor_id = button.getAttribute('matsu-id')
+
+            if (_action == 'add') {
+                $('#materialFrom .delete').addClass('d-none')
+                $('#materialFrom .action').text('Add').attr('data-action', 'add').attr('matsu-id', vendor_id)
+                $('#materialfrom #exampleModalLabel').text('Add Material From')
+
+                CU_Function('add')
+
+            } else if (_action == 'edit') {
+                var _materialid = button.getAttribute('data-bs-whatever')
+                $('#materialFrom #name').val(button.getAttribute('data-name'))
+                $('#materialFrom #location').val(button.getAttribute('data-location'))
+                $('#materialFrom #email').val(button.getAttribute('data-email'))
+                $('#materialFrom #phone').val(button.getAttribute('data-phone'))
+                $('#materialFrom #origin_type').val(button.getAttribute('data-type'))
+                $('#materialFrom .delete').removeClass('d-none').attr('material-from-id', _materialid).attr('data-action', 'delete')
+                $('#materialFrom .action').text('Edit').attr('data-action', 'edit').attr('material-from-id', _materialid)
+                $('#materialfrom #exampleModalLabel').text('Edit Material From')
+                CU_Function('edit')
+            }
+            D_Function('vendor-material-from')
+        })
+
+        $('#materialfrom').on('hidden.bs.modal', function () {
+            $(this).find('#materialFrom').trigger('reset');
+            $('#materialFrom #name option:last').remove()
+        })
+
+        // material to
+        var materialTo = document.getElementById('materialto')
+        materialTo.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var _action = button.getAttribute('data-action')
+            // var _staff_id = button.getAttribute('data-bs-whatever')
+            var vendor_id = button.getAttribute('matsu-id')
+            if (_action == 'add') {
+
+                $('#materialto .delete').addClass('d-none')
+                $('#materialto .action').text('Add').attr('data-action', 'add').attr('matsu-id', vendor_id)
+                $('#materialto #exampleModalLabel').text('Add Material To')
+                CU_Function('add')
+            }
+        })
+
+        var materialsupplying = document.getElementById('materialsupplying')
+        materialsupplying.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var _action = button.getAttribute('data-action')
+            // var _staff_id = button.getAttribute('data-bs-whatever')
+            var vendor_id = button.getAttribute('vendor-id')
+            if (_action == 'add') {
+                $('#materialsupplying .delete').addClass('d-none')
+                $('#materialsupplying .action').text('Add').attr('data-action', 'add').attr('vendor-id', vendor_id)
+                $('#materialsupplying #exampleModalLabel').text('Add Material')
+                CU_Function('add')
+            }
+            add_multiple_into_table()
+        })
+
+        // Edit Material Supplying
+        $('.editmaterialsuplyingbtn').click(function (event) {
+            let matid = $(this).attr('material-id')
+            $.get(`/post-api/vendor-material-supplying/${matid}`, function (data, status) {
+                let brfore_count = data.count
+                // console.log(brfore_count)
+                mat_data = data
+                $('#editmaterialmodel #mat_type').val(mat_data.Material_Type)
+                $('#editmaterialmodel #mat_name').val(mat_data.Material_Name)
+                $('#editmaterialmodel #hsn_code').val(mat_data.HSNCode)
+                $('#editmaterialmodel #gst').val(mat_data.Material_GST)
+                for (j of mat_data.Quality) {
+                    $.get(`/api/vendor-material-quality/${j}`, function (data) {
+                        $('#editmaterialsupplying .materialqualitytable tbody').append(`
+                        <tr class="supplyrow${data.id}"">
+                            <td>${data.Quality}</td>
+                            <td>${data.Price}</td>
+                            <td><a href="" data-id="${data.id}" class="material_quality_delete">
+                            <i class="fa fa-trash text-danger"></i>   
+                            </a></td>
+                        </tr>`)
+                        deleteSuplyingMaterial()
+                    })
+                }
+
+                // quality delete
+                $('.materialdeletebtn').click(function (event) {
+                    event.preventDefault()
+                    let person = prompt("Please Enter Your Name ?", "");
+                    if (person == '{{request.user.username}}') {
+                        Delete_Function('/post-api/vendor-material-supplying/' + matid, { 'id': matid })
+                        alert('Deleted Successfully. !!!')
+                        location.reload()
+                    }
+                    else {
+                        alert('Invalid Name. !!!')
+                    }
+                    event.stopImmediatePropagation()
+                })
+
+                // quality add
+                let qualityarr = []
+                $('#editmaterialmodel #add_to_price').click(function (e) {
+                    e.preventDefault()
+                    var quality = $('#editmaterialmodel #qu_type').val()
+                    var price = $('#editmaterialmodel #price').val()
+                    if (quality != null) {
+                        $('#editmaterialmodel #material_qu').append('<tr><td>' + quality + '</td><td>' + price + '</td></tr>')
+                        $('#editmaterialmodel #price, #editmaterialmodel #qu_type').val('')
+                    }
+                    qualityarr.push({
+                        'Quality': quality,
+                        'Price': price
+                    })
+                })
+
+                // Material form update
+                $('#editmaterialmodel').submit(function (event) {
+                    event.preventDefault()
+                    let params = JSON.stringify({
+                        'Material_Type': $('#editmaterialmodel #mat_type').val(),
+                        'Material_Name': $('#editmaterialmodel #mat_name').val(),
+                        'HSNCode': $('#editmaterialmodel #hsn_code').val(),
+                        'Material_GST': $('#editmaterialmodel #gst').val(),
+                    })
+
+                    // Material supplying update
+                    Update_Function(`/post-api/vendor-material-supplying/${matid}/`, params)
+
+                    let newqualities = [...mat_data.Quality]
+                    for (i of qualityarr) {
+                        let out = POST_Function(`/api/vendor-material-quality/`, i)
+                        newqualities.push(out)
+                    }
+
+                    // quality update
+                    let qualityparams = JSON.stringify({
+                        'Quality': newqualities,
+                    })
+                    Update_Function(`/post-api/vendor-material-supplying/${matid}/`, qualityparams)
+
+                    location.reload()
+                })
+
+                var myModalEl = document.getElementById('editmaterialsupplying')
+                myModalEl.addEventListener('hidden.bs.modal', function (event) {
+                    $('#editmaterialsupplying .materialqualitytable tbody').empty()
+                })
+            })
+        })
+
+        function deleteSuplyingMaterial() {
+            $('.material_quality_delete').click(function (event) {
+                event.preventDefault()
+                let matid = $(this).attr('data-id')
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+                    Delete_Function('/api/vendor-material-quality/' + matid, { 'id': matid })
+                    alert('Deleted Successfully. !!!')
+                    $('.supplyrow' + matid).remove()
+                }
+                else {
+                    alert('Invalid Name. !!!')
+                }
+                event.stopImmediatePropagation()
+            })
+        }
+
+        var addgst = document.getElementById('addgst')
+        addgst.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var _action = button.getAttribute('data-action')
+            // var _staff_id = button.getAttribute('data-bs-whatever')
+            var vendor_id = button.getAttribute('vendor-id')
+            if (_action == 'add') {
+
+                $('#addgst .delete').addClass('d-none')
+                $('#addgst .action').text('Add').attr('data-action', 'add').attr('vendor-id', vendor_id)
+                $('#addgst #exampleModalLabel').text('Add New GST Bank  ')
+                CU_Function('add')
+
+            } else if (_action == 'edit') {
+                var _gstid = button.getAttribute('gst-id')
+                $('#addgst #Leggal_Name').val(button.getAttribute('data-leggal-name'))
+                $('#addgst #Trade_Name').val(button.getAttribute('data-trade-name'))
+                $('#addgst #Holder_Name').val(button.getAttribute('data-holder-name'))
+                $('#addgst #GST_No').val(button.getAttribute('data-gst-no'))
+                $('#addgst #Phone').val(button.getAttribute('data-phone'))
+                $('#addgst #Name').val(button.getAttribute('data-name'))
+                $('#addgst #Email').val(button.getAttribute('data-email'))
+                $('#addgst #Bank_Account').val(button.getAttribute('data-bank-account'))
+                $('#addgst #Account_Number').val(button.getAttribute('data-account-no'))
+                $('#addgst #IFSC').val(button.getAttribute('data-ifsc'))
+                $('#addgst #Branch').val(button.getAttribute('data-branch'))
+                $('#addgst #Address').val(button.getAttribute('data-address'))
+                $('#addgst #City').val(button.getAttribute('data-city'))
+                $('#addgst #State').val(button.getAttribute('data-state'))
+                $('#addgst #Zip').val(button.getAttribute('data-zip'))
+                $('#addgst #Country').val(button.getAttribute('data-country'))
+
+                $('#addgst .delete').removeClass('d-none').attr('gst-id', _gstid).attr('data-action', 'delete')
+                $('#addgst .action').text('Edit').attr('data-action', 'edit').attr('gst-id', _gstid)
+                $('#addgst #exampleModalLabel').text('Edit GST Detail')
+                CU_Function('edit')
+            }
+            D_Function('vendor-gst')
+        })
+
+        // material from delete
+        $('.deletematerial').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('material-id')
+            let _url = url + 'vendor-material-supplying/' + _id + '/'
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                var params = { 'id': _id }
+                Delete_Function(_url, params)
+                alert('Deleted Successfully. !!!')
+                location.reload()
+            }
+            else {
+                alert('Invalid Name. !!!')
+            }
+        })
+
+        // material from delete
+        $('.deletesublocation').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('vendor-id')
+            let _url = url + 'vendor-material-to/' + _id + '/'
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                var params = { 'id': _id }
+                Delete_Function(_url, params)
+                alert('Deleted Successfully. !!!')
+                location.reload()
+            }
+            else {
+                alert('Invalid Name. !!!')
+            }
+        })
+
+        //  delete gst account
+        $('.deletegst').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('gst-id')
+            let _url = base + 'post-api/vendor-gst/' + _id + '/'
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                var params = { 'id': _id }
+                Delete_Function(_url, params)
+                alert('Deleted Successfully. !!!')
+                location.reload()
+            }
+            else {
+                alert('Invalid Name. !!!')
+            }
+        })
+
+        //  delete vendor for admin
+        $('.deleteMethod').click(function (e) {
+            e.preventDefault()
+            var _id = $(this).attr('data-bs-whatever')
+            let _url = url + 'vendors/' + _id + '/'
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                var params = { 'id': _id }
+                Delete_Function(_url, params)
+                alert('Deleted Successfully. !!!')
+                location.reload()
+            }
+            else {
+                alert('Invalid Name. !!!')
+            }
+        })
+
+        function CU_Function(action) {
+
+            if (action == 'edit') {
+
+                $('#StaffForm').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _staffid = $('#StaffForm .action').attr('staff-id')
+                    let action_url = url + 'vendor-staff/' + _staffid + '/'
+                    var object = {};
+                    data.forEach(function (value, key) {
+                        object[key] = value;
+                    });
+
+                    if (object?.Photo?.name == '') {
+                        delete object.Photo
+                        obj = JSON.stringify(object)
+                        Update_Function(action_url, JSON.stringify(object))
+                    } else {
+                        Update_File_Function(action_url, data)
+                    }
+                    $('.alertMessage .alert').text('Staff Updated Successfully').removeClass('d-none')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+
+                })
+
+                // edit form 
+                $('#materialFrom').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _materialFromid = $('#materialFrom .action').attr('material-from-id')
+                    let action_url = url + 'vendor-material-from/' + _materialFromid + '/'
+                    var object = {};
+                    data.forEach(function (value, key) {
+                        object[key] = value;
+                    });
+                    Update_Function(action_url, JSON.stringify(object))
+                    $('.alertMessage .alert').text('Staff Updated Successfully').removeClass('d-none')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+
+                })
+
+
+                $('#addgstbank').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+
+                    var gst_id = $('#addgstbank .action').attr('gst-id')
+                    let action_url = base + 'post-api/vendor-gst/' + gst_id + '/'
+
+                    var object = {};
+                    data.forEach(function (value, key) {
+                        object[key] = value;
+                    });
+                    // console.log(object)
+                    Update_Function(action_url, JSON.stringify(object))
+                    $('.alertMessage .alert').text('Vendor GST Updated Successfully').removeClass('d-none')
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                })
+
+            } else if (action == 'add') {
+
+                // add staff detail
+                $('#StaffForm').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var vendor_id = $('#StaffForm .action').attr('vendor-id')
+                    let action_url = url + 'vendor-staff/'
+                    var id = Create_Function(action_url, data)
+                    if (id) {
+                        var dynamic_url = base + 'post-api/vendors/' + vendor_id + '/'
+                        var data = View_Vendor_Info(id, dynamic_url)
+                        let vendor_staff_info = data?.Vendor_Staff_Detail
+                        vendor_staff_info.push(id)
+                        // console.log(vendor_staff_info)
+                        patch = { ['Vendor_Staff_Detail']: vendor_staff_info };
+                        Update_Function(dynamic_url, JSON.stringify(patch))
+                        $('.alertMessage .alert').text('Staff Created Successfully').removeClass('d-none')
+                        setTimeout(() => {
+                            location.reload()
+                        }, 500)
+                    }
+                })
+
+                // add materialFrom
+                $('#materialFrom').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _vendorid = $('#materialFrom .action').attr('matsu-id')
+                    var matfromid = Create_Function('/api/vendor-material-from/', data)
+
+                    $.get('/post-api/vendor-material-supplying/' + _vendorid, function (data, status) {
+                        let material_from = data.Material_From
+                        material_from.push(matfromid)
+                        patch = { ['Material_From']: material_from };
+                        Update_Function('/post-api/vendor-material-supplying/' + _vendorid + '/', JSON.stringify(patch))
+                        $('.alertMessage .alert').text('Material From Created Successfully').removeClass('d-none')
+                        setTimeout(() => {
+                            location.reload()
+                        }, 500)
+                    })
+                })
+
+                // add material to
+                $('#materialtoform').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _vendorid = $('#materialtoform .action').attr('matsu-id')
+                    let sub_location = $('#materialtoform #validationTagsNew').val();
+                    // console.log(sub_location)
+                    let district = $('#materialtoform #location').val()
+                    var location_id = []
+                    for (var i = 0; i < sub_location.length; i++) {
+                        var sl = sub_location[i]
+                        var data = { "Location": sl, 'csrfmiddlewaretoken': csrftoken }
+                        let action_url = url + 'vendor-sub-location/'
+                        var sub_id = POST_Function(action_url, data)
+                        location_id.push(sub_id)
+                    }
+                    var params = {
+                        "District": district,
+                        "SubLocation": location_id
+                    }
+                    let action_url = url + 'vendor-material-to/'
+                    var get_material_to_id = POST_Function(action_url, params)
+                    // console.log(get_material_to_id)
+
+                    $.get('/post-api/vendor-material-supplying/' + _vendorid, function (data, status) {
+                        let material_to = data.Material_To
+                        material_to.push(get_material_to_id)
+                        // console.log(material_to)
+                        patch = { ['Material_To']: material_to };
+                        Update_Function('/post-api/vendor-material-supplying/' + _vendorid + '/', JSON.stringify(patch))
+                        $('.alertMessage .alert').text('Material To Created Successfully').removeClass('d-none')
+                        setTimeout(() => {
+                            location.reload()
+                        }, 500)
+                    })
+                })
+
+                // add materials
+                $('#materialmodel').submit(function (e) {
+                    e.preventDefault()
+                    $(this).prop('disabled', true)
+                    // Loop through grabbing everything
+                    var myRows = [];
+                    var $headers = $("#materialmodel th");
+                    var $rows = $("#materialmodel tbody tr").each(function (index) {
+                        $cells = $(this).find("td");
+                        myRows[index] = [];
+                        $cells.each(function (cellIndex) {
+                            myRows[index][$($headers[cellIndex]).html()] = $(this).html();
+                        });
+                    });
+                    var myObj = {};
+                    myObj.myrows = myRows;
+                    var quality = myObj.myrows
+
+                    var action_url = url + 'vendor-material-quality/'
+                    var action_url_1 = url + 'product-quality/'
+
+                    var materail_id = []
+                    var product_quality = []
+
+                    for (var i = 0; i < quality.length; i++) {
+                        var d = quality[i]
+                        cs = { 'csrfmiddlewaretoken': csrftoken }
+                        var settings = $.extend({}, cs, d);
+                        // console.log(settings)
+                        var sub_id = POST_Function(action_url, settings)
+                        var p_id = POST_Function(action_url_1, settings)
+                        materail_id.push(sub_id)
+                        product_quality.push(p_id)
+                    }
+                    // Adding Material Supplying
+                    var action_url = '/post-api/vendor-material-supplying/'
+                    var params = {
+                        Material_Name: $('#mat_name').val(),
+                        Material_Type: $('#mat_type').val(),
+                        HSNCode: $('#hsn_code').val(),
+                        Material_GST: $('#gst').val(),
+                        Quality: materail_id
+                    }
+                    var _id = POST_Function(action_url, params)
+
+                    // Adding Products
+                    let matSupplyArr = []
+                    matSupplyArr.push(_id)
+                    var _vendorid = $('#materialmodel .action').attr('vendor-id')
+
+                    var params_1 = {
+                        Vendor: _vendorid,
+                        Product: $('#mat_name').val(),
+                        Material_Type: $('#mat_type').val(),
+                        HSNCode: $('#hsn_code').val(),
+                        GST: $('#gst').val(),
+                        Material_Supplying: matSupplyArr,
+                        Quality: product_quality
+                    }
+                    // console.log(params_1)
+
+                    var action_url_1 = base + 'post-api/products/'
+                    var id = POST_Function(action_url_1, params_1)
+
+                    if (id) {
+                        Final_Update(_vendorid, _id, 'Material_Supplying', 'Material Added Successfully')
+                    }
+                })
+
+                // add materialFrom
+                $('#addgstbank').submit(function (e) {
+                    e.preventDefault()
+                    var data = new FormData(this);
+                    var _vendorid = $('#addgstbank .action').attr('vendor-id')
+                    let action_url = base + 'post-api/vendor-gst/'
+                    var id = Create_Function(action_url, data)
+
+                    if (id) {
+                        Final_Update(_vendorid, id, 'GST_No', 'Vendor GST Added Successfully')
+                    }
+                })
+            }
+        }
+
+        function Final_Update(vid, id, col, message) {
+            var dynamic_url = base + 'post-api/vendors/' + vid + '/'
+            var data = View_Vendor_Info(id, dynamic_url)
+            let vendor = data?.[col]
+            // console.log(vendor)
+            vendor.push(id)
+            // console.log(vendor)
+            patch = { [col]: vendor };
+            Update_Function(dynamic_url, JSON.stringify(patch))
+            $('.alertMessage .alert').text(message).removeClass('d-none')
+            setTimeout(() => {
+                location.reload()
+            }, 500)
+        }
+
+        function D_Function(action_url) {
+            $('#StaffForm .delete').click(function () {
+                var _id = $(this).attr('data-staff-id')
+                let _url = url + action_url + '/' + _id + '/'
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+                    var params = { 'id': _id }
+                    Delete_Function(_url, params)
+                    alert('Deleted Successfully. !!!')
+                    location.reload()
+                }
+                else {
+                    alert('Invalid Name. !!!')
+                }
+            })
+
+            // material from delete
+            $('#materialFrom .delete').click(function () {
+                var _id = $(this).attr('material-from-id')
+                let _url = url + action_url + '/' + _id + '/'
+                let person = prompt("Please Enter Your Name ?", "");
+                if (person == '{{request.user.username}}') {
+                    var params = { 'id': _id }
+                    Delete_Function(_url, params)
+                    alert('Deleted Successfully. !!!')
+                    location.reload()
+                }
+                else {
+                    alert('Invalid Name. !!!')
+
+                }
+            })
+
+        }
+
+        function Create_Function(action_url, Formdata) {
+            var data;
+            $.ajax({
+                url: action_url,
+                type: 'POST',
+                data: Formdata,
+                async: false,
+                success: function (response) {
+                    data = response?.id
+                    callback.call(data)
+                },
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return data
+        }
+
+        function POST_Function(action_url, data) {
+            var data;
+            $.ajax({
+                type: "POST",
+                url: action_url,
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    data = response?.id
+                    callback.call(data)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+            return data
+        }
+
+        function View_Vendor_Info(id, dynamic_url) {
+            var data;
+            $.ajax({
+                url: dynamic_url,
+                type: 'GET',
+                async: false,
+                success: function (response) {
+                    data = response
+                    callback.call(data)
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return data
+        }
+
+        function Update_File_Function(action_url, Formdata) {
+            $.ajax({
+                url: action_url,
+                type: 'PATCH',
+                data: Formdata,
+                success: function (response) {
+                    // console.log(response)
+                },
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+
+        function Update_Function(action_url, Formdata) {
+            $.ajax({
+                type: 'PATCH',
+                url: action_url,
+                data: Formdata,
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    // console.log(response)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+        }
+
+        function Delete_Function(action_url, params) {
+            $.ajax({
+                type: "DELETE",
+                url: action_url,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(params),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            });
+        }
+
+        function add_multiple_into_table() {
+            $('#add_to_price').click(function (e) {
+                e.preventDefault()
+                var quality = $('#materialsupplying #qu_type').val()
+                var price = $('#materialsupplying #price').val()
+                if (quality != null) {
+                    $('#material_qu').append('<tr><td>' + quality + '</td><td>' + price + '</td></tr>')
+                    $('#materialsupplying #price, #materialsupplying #qu_type').val('')
+                }
+            })
+        }
+
+        // add gst detail
+        var addgst = document.getElementById('addgst')
+        addgst.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            var recipient = button.getAttribute('data-bs-whatever')
+            var modalBodyInput = addgst.querySelector('.modal-body input')
+            modalBodyInput.value = recipient
+        })
+
+        // edit gst detail
+        // var editgst = document.getElementById('editgst')
+        // editgst.addEventListener('show.bs.modal', function (event) {
+        //     // Button that triggered the modal
+        //     var button = event.relatedTarget
+        //     var recipient = button.getAttribute('data-bs-whatever')
+        //     var modalBodyInput = editgst.querySelector('.modal-body input')
+        //     modalBodyInput.value = recipient
+        //     var gst_type = button.getAttribute('data-gst-type')
+        //     var gst_no = button.getAttribute('data-gst-no')
+        //     var pan_no = button.getAttribute('data-pan-no')
+        //     var email = button.getAttribute('data-email')
+        //     var tin = button.getAttribute('data-tin')
+        //     var ph_no = button.getAttribute('data-ph-no')
+        //     $('#editgst #gst_type').val(gst_type)
+        //     $('#editgst #gst_no').val(gst_no)
+        //     $('#editgst #pan_no').val(pan_no)
+        //     $('#editgst #Vendor_Email').val(email)
+        //     $('#editgst #Vendor_Tin').val(tin)
+        //     $('#editgst #Vendor_Phone_Number').val(ph_no)
+        // })
+
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            let _id = $(this).attr('href')
+            let _url = $(this).attr('data-url')
+            let _method = $(this).attr('data-method')
+            DeleteForUser(_id, _url, _method)
+        })
+
+    })
+</script>
+{% endblock %}

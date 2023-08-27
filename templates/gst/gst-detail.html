@@ -1,0 +1,672 @@
+{% extends "_base.html" %} {% block content %} {% load mathfilters %}
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">GST Details <span class="header_ text-capitalize text-danger">( <span>Sales</span> )
+                </span>
+                <div class="d-flex float-end">
+                    <div class="form-check me-3">
+                        <input class="form-check-input check_gst" type="radio" name="flexRadioDefault"
+                            id="flexRadioDefault1" value="sales" checked>
+                        <label class="form-check-label fa-14" for="flexRadioDefault1">
+                            Sales
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input check_gst" type="radio" name="flexRadioDefault"
+                            id="flexRadioDefault2" value="purchase">
+                        <label class="form-check-label fa-14" for="flexRadioDefault2">
+                            Purchase
+                        </label>
+                    </div>
+                </div>
+            </h5>
+        </div>
+    </div>
+    <!-- Sales -->
+    <div class="row sales mx-0">
+        <div class="box-1 rounded bg-white mt-2 pt-3">
+            <!-- Calander Form -->
+            <div class="row mb-4">
+                <div class="col-md-8 ms-auto">
+                    <form id="calendersearch" method="get" action="" novalidate>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="sales_calander_from" class="form-label mb-0">From</label>
+                                <input required type="date" class="form-control" name="sales_calander_from">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sales_calander_to" class="form-label mb-0">To</label>
+                                <input required type="date" class="form-control" name="sales_calander_to">
+                            </div>
+                            <div class="col-md-4 mt-auto mb-1">
+                                <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                        class="fa fa-search me-2"></i> Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Search Form -->
+            <div class="row ">
+                <div class="col-12 mb-2 ">
+                    <form action="">
+                        <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                            <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                aria-label="Search Here ..." aria-describedby="button-addon2">
+                            <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                    class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive mb-3">
+                {% if salesinvoices %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr class="d-flex">
+                            <th class="col-2" scope="col">Date of Invoice</th>
+                            <th class="col-2" scope="col">Customer Name</th>
+                            <th class="col-2" scope="col">Customer Legal Name</th>
+                            <th class="col-2" scope="col">Gst Number</th>
+                            <th class="col-2" scope="col">HSN Code</th>
+                            <th class="col-2" scope="col">Invoice Number</th>
+                            <th class="col-2" scope="col">Total W/O Gst</th>
+                            <th class="col-2" scope="col">Total Incl Gst</th>
+                            <th class="col-2" scope="col">Total Incl Gst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Total Sgst</th>
+                            <th class="col-2" scope="col">Total Sgst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Total Cgst</th>
+                            <th class="col-2" scope="col">Total Cgst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Sgst %</th>
+                            <th class="col-2" scope="col">Cgst %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for salesinvoice in salesinvoices %}
+                        <tr class="d-flex">
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in salesinvoice.invoice.all %}
+                                    <li>{{i.InvoiceDate}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                {{i.customer.customerid.Company_Name}}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                {{i.customer.gst.Leggal_Name}}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.saleid.sales.all|slice:"1" %}
+                                {{i.customer.gst.GST_No}}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                {% for j in i.orderid.Materials.all|slice:"1" %}
+                                <div>{{j.Product_Name.HSNCode}}</div>
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in salesinvoice.invoice.all %}
+                                    <li>{{i.InvoiceNo}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{i.netAmount.WithOutGSTNetTotalAmount|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{i.netAmount.WithGSTNetTotalAmount|floatformat:"0"}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% with cgst=salesgst.0.0|cut:"%"|div:2 %}
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"2"}}
+                                    </li>
+                                    {% endfor %}
+                                    {% endwith %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% with cgst=salesgst.0.0|cut:"%"|div:2 %}
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                    </li>
+                                    {% endfor %}
+                                    {% endwith %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% with cgst=salesgst.0.0|cut:"%"|div:2 %}
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"2"}}
+                                    </li>
+                                    {% endfor %}
+                                    {% endwith %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% with cgst=salesgst.0.0|cut:"%"|div:2 %}
+                                    {% for i in salesinvoice.saleid.sales.all %}
+                                    <li> Rs.{{cgst|mul:i.netAmount.WithGSTNetTotalAmount|div:"100"|floatformat:"0"}}
+                                    </li>
+                                    {% endfor %}
+                                    {% endwith %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                {% for j in i.orderid.Materials.all|slice:"1" %}
+                                {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in salesinvoice.invoice.all|slice:"1" %}
+                                {% for j in i.orderid.Materials.all|slice:"1" %}
+                                {{j.Product_Name.GST|cut:"%"|div:2}}%
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="d-flex">
+                            <td class="col-2">Grand Total</td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2">
+
+                                Rs.{{salestotalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"2"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|floatformat:"0"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:salestotalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:salestotalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:salestotalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"2"}}
+                            </td>
+                            <td class="col-2">
+                                Rs.{{salestotalwgst.saleid__sales__netAmount__WithGSTNetTotalAmount__sum|sub:salestotalwogst.saleid__sales__netAmount__WithOutGSTNetTotalAmount__sum|floatformat:"0"}}
+                            </td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- pagination -->
+        {% if salesinvoices.has_other_pages %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if salesinvoices.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{salesinvoices.previous_page_number }}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                {% endif %} {% for i in salesinvoices.paginator.page_range %} {% if salesinvoices.number == i %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{i}}">{{i}}</a>
+                </li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                {% endif %} {% endfor %} {% if salesinvoices.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{salesinvoices.next_page_number }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-disabled="true">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <!-- Purchase -->
+    <div class="row purchases d-none mx-0">
+        <div class="box-1 rounded bg-white mt-2 pt-3">
+            <!-- Calander Form -->
+            <div class="row mb-4">
+                <div class="col-md-8 ms-auto">
+                    <form id="calendersearch" method="get" action="" novalidate>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="purchase_calander_from" class="form-label mb-0">From</label>
+                                <input required type="date" class="form-control" name="purchase_calander_from">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="purchase_calander_to" class="form-label mb-0">To</label>
+                                <input required type="date" class="form-control" name="purchase_calander_to">
+                            </div>
+                            <div class="col-md-4 mt-auto mb-1">
+                                <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                        class="fa fa-search me-2"></i>
+                                    Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Search Form -->
+            <div class="row ">
+                <div class="col-12 mb-2 ">
+                    <form action="">
+                        <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                            <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                aria-label="Search Here ..." aria-describedby="button-addon2">
+                            <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                    class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive mb-3">
+                {% if voucherdetails %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr class="d-flex">
+                            <th class="col-2" scope="col">Date of Voucher</th>
+                            <th class="col-2" scope="col">Voucher Number</th>
+                            <th class="col-2" scope="col">Vendor Name</th>
+                            <th class="col-2" scope="col">Gst Number</th>
+                            <th class="col-2" scope="col">HSN Code</th>
+                            <th class="col-2" scope="col">Pur Invoice Name</th>
+                            <th class="col-2" scope="col">Total W/O Gst</th>
+                            <th class="col-2" scope="col">Total Incl Gst</th>
+                            <th class="col-2" scope="col">Total Incl Gst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Total Sgst</th>
+                            <th class="col-2" scope="col">Total Sgst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Total Cgst</th>
+                            <th class="col-2" scope="col">Total Cgst (Roundoff Value)</th>
+                            <th class="col-2" scope="col">Sgst %</th>
+                            <th class="col-2" scope="col">Cgst %</th>
+                            <th class="col-2" scope="col">Total Purchase</th>
+                            <th class="col-2" scope="col">Purchase Value Lorry</th>
+                            <th class="col-2" scope="col">Lorry Over Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for voucherdetail in voucherdetails %}
+                        <tr class="d-flex">
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>{{j.Info.VoucherDate}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>{{j.Info.VoucherNo}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <div>{{i.vendorDetail.GSTNo.Trade_Name}}</div>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <div>{{i.vendorDetail.GSTNo.GST_No}}</div>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                {% for i in voucherdetail.quotation.purchase.material.all|slice:"1" %}
+                                <div>{{i.HSNCode}}</div>
+                                {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <div>{{i.vendorDetail.GSTNo.Leggal_Name}}</div>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.total|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.total_amount|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.sgst_amount|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.sgst_amount|floatformat:"0"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.cgst_amount|floatformat:"2"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.cgst_amount|floatformat:"0"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>{{j.sgst_amount|div:j.total_amount|mul:100|floatformat:"2"}}%</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>{{j.cgst_amount|div:j.total_amount|mul:100|floatformat:"2"}}%</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                {% for i in voucherdetail.voucher.all %}
+                                <ul>
+                                    {% for j in i.amount.all %}
+                                    <li>Rs.{{j.total_amount|floatformat:"0"}}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in voucherdetail.purchase.entries.all %}
+                                    <li>{{i.netAmount.GstTotal|floatformat:"2"}}</li>
+                                    <!-- {% if i.remainder.GSTFilledFiledCheck == '1' %} -->
+                                    <!-- <li>{{i.netAmount.GstTotal|floatformat:"2"}}</li> -->
+                                    <!-- {% else %}
+                                    <li></li>
+                                    {% endif %} -->
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="col-2">
+                                <ul>
+                                    {% for i in voucherdetail.purchase.entries.all %}
+                                    <li>{{i.netAmount.GstBalance|floatformat:"2"}}</li>
+                                    <!-- {% if i.remainder.GSTFilledFiledCheck == '1' %}
+                                    <li>0</li> -->
+                                    <!-- {% else %}
+                                    <input type="text" placeholder="GST Due Amount" class="form-control">
+                                    {% endif %} -->
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="d-flex">
+                            <td class="col-2">Grand Total</td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2">Rs.{{purchasetotalwogst.voucher__amount__total__sum|floatformat:"2"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasetotalwgst.voucher__amount__total_amount__sum|floatformat:"2"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasetotalwgst.voucher__amount__total_amount__sum|floatformat:"0"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasesgstamount.voucher__amount__sgst_amount__sum|floatformat:"2"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasesgstamount.voucher__amount__sgst_amount__sum|floatformat:"0"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasecgstamount.voucher__amount__cgst_amount__sum|floatformat:"2"}}</td>
+                            <td class="col-2">
+                                Rs.{{purchasecgstamount.voucher__amount__cgst_amount__sum|floatformat:"0"}}</td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2">
+                                Rs.{{purchasetotalwgst.voucher__amount__total_amount__sum|floatformat:"0"}}</td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+            </div>
+            <!-- pagination -->
+            {% if voucherdetails.has_other_pages %}
+            <nav class="mt-4" aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if voucherdetails.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                            href="?page={{voucherdetails.previous_page_number }}">Previous</a></li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    {% endif %} {% for i in voucherdetails.paginator.page_range %} {% if voucherdetails.number == i %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{i}}">{{i}}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                    {% endif %} {% endfor %} {% if voucherdetails.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{voucherdetails.next_page_number }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-disabled="true">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.gstMenu').addClass('active')
+    });
+    $(document).ready(function () {
+        $('.gstMenu').addClass('active')
+        var base = 'http://127.0.0.1:8000/'
+        var url = 'http://127.0.0.1:8000/api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+
+        $('#example, #example1').DataTable()
+
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var _obj = JSON.stringify({
+                    'id': $(this).attr('href'),
+                    'model': $(this).attr('data-url')
+                });
+                var params = {
+                    "Notifications": _obj,
+                    'csrfmiddlewaretoken': csrftoken,
+                    'Types': $(this).attr('data-method'),
+                    'User': $('#userid').html()
+                }
+                // console.log(params)
+                $.post(base + 'post-api/notifications/', params, function (req, res) {
+                    // console.log(req)
+                    // console.log(res)
+                })
+
+            }
+        })
+
+
+        $('input[name="flexRadioDefault"]').click(function () {
+            var val = $(this).val()
+            $('.header_ span').text(val)
+            // console.log(val)
+            if (val == 'sales') {
+                $('.header_').addClass('text-danger').removeClass('text-success')
+                $('.sales').removeClass('d-none')
+                $('.purchases').addClass('d-none')
+            } else {
+                $('.header_').addClass('text-success').removeClass('text-danger')
+                $('.sales').addClass('d-none')
+                $('.purchases').removeClass('d-none')
+            }
+        });
+
+    })
+</script>
+{% endblock %}

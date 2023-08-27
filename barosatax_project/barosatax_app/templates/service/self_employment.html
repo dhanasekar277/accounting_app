@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+    BarosaTax - Self Employment
+{% endblock %}
+{% block content %}
+{% load static %}
+
+<!-- selfemployment_tax starts here -->
+<section class="about_us">
+  <div class="row p-lg-5 p-4">
+    <div class="col-lg-6 my-auto px-0 px-lg-2">
+      <h1 class="fw-bold mb-4">Small Business / Self Employment Tax
+</h1>
+      <p>
+        BarosaTax meticulously follows the best business process to gain better refunds and fewer tax liabilities. Small Business Taxes are unique to every business and our experts will help you choose the best options available. Usually, we take very minimal time to file an income tax return for any businesses and make sure that it remains compliant under the Income Tax Act and Rules.      </p>
+    </div>
+    <div class="col-lg-6 order-first order-lg-last mb-4 mb-lg-0 px-0 px-lg-2">
+      <img
+        src="{% static 'img/smallbuz.jpg' %}"
+        class="w-100"
+        alt=""
+      />
+    </div>
+  </div>
+</section>
+<!-- personal_tax ends here -->
+{% endblock %}

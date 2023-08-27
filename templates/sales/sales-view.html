@@ -1,0 +1,475 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold" ><a href="{% url 'quotations'%}" class="btn btn-primary me-2 btn-sm"><i class="fa fa-12 fa-chevron-left"></i> &nbsp;Back</a>Sales Entry</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 salesView rounded bg-white mt-2 p-3 mb-4">
+                <h3 class="text-uppercase fw-bold">
+                    <span id="customer_id" customer-id="{{sales.customer.id}}" >{{sales.customer.customerid.Company_Name}}</span>
+                    <span class="order_id d-none">{{sales.id}}</span>
+                    <a href="../../invoices/sales-invoice/{{sales.id}}" id="salesInvoice" class="btn btn-outline-primary btn-sm float-end"><i class="fa fa-file"></i> &nbsp;Invoice</a>
+                    <a href="" id="salesEntryEdit" class="btn btn-warning me-3 btn-sm float-end"><i class="fa fa-edit"></i> &nbsp;Edit</a>
+                </h3>
+                <p>
+                    <i class="fa fa-envelope"></i> : 
+                    <span>{{sales.customer.customerid.Company_Email}}</span>
+                    <i class="fa fa-phone ms-3"></i> : 
+                    <a href="tel:{{sales.customer.phone.Phone_Number}}" >{{sales.customer.phone.Phone_Number}}</a>
+
+                    <select name="" class="d-none" id="sphone" value="{{sales.customer.phone.Phone_Number}}">
+                        {% for i in sales.customer.customerid.Founder_Phone.all %}
+                            <option value="{{i.id}}">{{i.Phone_Number}}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <b >GST NO : </b>
+                    <span id="gst_txt">{{sales.customer.gst.GST_No}}</span>
+                    <select name="" class="d-none" id="sgstno" value="{{sales.customer.gst.GST_No}}">
+                        {% for i in sales.customer.customerid.GST_No.all %}
+                            <option value="{{i.id}}">{{i.GST_No}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <b class="ms-3">PAN NO : </b>
+                    <span id="pan_txt">{{sales.customer.pan.PAN_No}}</span>
+                    <select name="" class="d-none" id="spanno">
+                        {% for i in sales.customer.customerid.PAN_No.all %}
+                            <option value="{{i.id}}">{{i.PAN_No}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <b class="ms-3">TIN NO : </b>
+                    <span id="tin_txt">{{ sales.customer.tin.TIN_No }}</span>
+                    <select name="" class="d-none" id="stinno">
+                        {% for i in sales.customer.customerid.TIN_No.all %}
+                            <option value="{{i.id}}">{{i.TIN_No}}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p class="text-capitalize">
+                    <b>Delivery Address : </b> <span>{{sales.orderid.Sales_Delivery_Address}}</span>
+                    <b class="ms-3">Billing Address : </b> <span>{{sales.orderid.Billing_Address}}</span>
+                </p>
+                <span class="d-none ordercount">{{sales.poInfo.all.count}}</span>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>S No</th>
+                                <th hidden>mat_id</th>
+                                <th>Purchase Date</th>
+                                <th>Unloading Site</th>
+                                <th>Site</th>
+                                <th>Material</th>
+                                <th>CDC</th>
+                                <th>LDC</th>
+                                <th>Vehicle No</th>
+                                <th>Qty</th>
+                                <th>Type</th>
+                                <th>Round Off</th>
+                                <th>Rate</th>
+                                <th>Total</th>
+                                <th>GST</th>
+                                <th>With GST</th>
+                                <th>Site Supervisior</th>
+                                <th>QC</th>
+                                <th>Security</th>
+                                <th>Engineer</th>
+                                <th>Driver Name</th>
+                                <th>Unloading Supervisior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in sales.poInfo.all %}
+                            <tr id="mat{{forloop.counter}}" po-id="{{i.id}}">
+                                <td><div style="width:30px;">{{forloop.counter}}</div></td>
+                                <td>
+                                    <input style="width:127px;" disabled type="date" value="{{i.Date}}" id="purchaseDate">
+                                </td>
+                                <td><div style="width:120px;">{{i.MatId.Location_Supply}}</div></td>
+                                <td><div style="width: 50px;">{{i.MatId.Delivery_Site}}</div></td>
+                                <td><div style="width:140px;">{{i.MatId.Material_Name}}</div></td>
+                                <td><input style="width:100px;" disabled value="{{i.CDC}}" id="CDC" placeholder="CDC" type="text"></td>
+                                <td><input style="width:100px;" disabled value="{{i.LDC}}" id="LDC" placeholder="LDC" type="text"></td>
+                                <td><input style="width:100px;" disabled value="{{i.VehicleNo}}" id="VehicleNo" placeholder="Vehicle No" type="text"></td>
+
+                                <td><input style="width:50px;" class="quantity" id="{{forloop.counter}}" disabled value="{{i.qty}}" placeholder="qty" type="text"></td>
+                                <td><div>{{i.MatId.Mat_PO_ID.Quantity_Type}}</div></td>
+                                <td><input style="width:75px;" id="RoundOff"  disabled value="{{i.RoundOff}}" placeholder="Round Off" type="text"></td>
+                                <td><div id="price">{{i.MatId.Sale_Price}}</div></td>
+                                <td><input style="width:75px;" placeholder="Total" disabled value="{{i.Total}}" id="Total" type="text"></td>
+                                <td><div>{{i.MatId.Product_Name.GST}}</div></td>
+                                <td><input style="width:75px;" placeholder="With GST" disabled value="{{i.WithGST}}" id="WithGST" type="text"></td>
+
+                                <td><input style="width:100px;" placeholder="Site Supervisior" disabled value="{{i.SiteSupervisior}}" id="SiteSupervisior" type="text"></td>
+                                <td><input style="width:75px;" placeholder="QC" disabled value="{{i.QC}}" id="QC" type="text"></td>
+                                <td><input style="width:75px;" placeholder="Security" disabled value="{{i.Security}}" id="Security" type="text"></td>
+                                <td><input style="width:75px;" placeholder="Engineer" disabled value="{{i.Engineer}}" id="Engineer" type="text"></td>
+                                <td><input style="width:100px;" placeholder="Driver Name" disabled value="{{i.DriverName}}" id="DriverName" type="text"></td>
+                                <td><input style="width:140px;" placeholder="Unloading Supervisior" disabled value="{{i.UnloadingSupervisior}}" id="UnloadingSupervisior" type="text"></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- <div class="row mt-3">
+                    <span id="total_id" class="d-none">{{sales.total.id}}</span>
+                    <div class="col-lg-3">
+                        <label for="cgstop" class="small fw-bold">2.5% CGST OUTPUT TAX</label>
+                        <input type="text" id="cgstop" disabled value="{{sales.total.cgst}}" placeholder="2.5% CGST OUTPUT TAX" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="sgstop" class="small fw-bold">2.5% SGST OUTPUT TAX</label>
+                        <input type="text" id="sgstop" disabled value="{{sales.total.sgst}}" placeholder="2.5% SGST OUTPUT TAX" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="roundedoff" class="small fw-bold">ROUNDED OFF</label>
+                        <input type="text" placeholder="Rounded Off" disabled value="{{sales.total.roundedoff}}" id="roundedoff" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="finaltotal" class="small fw-bold">TOTAL</label>
+                        <input type="text" placeholder="Final Total" disabled value="{{sales.total.total}}" id="finaltotal" class="form-control form-control-sm">
+                    </div>
+                </div> -->
+                <form id="remainder_data">
+                    <span id="remainder_id" class="d-none">{{sales.remainder.id}}</span>
+                    <div class="row mb-3">
+                        <div class="col-lg-12 mt-3">
+                            <h5 class="fw-bold mb-2">Remainder : </h5>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledInvNo" class="small fw-bold">GST Filled Invoice No</label>
+                            <input type="text" disabled value="{{sales.remainder.GSTFilledInvNo}}" placeholder="GST Filled Invoice No" name="GSTFilledInvNo" id="GSTFilledInvNo" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledInvReceive" class="small fw-bold">GST Filled Inv Receive</label>
+                            <input type="text" disabled value="{{sales.remainder.GSTFilledInvReceive}}" placeholder="GST Filled Inv Receive" name="GSTFilledInvReceive" id="GSTFilledInvReceive" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledFiledCheck" class="small fw-bold">GST Filled Filed Check</label>
+                            <input type="text" disabled value="{{sales.remainder.GSTFilledFiledCheck}}" placeholder="GST Filled Filed Check" name="GSTFilledFiledCheck" id="GSTFilledFiledCheck" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledInvFiled" class="small fw-bold">GST Filled Inv Filed</label>
+                            <input type="text" disabled value="{{sales.remainder.GSTFilledInvFiled}}" placeholder="GST Filled Inv Filed" name="GSTFilledInvFiled" id="GSTFilledInvFiled" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <span id="net_id" class="d-none">{{sales.netAmount.id}}</span>
+                    <div class="col-lg-3">
+                        <label for="WithoutGSTNetTotalAmount" class="small fw-bold">Without GST Net Total Amount</label>
+                        <input type="text" disabled value="{{sales.netAmount.WithOutGSTNetTotalAmount}}" placeholder="Without GST Net Total Amount" id="WithoutGSTNetTotalAmount" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="WithoutGSTNetTotalAmount" class="small fw-bold">WithGSTNetTotalAmount</label>
+                        <input type="text" disabled value="{{sales.netAmount.WithGSTNetTotalAmount}}" placeholder="WithGSTNetTotalAmount" id="WithGSTNetTotalAmount" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="AmountPayyed" class="small fw-bold">Amount Payyed</label>
+                        <input type="text" disabled value="{{sales.netAmount.AmountPayyed}}" placeholder="Amount Payyed" id="AmountPayyed" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="Balance" class="small fw-bold">Balance</label>
+                        <input type="text" disabled value="{{sales.netAmount.Balance}}" placeholder="Balance" id="Balance" class="form-control form-control-sm">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="invoice" tabindex="-1" aria-labelledby="invoiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body" id="final_invoice">
+                <h6 class="text-center fw-bold mb-3">TAX INVOICE 2021/2022</h6>
+                <p class="position-absolute top-0 end-0 mt-3 me-3">(DUPLICATE FOR TRANSPORTER)</p>
+                <table class="table table-bordered mb-0">
+                    <tr>
+                        <td width="30%">
+                            <p class="mb-0">KAVITHA AGENCY</p>
+                            <p class="mb-0">No. 3/46-C Semman Street,</p>
+                            <p class="mb-1">C.Pallavaram, Chennai - 600 043.</p>
+                            <p class="mb-0"><span class="fw-bold">CELL : </span>9791023871</p>
+                            <p class="mb-0"><span class="fw-bold">GSTIN/UIN : </span>CIHPK2333K1ZD</p>
+                            <p class="mb-0"><span class="fw-bold">State Name : </span>Tamil Nadu, <span
+                                    class="ms-2 fw-bold">Code : </span>33</p>
+                            <p class="mb-0"></p>
+                            <p class="mb-0"><span class="fw-bold">E-Mail : </span>kavithaagency@gmail.com</p>
+                        </td>
+                        <td width="25%" class="px-0">
+                            <p class="mb-0 mx-2">Invoice No.</p>
+                            <p class="mb-0 mx-2 fw-bold">105/2021-2022</p>
+                            <hr class="my-1">
+                            <p class="mb-0 mx-2">Delivery Note</p>
+                            <p class="mb-0 mx-2">NIL</p>
+                            <hr class="my-1">
+                            <p class="mb-0 mx-2">Supplier's Ref.</p>
+                            <p class="mb-0 mx-2 fw-bold">LHE/21-22/214</p>
+                        </td>
+                        <td width="25%" class="px-0">
+                            <p class="mb-0 mx-2">Dated</p>
+                            <p class="mb-0 mx-2 fw-bold">29-Sep-2021</p>
+                            <hr class="my-1">
+                            <p class="mb-0 mx-2">Other Reference(s)</p>
+                            <p class="mb-0 mx-2">NIL</p>
+                            <hr class="my-1">
+                            <p class="mb-0 mx-2">Mode/Terms of Payment</p>
+                            <p class="mb-0 mx-2 fw-bold">15 Days</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%" style="border-bottom-style: hidden;" class="pb-0">
+                            <div>Buyer</div>
+                            <div>ALLIANCE BUSINESS PARKS PVT LTD</div>
+                            <div>NO.36/1, PLOT NO.A,</div>
+                            <div>GANDHI MANDAPAM MAIN ROAD</div>
+                            <div>KOTTURPURAM, CHENNAI,</div>
+                            <div>TAMIL NADU - 600085.</div>
+                        </td>
+                        <td width="25%" class="px-0">
+                            <div class="mx-2"><b>Buyer's Order No: </b></div>
+                            <div class="mx-2">PO2122AGR-441</div>
+                            <hr class="my-1">
+                            <div class="mx-2"><b>Despatch Document No : </b>NIL</div>
+                            <hr class="my-1">
+                            <div class="mb-0 mx-2"><b>Despatched through : </b>ROAD</div>
+                        </td>
+                        <td width="25%" class="px-0">
+                            <div class="mx-2"><b>Date :</b> 11-Sep-2021</div>
+                            <hr class="my-1">
+                            <div class="mx-2"><b>Delivery Note : </b></div>
+                            <div class="mx-2">NIL</div>
+                            <hr class="my-1">
+                            <div class="mx-2"><b>Destination : </b>NIL</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pt-0">
+                            <div class="mb-0"><span class="fw-bold me-2">GSTIN/UIN : </span>33AAFCA5595G1ZM</div>
+                            <div class="mb-0"><span class="fw-bold me-2">PAN/IT No : </span>Tamil Nadu</div>
+                            <div class="mb-0"><span class="fw-bold me-2">State Name : </span>Tamil Nadu, <span
+                                    class="ms-2 fw-bold me-2">Code : </span>33</div>
+                        </td>
+                        <td colspan="2">
+                            <p class="mb-0 fw-bold">Terms of Delivery</p>
+                            <p class="mb-0">Alliance Galleria Residences</p>
+                            <div>Survey No : 200/04, 200 Feet Radial Road, Zamin Pallavaram, Chennai-600 043</div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-bordered mb-0 ">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Description of Goods</th>
+                            <th>HSN/SAC</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>per</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mb-4">
+                            <td>1</td>
+                            <td>AAC BROKAN BLOCKS</td>
+                            <td>05050505</td>
+                            <td>10.440 MT</td>
+                            <td>2,300.00</td>
+                            <td>MT</td>
+                            <td>24,012.00</td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="text-end fw-bold">
+                                    <div>2.5%-CGST-OUTPUT TAX</div>
+                                    <div>2.5%-SGST-OUTPUT TAX</div>
+                                    <div>ROUNDED OFF</div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div>
+                                    <div>2.50</div>
+                                    <div>2.50</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>%</div>
+                                <div>%</div>
+                            </td>
+                            <td>
+                                <div class="text-end">
+                                    <div>600.30</div>
+                                    <div>600.30</div>
+                                    <div>600.30</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Total</td>
+                            <td></td>
+                            <td>10.440 MT</td>
+                            <td></td>
+                            <td></td>
+                            <td> *25,213.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <div>
+                                    <div><small>Amount Chargeable (in words)</small> <span class="float-end">E &
+                                            O.E</span></div>
+                                    <div class="fw-bold">INR Twenty Five Thousand Two Hundred Thirteen Only</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered border-top-0 mb-0 table-sm">
+                    <tr class="text-center fw-bold">
+                        <td>HSN/SAC</td>
+                        <td>Taxable Value</td>
+                        <td colspan="2">Central Tax</td>
+                        <td colspan="2">State Tax</td>
+                        <td>Total</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+
+                        <td>Rate</td>
+                        <td>Amount</td>
+                        <td>Rate</td>
+                        <td>Amount</td>
+                        <td>Tax Amount</td>
+                    </tr>
+                    <tr>
+                        <td>8723468723</td>
+                        <td>24,123.00</td>
+                        <td>2.50%</td>
+                        <td>600.30</td>
+                        <td>2.50%</td>
+                        <td>600.30</td>
+                        <td>1,200.60</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-end">Total</td>
+                        <td>24,123.00</td>
+                        <td></td>
+                        <td>600.30</td>
+                        <td></td>
+                        <td>600.30</td>
+                        <td>1,200.60</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <div>
+                                <span>Tax Amount (in words) : </span><b>INR One Thousand Two Hundred Thirteen Only</b>
+                            </div>
+                            <div>
+                                <b>Remarks :</b>
+                                <div>BEING THE INVOICE NUMBER : 105 / 2021-2022 / INVOICE</div>
+                                <div>DATE : <span>29.09.2021</span> ALLIANCE BUSINESS PARKS PVT LTD</div>
+                                <div>ACCOUNTED</div>
+                            </div>
+                            <div>
+                                <span>Company's VAT TIN : </span><b>32748324987</b>
+                            </div>
+                            <div>
+                                <span>Buyer's VAT TIN : </span><b>32748324987</b>
+                            </div>
+                            <div>
+                                <span>Company's PAN : </span><b>32748324987</b>
+                            </div>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="width:50%;">
+                            <div>
+                                <u>Declaration</u>
+                                <div>
+                                    We declare that this invoice shows the actual price of the goods described
+                                    and that all particulars are true and correct.
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="3">
+                            <div>Company's Bank Details</div>
+                            <div><b>Bank Name : </b> <span>INDIAN BANK</span></div>
+                            <div><b>A/C No : </b> <span>673499345</span></div>
+                            <div><b>Branch & IFSC : </b> <span>PALLAVARAM</span> & <span>IDB98324</span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="width:50%;">
+                            <div>
+                                Customer's Seal and Signature
+                            </div>
+                            <br><br>
+                        </td>
+                        <td colspan="3" class="text-center">
+                            <div>for KAVITHA AGENCY</div>
+                            <div class="mt-5">Authorised Signature</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal"><i
+                        class="fa fa-close"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="printDiv('final_invoice')"><i
+                        class="fa fa-print me-2"></i>Print</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+{% endblock %}
+
+{% block script %}
+<style type="text/css" media="print">
+    @media print {
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+
+</style>
+<script>
+    $('.salesMenu').addClass('active')
+    $('.quantity').on('input',function(e){
+        var qty = Number($(this).val())
+        var select = '#mat'+$(this).attr('id')
+        var rate = Number($(`${select} #price`).text())
+        $(`${select} #Total`).val(qty*rate)
+        $(`${select} #RoundOff`).val(Math.round(qty*rate))
+    });
+</script>
+<!-- <style>
+    input[type="text"]:disabled, input[type="date"]:disabled {
+        background: #ffffff;
+        border: unset;
+        padding: 0;
+    }
+</style> -->
+<script src="{% static 'js/sales-entry.js' %}"></script>
+{% endblock %})

@@ -1,0 +1,197 @@
+{% extends "_base.html" %} {% load static %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Purchase Reports</h5>
+            <div class="row mx-0">
+                <div class="col-4 ps-0 pe-3 mb-3">
+                    <div class="card border-0 shadow p-3">
+                        <label for="vendors" class="form-label mb-0">Vendors</label>
+                        <select onchange="location = this.value;" class="form-select" id="vendors" aria-label="Default select example">
+                            <option value="/business-reports/purchase-reports">Select customers to get reports</option>
+                            {% for vendor in vendors %}
+                            {% if purchases.0.vendorId.id == vendor.id %}
+                            <option selected value="/business-reports/purchase-reports/{{vendor.id}}">{{vendor.Company_Name}}</option>
+                            {% else %}
+                            <option value="/business-reports/purchase-reports/{{vendor.id}}">{{vendor.Company_Name}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-8 px-0 mb-3">
+                    <div class="card border-0 shadow p-3">
+                        <form id="calendersearch" method="get" action="" novalidate>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="calander_from" class="form-label mb-0">From</label>
+                                    <input required type="date" class="form-control" name="calander_from">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="calander_to" class="form-label mb-0">To</label>
+                                    <input required type="date" class="form-control" name="calander_to">
+                                </div>
+                                <div class="col-md-4 mt-auto mb-1">
+                                    <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                            class="fa fa-search me-2"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% if purchases %}
+            <div class="card border-0 shadow p-3">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="accordion" id="accordionExample">
+                    {% for purchase in purchases %}
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                    <b>Unloading Site</b>: <span class="ms-2">
+                                        {{purchase.quotation.order.Materials.all.first.Location_Supply}} (AT SITE)
+                                    </span>
+                                    <b class="ms-5">Purchase Date</b>: <span class="ms-2">{{purchase.quotation.order.Materials.all.first.Expected_Date}}</span>
+                                </button>
+                            </h2>
+                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <table class="table table-bordered table-striped">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th scope="col">Material</th>
+                                                <th scope="col">Load</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">People at Site</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for j in purchase.purchaseMaterial.all %}
+                                            <tr>
+                                                <td>
+                                                    <div><b>Material</b>: <span class="ms-2">{{j.mat_id.Material_Name}}</span></div>
+                                                    <div><b>Rate</b>: <span class="ms-2">Rs.{{j.mat_id.Current_Price}}</span></div>
+                                                    <div><b>Quantity & Type</b>: <span class="ms-2">{{j.QtyCalc}} {{j.QuantityType}}</span></div>
+                                                    {% if j.Moisture %}
+                                                    <div><b>Moisture</b>: <span class="ms-2 text-success">{{j.Moisture}}%</span></span></div>
+                                                    {% else %}
+                                                    <div><b>Moisture</b>: <span class="ms-2 text-danger">No</span></span></div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div><b>CDC</b>: <span class="ms-2">{{j.CDC}}</span></div>
+                                                    <div><b>LDC</b>: <span class="ms-2">{{j.LDC}}</span></div>
+                                                    <div><b>Driver Name</b>: <span class="ms-2">{{j.DriverName}}</span></div>
+                                                    <div><b>Vehicle No</b>: <span class="ms-2">{{j.VehicleNo}}</span></div>
+                                                </td>
+                                                <td>
+                                                    <div><b>Total Amount</b>: <span class="ms-2">Rs.{{j.Total|floatformat:0}}</span></div>
+                                                    <div><b>GST Amount</b>: <span class="ms-2">Rs.{{j.WithGST|sub:j.Total|floatformat:0}}</span></div>
+                                                    <div><b>Total With GST</b>: <span class="ms-2">Rs.{{j.WithGST|floatformat:0}}</span></div>
+                                                </td>
+                                                <td>
+                                                    <div><b>Site Supervisior</b>: <span class="ms-2">{{j.SiteSupervisior}}</span></div>
+                                                    <div><b>QC</b>: <span class="ms-2">{{j.QC}}</span></div>
+                                                    <div><b>Security</b>: <span class="ms-2">{{j.Security}}</span></div>
+                                                    <div><b>Engineer</b>: <span class="ms-2">{{j.Engineer}}</span></div>
+                                                    <div><b>Unloading Supervisior</b>: <span class="ms-2">{{j.UnloadingSupervisior}}</span></div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card card border-0 shadow p-3">
+                    <div class="p-5 mt-4 border-0 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96"
+                            viewBox="0 0 172 172" style=" fill:#000000;">
+                            <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                                stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                                font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                                style="mix-blend-mode: normal">
+                                <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                                <g>
+                                    <path
+                                        d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                        fill="#333333" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                        fill="#e74c3c" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                        fill="#f5f5f5" fill-rule="nonzero"></path>
+                                    <path
+                                        d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                        fill="#f5f5f5" fill-rule="evenodd"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        <h5 class="fw-bold mt-3">No Details Available</h5>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.accordion-button:not(.collapsed) {
+    color: #dc3545 !important;
+    background-color: #dc354512 !important;
+    box-shadow: none !important;
+}
+.accordion-button:focus{
+    box-shadow: none !important;
+    outline: none;
+}
+</style>
+
+{% endblock content %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.purchaseReportsMenu').addClass('active')
+    });
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+</script>
+{% endblock script %}

@@ -1,0 +1,369 @@
+
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<a href="{% url 'customer' %}" class="btn m-2 btn-sm"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</a>
+
+{% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alerts mx-3 alert-{{ message.tags }}" {% endif %}> {{ message }} </div>
+    {% endfor %}
+{% endif %}
+
+
+<!-- <div class="card p-3 mb-3 mx-3 box-2">
+    <h6 class="fw-bold">Add Customer</h6>
+    <hr class="my-2">
+    <div class="row">
+        <div class="col-3">
+            <label for="">Founder Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Company Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Founder Phone Number</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Founder Email</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-4 my-2">
+            <label for="">Founder Address</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Founder City</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Founder State</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Founder Zip</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Founder Country</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-4">
+            <label for="">Company Address</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Company City</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Company State</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Company Zip</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Company Country</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 mt-2">
+            <label for="">No Of Project</label>
+            <input type="number" class="form-control">
+        </div>
+        <div class="col-4 mt-2">
+            <label for="">Payment Terms</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-6 mt-2">
+            <label for="">Remarks</label>
+            <input type="text" class="form-control">
+        </div>
+
+        <div class="col-6 my-2">
+            <h6 class="fw-bold">Customer TIN</h6>
+            <hr class="my-1">
+            <div class="row">
+                <div class="col-6">
+                    <label for="">TIN No</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-6">
+                    <label for="">TIN Scan Copy</label>
+                    <input type="file" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="col-6 my-2">
+            <h6 class="fw-bold">PAN No</h6>
+            <hr class="my-1">
+            <div class="row">
+                <div class="col-6">
+                    <label for="">PAN No</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-6">
+                    <label for="">PAN Scan Copy</label>
+                    <input type="file" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="col-12 ">
+            <h6 class="fw-bold">Customer Staff Account</h6>
+            <hr class="my-1">
+        </div>
+        <div class="col-3">
+            <label for="">Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for=""> Contact No</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Email</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Position</label>
+            <select name="" id="" class="form-control">
+                <option value="">----------</option>
+                <option value="">Purchase Head</option>
+                <option value="">Account Head</option>
+                <option value="">QC</option>
+                <option value="">Payment Head</option>
+                <option value="">Unloading Suprivisor</option>
+                <option value="">Security</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <label for="">Photo</label>
+            <input type="file" class="form-control">
+        </div>
+        <div class="col-3 my-2">
+            <label for="">Location</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">City</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">State</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Zip</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Country</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-1 my    -2 pt-1">
+            <button class="btn btn-primary w-100 mt-4"><i class="fa fa-plus"></i></button>
+        </div>
+        <div class="col-12 ">
+            <h6 class="fw-bold">Customer GST</h6>
+            <hr class="my-1">
+        </div>
+        <div class="col-2">
+            <label for="">GST Type</label>
+            <select name="" id="" class="form-control">
+                <option value="">----------</option>
+                <option value="">GST Registered</option>
+                <option value="">Unregistered</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <label for="">GST No</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Leggal Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Trade Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Scan Copy</label>
+            <input type="file" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Location Url</label>
+            <input type="text" class="form-control">
+        </div>
+        
+        <div class="col-2 my-2">
+            <label for="">Mobile</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Mail Id</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">GST BANK</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">GST Branch</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">IFSC Code</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Holder Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Position</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">Photo</label>
+            <input type="file" class="form-control">
+        </div>
+        <div class="col-6">
+            <label for="">Address</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2">
+            <label for="">City</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 mt-2">
+            <label for="">State</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 mt-2">
+            <label for="">Zip</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 mt-2">
+            <label for="">Country</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-1 my    -2 pt-1">
+            <button class="btn btn-primary w-100 mt-4"><i class="fa fa-plus"></i></button>
+        </div>
+        <div class="col-12 my-2">
+            <h6 class="fw-bold">Customer Bank Account</h6>
+            <hr class="my-1">
+        </div>
+        <div class="col-3">
+            <label for="">Account Holder Name</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Account Category</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Account No</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3">
+            <label for="">Account Position</label>
+            <select name="" id="" class="form-control">
+                <option value="">----------</option>
+                <option value="">Purchase Head</option>
+                <option value="">Account Head</option>
+                <option value="">QC</option>
+                <option value="">Payment Head</option>
+                <option value="">Unloading Suprivisor</option>
+                <option value="">Security</option>
+            </select>
+        </div>
+        <div class="col-3 my-2">
+            <label for="">Branch</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3 my-2">
+            <label for="">IFSC Code</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-2 my-2">
+            <label for="">Register Phone</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-3 my-2">
+            <label for="">Register Email</label>
+            <input type="text" class="form-control">
+        </div>
+        <div class="col-1 my    -2 pt-1">
+            <button class="btn btn-primary w-100 mt-4"><i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+</div> -->
+
+ 
+<div class="card p-3 mb-3 mx-3 box-2">
+    <h6 class="fw-bold">Add Customer</h6>
+    <hr class="my-2">
+    {% crispy obj.customer_form %}
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+    <style>
+        #div_id_PAN_Scan_Copy .custom-file-label, #div_id_Scan_Copy .custom-file-label, #div_id_Photo .custom-file-label{
+            display:none !important;
+        }
+        #div_id_PAN_Scan_Copy .custom-file, #div_id_Scan_Copy .custom-file, #div_id_Photo .custom-file{
+            padding: 0 !important;
+        }
+        .alerts{
+            padding: 5px 15px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .alert-error{
+            background: #dc3545;
+        }
+        .alert-success{
+            background:#0f5132 !important; 
+        }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+
+            $('.customerMenu').addClass('active')
+
+            var url = 'http://127.0.0.1:8000/api/'
+            var csrftoken = $('meta[name="csrf-token"]').attr('content')
+            var userid = $('#user-id').attr('data-id')
+            var agencyid = $('#user-id').attr('data-id')
+            $('#id_User').val(userid)
+            $.ajaxSetup({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+            });
+
+            $('#example').DataTable()
+
+            $('#id_Company_Name, #id_Vendor_Company_Name').change(function(){
+                var vn = $('#id_Company_Name').val()
+                $('#id_Company_Name, #id_Vendor_Company_Name').val(vn)
+            })
+
+        })
+    </script>
+{% endblock %})

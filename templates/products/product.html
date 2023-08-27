@@ -1,0 +1,651 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Products</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <a class="btn btn-sm btn-primary float-end mb-2" id="agency"><i class="fa fa-plus me-1"></i>
+                            Add</a>
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if obj.product_obj %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th>Material Name</th>
+                            <!-- <th scope="col">Location</th>
+                            <th scope="col">Price & GST</th> -->
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for i in obj.product_obj %}
+                        <tr>
+                            <td class="text-capitalize">{{i.Product}}</td>
+                            <td><a href="" data-bs-toggle="modal" data-bs-target="#viewMaterial"
+                                    data-product-name="{{i.Product}}"><i class="fa fa-eye"></i> View </a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if obj.product_obj.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if obj.product_obj.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{obj.product_obj.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in obj.product_obj.paginator.page_range %}
+                        {% if obj.product_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if obj.product_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{obj.product_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- add material Modal -->
+<div class="modal fade" id="add_agency" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header py-2 border-0">
+                <h5 class="modal-title header" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-1 pb-4">
+                <form class="row agency-validation" novalidate>
+                    <div class="col-12">
+                        <div class="alert alert-success alertMessage d-none p-2 alert-dismissible fade show"
+                            role="alert">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 pe-2">
+                        <label for="vname" class="form-label fw-bolder">Material Name</label>
+                        <input type="text" class="form-control" id="Product" name="Product"
+                            placeholder="Enter Material Name." required>
+                        <div class="invalid-feedback">
+                            Please provide a material name.
+                        </div>
+                    </div>
+                    <div class="col-md-3 px-2">
+                        <label for="materialtype" class="form-label fw-bolder">Material Type</label>
+                        <select class="form-control" name="Material_Type" id="Material_Type">
+                            <option value="">-----------</option>
+                            <option value="N">Natural</option>
+                            <option value="M">Manufactured</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 px-2">
+                        <label for="vgst" class="form-label fw-bolder">GST</label>
+                        <input type="number" class="form-control" name="GST" id="GST" placeholder="Enter GST." required>
+                    </div>
+                    <div class="col-md-3 ps-2">
+                        <label for="vgst" class="form-label fw-bolder">HSN Code</label>
+                        <input type="number" class="form-control" id="HSNCode" name="HSNCode" placeholder="Enter HSN."
+                            required>
+                    </div>
+                    <div class="col-md-5 mt-3 pe-2">
+                        <!-- <select name="" id="quality" class="form-control">
+                            <option value="">Select Quality</option>
+                            <option value="First Quality">First Quality</option>
+                            <option value="Second Quality">Second Quality</option>
+                        </select> -->
+                        <input type="text" id="quality" class="form-control" placeholder="Quality">
+                    </div>
+                    <div class="col-md-5 mt-3 px-2">
+                        <input type="text" class="form-control" id="price" placeholder="Enter Price." required>
+                    </div>
+                    <div class="col-md-2 mt-3 ps-2">
+                        <a href="" class="btn btn-danger btn-block" id="AddMaterialQuality"><i
+                                class="fa fa-plus"></i></a>
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-sm d-none materialQuality table-bordered mt-3 mb-1">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Quality</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody class="productPrice">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 mt-2 ">
+                        <label for="vendor" class="form-label fw-bolder">Vendor</label>
+                        <select class="form-control" id="vendor" name="Vendor">
+                            <option value="" id="update_vendor">Select Vendor</option>
+                        </select>
+                    </div>
+
+                    <!-- <div class="col-6 mt-2 pe-2">
+                    <div>
+                        <label for="" class="fw-bold">Material From</label>
+                        <select name="" class="form-control mt-2 form-control-sm" id="materialFrom">
+                            <option value="">-------</option>
+                            <option value="crusher">Crusher</option>
+                            <option value="quary">Quary</option>
+                        </select>
+
+                        <input type="text" class="form-control mt-1 form-control-sm" id="materialFromLocation" placeholder="Location">
+
+                        <input type="text" class="form-control mt-1 form-control-sm" id="materialFromEmail" placeholder="Email">
+
+                        <input type="text" class="form-control mt-1 form-control-sm" id="materialFromPhone" placeholder="Phone">
+                    </div>
+
+                    <button class="btn btn-danger btn-sm mt-1 w-100 addMaterialFrom">Add Material From</button>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered FromTbl d-none mt-2">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Location</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materialFromTbl">
+    
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="col-6 mt-2 ps-2">
+                    <div>
+                        <label for="" class="fw-bold">Material To</label>
+                        <input type="text" class="form-control mt-1 form-control-sm" id="district" placeholder="District">
+                        <textarea class="form-control mt-1 form-control-sm" id="sublocation" placeholder="Sub Location"></textarea>
+                    </div>
+                    <button class="btn btn-danger btn-sm mt-1 w-100 materialTo">Add Material To</button>
+                    <table class="table table-sm table-bordered mt-2 d-none ToTbl">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>District</th>
+                                <th>Sub Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materialToTbl">
+
+                        </tbody>
+                    </table>
+                </div> -->
+
+                    <div class="col-md-12 mt-3">
+                        <button type="submit" class="btn btn-sm edit btn-primary"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- view material -->
+<div class="modal fade" id="viewMaterial" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="exampleModalLabel">6MM Aggregates</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-3">
+                <table class="table table-bordered mb-0 table-stripped">
+                    <thead class="table-dark ">
+                        <tr>
+                            <th>Vendor Name</th>
+                            <th>Price</th>
+                            <th>Location From</th>
+                            <th>Location To</th>
+                            <th>Material Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="viewmaterials">
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.productMenu').addClass('active')
+        var base = window.location.protocol + "//" + window.location.host + '/';
+        var url = base + 'api/'
+        var post_url = base + 'post-api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        // get all vendors
+        $.get(url + 'vendors/?format=datatables', function (res) {
+            for (var i = 0; i < res.data.length; i++) {
+                $('#vendor').append('<option value="' + res?.data[i]?.id + '">' + res?.data[i]?.Vendor_Name + '</option>')
+            }
+        })
+
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+
+        $('#agency').click(function () {
+            $('#add_agency .header').text('Add Material')
+            $('.editvalidation').addClass('agency-validation').removeClass('editvalidation')
+            $('.agency-validation input').val('')
+            $('#add_agency .btn-primary').html('<i class="fa fa-plus me-1"></i> Add Material')
+            $('#add_agency').modal('toggle')
+        })
+
+        var viewMaterial = document.getElementById('viewMaterial')
+
+        viewMaterial.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var product_name = button.getAttribute('data-product-name')
+            // console.log(product_name)
+
+            $.get('/products/productviewapi/' + product_name, function (data, status) {
+                data = JSON.parse(data)
+                // console.log(data)
+                for (i of data) {
+                    $('#viewmaterials').append(`
+                    <tr>
+                        <td>${i.fields.Vendor}</td>
+                        <td>
+                            <div><span class="text-capitalize text-primary fw-bold">${i.fields.Product}</span> - HSN(${i.fields.HSNCode})</div>
+                            <ul class="ps-3 mb-1 materialList">
+                            ${(
+                            function matlist() {
+                                let quality = []
+                                for (j of i.fields.Material_Supplying) {
+                                    for (k of j.MaterialQuality) {
+                                        quality.push(`<li>${k.Quality} - (Rs.${k.Price})</li>`)
+                                    }
+                                    return quality.join('')
+                                }
+                            }
+                        )()}    
+                            </ul>
+                            <div><b>GST : </b>${i.fields.GST}</div>
+                        </td>
+                        <td>
+                            <ul class="ps-3 mb-1">
+                            ${(
+                            function matlist() {
+                                let quality = []
+                                for (j of i.fields.Material_Supplying) {
+                                    for (k of j.MaterialFrom) {
+                                        quality.push(`<li>
+                                            <b>Origin : </b>${k.Type} 
+                                            <br> 
+                                            <b>Location : </b>${k.Location}
+                                            </li>`)
+                                    }
+                                    return quality.join('')
+                                }
+                            }
+                        )()}    
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="ps-3 mb-1">
+                            ${(
+                            function matlist() {
+                                let quality = []
+                                for (j of i.fields.Material_Supplying) {
+                                    for (k of j.MaterialTo) {
+                                        quality.push(`<li>
+                                            <b>Location : </b>${k.District} 
+                                            <br>
+                                            <b>Sub Loc : </b>${k.Sublocation.join()} 
+                                            </li>`)
+                                    }
+                                    return quality.join('')
+                                }
+                            }
+                        )()}    
+                            </ul>
+                        </td>
+                        <td>${i.fields.Material_Type == 'M' ? 'Manufactured' : 'Natural'}</td>
+                    </tr>
+                    `)
+                }
+            })
+        })
+        viewMaterial.addEventListener('hidden.bs.modal', function (event) {
+            $("#viewmaterials tr").remove();
+        })
+
+        material_quanity_json = []
+        // add material Quality
+        $('#AddMaterialQuality').click(function (e) {
+            e.preventDefault()
+            let quality = $('#quality').val()
+            let price = $('#price').val()
+            $('.productPrice').append('<tr><td>' + quality + '</td><td>' + price + '</td></tr>')
+            $('#quality, #price').val('')
+            $('.materialQuality').removeClass('d-none')
+            var params = {
+                Quality: quality,
+                Price: price,
+                'csrfmiddlewaretoken': csrftoken
+            }
+            material_quanity_json.push(params)
+        })
+
+        // add material to
+        $('.materialTo').click(function (e) {
+            e.preventDefault()
+            let district = $('#district').val()
+            let sublocation = $('#sublocation').val()
+            $('#materialToTbl').append('<tr><td>' + district + '</td><td>' + sublocation + '</td></tr>')
+            $('#district, #sublocation').val('')
+            $('.ToTbl').removeClass('d-none')
+        })
+
+
+        // add material to
+        $('.addMaterialFrom').click(function (e) {
+            e.preventDefault()
+            let type = $('#materialFrom').val()
+            let location = $('#materialFromLocation').val()
+            let email = $('#materialFromEmail').val()
+            let phone = $('#materialFromPhone').val()
+            $('#materialFromTbl').append('<tr><td>' + type + '</td><td>' + location + '</td><td>' + email + '</td><td>' + phone + '</td></tr>')
+            $('#materialFrom, #materialFromLocation, #materialFromEmail, #materialFromPhone').val('')
+            $('.FromTbl').removeClass('d-none')
+
+
+        })
+
+        $('.agency-validation').submit(function (e) {
+            e.preventDefault()
+            var data = new FormData(this);
+            var object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+            // console.log(material_quanity_json)
+
+            var action_url = url + 'vendor-material-quality/'
+            var action_url_1 = url + 'product-quality/'
+
+            var avg_price = 0
+
+            vendor_material_quality = []
+            product_quality = []
+            for (var i = 0; i < material_quanity_json.length; i++) {
+                var vmq_id = POST_Function(action_url, material_quanity_json[i])
+                var pq_id = POST_Function(action_url_1, material_quanity_json[i])
+                vendor_material_quality.push(vmq_id)
+                product_quality.push(pq_id)
+                avg_price += Number(material_quanity_json[i]?.Price)
+            }
+
+            var avg_p = avg_price / material_quanity_json.length
+            // console.log(avg_p)
+
+            object['Quality'] = product_quality
+            object['Vendor'] = Number(object['Vendor'])
+            object['AvgPrice'] = avg_p
+            product_obj = object
+
+            // console.log(product_obj)
+
+            var action_url = base + 'post-api/products/'
+            POST_Function(action_url, product_obj)
+            var params = {
+                Material_Name: $('#Product').val(),
+                Material_Type: $('#Material_Type').val(),
+                Material_GST: $('#GST').val(),
+                HSNCode: $('#HSNCode').val(),
+                Quality: vendor_material_quality,
+            }
+
+            setTimeout(() => {
+                var action_url_1 = url + 'vendor-material-supplying/'
+                POST_Function(action_url_1, params)
+            }, 200)
+
+            $('.alertMessage').removeClass('d-none').text('Material Added Successfully. !!!')
+            setTimeout(() => {
+                location.reload()
+            }, 400)
+        })
+
+        function POST_Function(action_url, data) {
+            var data;
+            $.ajax({
+                type: "POST",
+                url: action_url,
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function (response) {
+                    data = response?.id
+                    callback.call(data)
+                },
+                error: function (response) {
+                    // console.log(response);
+                }
+            });
+            return data
+        }
+
+
+
+
+        // patch method
+        function GETPATCHMethod() {
+
+            $('.editvalidation .btn').click(function () {
+                PATCHMETHOD()
+            })
+
+        }
+
+
+        function PATCHMETHOD() {
+
+            // console.log(params)
+
+            // Example starter JavaScript for disabling form submissions if there are invalid fields
+            (function () {
+                'use strict'
+
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.querySelectorAll('.editvalidation')
+
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+
+                            if (form.checkValidity()) {
+                                event.preventDefault()
+                                var patch = {
+                                    Product: $('#vname').val(),
+                                    Price: $('#vprice').val(),
+                                    GST: $('#vgst').val(),
+                                    Vendor: $('#vendor').val(),
+                                    id: $('.editvalidation .edit').attr('data-id')
+                                }
+                                // console.log(patch)
+                                $.ajax({
+                                    type: 'PATCH',
+                                    url: post_url + 'products/' + patch.id + '/',
+                                    data: JSON.stringify(patch),
+                                    processData: false,
+                                    contentType: "application/json",
+                                    dataType: "json",
+                                    headers: {
+                                        'X-CSRFToken': csrftoken
+                                    },
+                                    success: function (response) {
+                                        $('.alert-success').removeClass('d-none').html('Material Updated. !!!<button type="button" class="btn-close pt-1 small pe-1" data-bs-dismiss="alert" aria-label="Close"></button>')
+                                        setTimeout(() => {
+                                            location.reload()
+                                        }, 1000)
+                                    },
+                                    error: function (response) {
+                                        // console.log(response);
+                                    }
+                                });
+                            }
+
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        }
+
+
+        // delete method for users
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var _obj = JSON.stringify({ 'id': $(this).attr('href'), 'model': $(this).attr('data-url') });
+                var params = {
+                    "Notifications": _obj,
+                    'csrfmiddlewaretoken': csrftoken,
+                    'Types': $(this).attr('data-method'),
+                    'User': $('#userid').html()
+                }
+                // console.log(params)
+                $.post(base + 'post-api/notifications/', params, function (req, res) {
+                    // console.log(req)
+                    // console.log(res)
+                })
+
+            }
+        })
+
+
+        // delete method
+        var deleteProduct = document.getElementById('deleteMethod')
+        deleteProduct.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var id = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            $('#deleteMethod .dlt').attr('data-id', id)
+            DELETEMethod()
+        })
+
+        function DELETEMethod() {
+            $('#deleteMethod .dlt').click(function () {
+                var customurl = $(this).attr('data-url')
+                var key = $(this).attr('data-col')
+                var value = $(this).attr('data-id')
+                var baseurl = url + 'products/' + value
+                var params = { [key]: value };
+                // console.log(params)
+                $.ajax({
+                    type: "DELETE",
+                    url: baseurl,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                });
+                $('.row_' + value).remove()
+                $('#deleteMethod').modal('toggle');
+            })
+        }
+    })
+</script>
+{% endblock %}

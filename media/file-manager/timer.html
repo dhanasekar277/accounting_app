@@ -1,0 +1,95 @@
+<!--
+Timer Functionality.
+On Page load the timer starts its count.Initially the Start Button will be disabled as the timer is already running.
+When the Stop is clicked the timer stops and the start button will be enabled.
+When the reset is click the timer is set to 00:00:00 and the start its counting.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Timer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<style>
+ body{
+        background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+
+    }
+</style>
+<body>
+
+<div id="container" class="container-fluid">
+   
+    <span class="badge rounded-pill bg-secondary" style="margin-left: 46%;margin-top: 20%;"><h1 id="timer">00:00:00</h1></span><br>
+</br><br>
+</div>
+<div id="row" style="margin-left: 45%;margin-top: 3%;">
+    <button  class="btn btn-success" id="start">Start</button>
+    <button  class="btn btn-danger" id="stop">Stop</button>
+    <button  class="btn btn-primary"  id="clear">Reset</button>
+    </div>
+
+
+</body>
+</html>
+<script type="text/javascript">
+ var time = document.getElementsByTagName('h1')[0],
+    start = document.getElementById('start'),
+    stop = document.getElementById('stop'),
+    clear = document.getElementById('clear'),
+    seconds = 0, minutes = 0, hours = 0,
+    t;
+
+function counter() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    time.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+ 
+    timer();
+}
+document.getElementById("start").disabled = true;
+function timer() {
+    t = setTimeout(counter, 1000);
+}
+timer();
+
+
+/* Start button */
+//start.onclick = timer;
+start.onclick = function() {
+    timer();
+    document.getElementById("start").disabled = true;// to disable the start to avoid multiple click
+}
+
+
+/* Stop button */
+stop.onclick = function() {
+    clearTimeout(t); // to stop the timer
+    document.getElementById("start").disabled = false; //to enable the start button
+}
+
+/* Clear button */
+clear.onclick = function() {
+ 
+    time.textContent = "00:00:00";
+    seconds = 0; minutes = 0; hours = 0;
+   timer();
+   document.getElementById("start").disabled = true; // to disable the start to avoid multiple click
+}
+</script>
+
+ 

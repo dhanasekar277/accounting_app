@@ -1,0 +1,116 @@
+{% extends '_base.html' %}
+{% block Header %}
+<h1 class="h5 mb-0">
+    Phone Book <b class="text-primary fa-12 agencyid" agency-id="{{obj.active_agency_obj.0.id}}">
+        ( {{obj.active_agency_obj.0.Agency_Name }} ) </b>
+</h1>
+{% endblock %}
+{% block content %}
+<div class="row ms-3 me-1">
+    <div class="col-12 row mt-3 ">
+        <div class="col-4 d-flex">
+            <label for="" class="my-1 fw-bold">Phone Books : </label>
+            <select name="" class="form-control form-control-sm w-50 ms-2" id="selectPhonebook">
+                <option value="vendors">Vendor</option>
+                <option value="customers">Customer</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 appendData row pb-3">
+        {% endblock content %}
+        {% block script %}
+        <script>
+            $(document).ready(function () {
+                let url = 'http://127.0.0.1:8000/api/'
+                var page = 1
+                $('.phonebookMenu').addClass('active')
+                getData('vendors', 1)
+                window.addEventListener('scroll', () => {
+                    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrolled = window.scrollY;
+                    if (scrolled === scrollable) {
+                        page = page + 1
+                        getData('vendors', page)
+                        // return page
+                    }
+                })
+
+                $('#selectPhonebook').change(function () {
+                    let pb = $(this).val()
+                    $('.appendData').html('')
+                    page = 1
+                    getData(pb, 1)
+                })
+
+                function getData(pb, page) {
+                    var pages = '/?page=' + page
+                    $.get('/api/' + pb + pages, function (res) {
+                        if (pb == 'vendors') {
+                            let vendor = res.results
+                            for (var i = 0; i < vendor.length; i++) {
+                                $('.appendData').append(`
+                                <div class="col-lg-4 mt-3 pe-1">
+                                    <div class="card h-100 box-2 py-2 px-3">
+                                        <div><a class="text-decoration-none" href="tel:${vendor[i]?.Phone}">${vendor[i]?.Vendor_Name}</a> <b>(
+                                                ${vendor[i]?.Company_Name} ) <a href="mailto:${vendor[i]?.Email}"
+                                            class="ms-2 text-danger text-decoration-none"><i class="fa fa-envelope"></i></a></b></div>
+                                            <hr class="my-1" />
+                                        <div class="vendorstaff${vendor[i]?.id}"></div>
+                                    </div>
+                                </div>`)
+                                var VendorStaff = vendor[i]?.Vendor_Staff_Detail
+                                var vendorid = vendor[i]?.id
+
+                                if (VendorStaff.length == 0) {
+                                    $('.vendorstaff' + vendorid).addClass('d-none')
+                                } else {
+                                    for (var j = 0; j < VendorStaff.length; j++) {
+                                        // console.log(VendorStaff[j])
+                                        var acc = '.vendorstaff' + vendorid 
+                                        $(acc).html(`
+                                        <b>Staff Position : </b><span class="Staffposition${vendor[i]?.id} text-capitalize">${VendorStaff[j]?.Position}</span>
+                                        <a class="ms-2 staffphone${vendor[i]?.id} text-danger" href="tel:${VendorStaff[j]?.Phone}"><i class="fa fa-envelope"></i></a>
+                                        <a class="ms-1 staffmail${vendor[i]?.id} text-success" href="mailto:${VendorStaff[j]?.Email}"><i class="fa fa-phone"></i></a>`)
+                                    }
+                                }
+                            }
+                        }
+                        else if (pb == 'customers') {
+                            var customers = res.results
+                            // console.log(customers)
+                            for (var i = 0; i < customers.length; i++) {
+                                var GSTBlock = customers[i].GST_No.length == 0 ? 'd-none' : ''
+                                // <b>GST : </b><a href="tel:' + customers[i].GST_No.Mobile + '" class="ms-2"><i class="fa fa-phone"></i></a><a class="ms-2 text-danger" href="' + customers[i].GST_No.Mail_Id + '" ><i class="fa fa-envelope"></i></a></div>
+                                $('.appendData').append('<div class="col-4 pe-1 mt-3"><div class="card h-100 box-2 py-2 px-3 "><div><b>Founder Name : </b><a class="text-decoration-none text-capitalize" href="tel:' + customers[i]?.Founder_Phone + '">' + customers[i]?.Founder_Name + '</a> <a class="ms-2 text-danger" href="mailto:' + customers[i]?.Founder_Email + '"><i class="fa fa-envelope"></i></a><div><div class="gstno' + customers[i]?.id + '"><b>GST No : </b><hr class="my-1"/><div class="gst"></div></div><div class="BankAccount' + customers[i]?.id + '"><b>Bank Account : </b><hr class="my-1"/><div></div></div><div class="mt-1 StaffAccount' + customers[i]?.id + '"><b>Staff Account : </b><hr class="my-1"/><div class="sa"></div></div></div></div>')
+
+                                var Staff_Account = customers[i]?.Customer_Staff_Account
+                                var Bank_Account = customers[i]?.Bank_Account
+
+                                var cust_id = customers[i]?.id
+
+                                var saselector = '.StaffAccount' + cust_id + ' div'
+                                var baselector = '.BankAccount' + cust_id + ' div'
+                                var gstselector = '.gstno' + cust_id + ' .gst'
+
+                                for (var j = 0; j < Staff_Account.length; j++) {
+                                    $(saselector).append('<span class="text-capitalize">' + Staff_Account[j]?.Name + ' ( ' + Staff_Account[j]?.Position + ' ) : </span> <a href="tel:' + Staff_Account[j]?.Contact_No + '" class="ms-2"><i class="fa fa-phone"></i></a><a class="ms-2 text-danger" href="mailto:' + Staff_Account[j]?.Email + '"><i class="fa fa-envelope"></i></a></br>')
+                                }
+
+                                for (var k = 0; k < Bank_Account.length; k++) {
+                                    $(baselector).append('<span class="text-capitalize">' + Bank_Account[k]?.Branch + ' : </span> <a href="tel:' + Bank_Account[k]?.Register_Phone + '" class="ms-2"><i class="fa fa-phone"></i></a></br>')
+                                }
+
+                                for (var l = 0; l < customers[i].GST_No.length; l++) {
+                                    $(gstselector).append('<span class="text-capitalize">' + customers[i].GST_No[l]?.Holder_Name + ' : </span> <a href="tel:' + customers[i].GST_No[l]?.Mobile + '" class="ms-2"><i class="fa fa-phone"></i></a><a href="tel:' + customers[i].GST_No[l]?.Mail_Id + '" class="ms-2"><i class="fa fa-envelope"></i></a></br>')
+                                }
+
+                            }
+                        }
+                    }).fail(function () {
+                        return alert('End Of The List. !!!'); // or whatever
+                    });
+                }
+
+            })
+        </script>
+        {% endblock script %}

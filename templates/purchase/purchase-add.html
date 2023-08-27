@@ -1,0 +1,102 @@
+    
+{% extends "_base.html" %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-3">  
+            <div class="col-md-12 text-capitalize">
+                <h5 class="fw-bold mb-1">
+                    <a href="{% url 'purchase' %}" class="btn btn-sm ps-0"><i class="fa fa-chevron-left me-2"></i>Back</a>
+                    Add Purchases Entry 
+                </h5>
+            </div>
+
+            <div class="col-md-12">
+                <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="orders" class="fw-bold small">Order </label>
+                            <select name="" id="Orders" class="form-control">
+                                <option value="">Select Orders</option>
+                                {% for i in context.order_obj %}
+                                    <option value="{{i.id}}">{{i.Sales_Company.Company_Name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 table-responsive order_detail d-none mt-2">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>VENDOR</th>
+                                        <th>UNLOADING</th>
+                                        <th>MATERIAL</th>
+                                        <th>TOTAL</th>
+                                        <th>Invoice</th>
+                                        <th>SITE NUMBERS</th>
+                                        <th>GST STATUS</th>
+                                        <th>PAYMENT</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="order_info">
+
+                                </tbody>
+                            </table>    
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+
+            $('.purchaseMenu').addClass('active')
+            var url = window.location.href
+            var arr = url.split("/");
+            var host_url = arr[0] + "//" + arr[2]
+            var url = host_url + '/api/'
+            var csrftoken = $('meta[name="csrf-token"]').attr('content')
+            var userid = $('#user-id').attr('data-id')
+            var agencyid = $('#user-id').attr('data-id')
+
+            let yr = new Date().getFullYear()
+            $('#year').html(yr)
+            $('#nyear').html(yr+1)
+
+            $('#Orders').change(function(){
+                $('.order_detail').removeClass('d-none')
+                var ag_name = $('.agency').text()
+                $('.agency_name').text(ag_name)
+                var id_ = $(this).val()
+
+                $.get(url+'orders/'+id_+'/', function(res){
+                    var sales = res?.Sales_Company
+                    var sales_acc = res?.Sales_Company?.Customer_Staff_Account
+                    var mat = res?.Materials
+                    let owner_number = sales?.Founder_Phone
+                    let office_address = sales?.GST_No?.Address+', '+sales?.GST_No?.City+', '+sales?.GST_No?.State+'-'+sales?.GST_No?.Zip+', '+sales?.GST_No?.Country
+                    // console.log(res)
+                    for(var i=0;i<mat.length;i++){
+
+                        let vendor_code = mat[i]?.Vendor?.id
+                        let Expected_Date = mat[i]?.Expected_Date
+                        let Material_Name = mat[i]?.Material_Name
+                        $('.order_info').append('<tr><td><div><b>Vendor Id</b>: '+vendor_code+' ('+Expected_Date+')</div><div class="mt-1"><input class="form-control form-control-sm" type="text" placeholder="GST No"></div><div class="mt-1"><input class="form-control form-control-sm" type="text" placeholder="Purchased No"></div></td><td><div class="text-capitalize"><b>Company Name : </b>'+sales?.Company_Name+'</div><div class="text-capitalize"><b>Office Address : </b>'+office_address+'</div><div class="text-capitalize"><b>Location Supply : </b>'+mat[i]?.Location_Supply+'</div></td><td><div class="text-primary">'+Material_Name+'</div><div class="mt-1"><input class="form-control form-control-sm" style="width:100px;" type="text" placeholder="C.DC"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:100px;" type="text" placeholder="L.DC"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:100px;" type="text" placeholder="CFT/ MT"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:100px;" type="text" placeholder="RATE"></div></td><td><div class="mt-1"><input class="form-control form-control-sm" type="text" placeholder="Total" style="width:120px;"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:120px;" type="text" placeholder="Total With Out GST"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:120px;" type="text" placeholder="Total With GST"></div></td><td><div><input class="form-control form-control-sm" style="width:115px;" type="text" placeholder="Invoice No"></div><div class="mt-1"><input class="form-control form-control-sm" type="date" style="width:115px;" placeholder="Invoice Date"></div><div class="mt-1"><input class="form-control form-control-sm" style="width:115px;" type="text" placeholder="DC & Invoice Copy"></div></td><td><div><b>Owner No : </b>'+owner_number+'</div><div class="mat_'+mat[i]?.id+'"></div></td><td><select class="form-control form-control-sm"><option value="GST FILED">GST FILED</option><option value="NOT FILLED">NOT FILLED</option></select></td><td><div><select class="form-control form-control-sm"><option value="PAYMENT PAID">PAYMENT PAID</option><option value="NOT PAID">NOT PAID</option><option value="PARTIAL PAID">PARTIAL PAID</option><option value="GST PENDING">GST PENDING</option></select></div></td></tr>')
+                        
+                        for(var j=0;j<sales_acc.length;j++){    
+                            $('.mat_'+mat[i]?.id).append('<div><b>'+sales_acc[j]?.Position+'</b>: <span>'+sales_acc[j]?.Contact_No+'</span></div>')
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

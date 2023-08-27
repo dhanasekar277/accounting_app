@@ -1,0 +1,58 @@
+{% load static %}
+<footer class="pt-5 pb-3 text-white container-fluid px-lg-5 px-4">
+    <div class="row">
+        <div class="col-md-3 mb-4 mb-md-0">
+            <img src="{% static 'img/logo.jpg' %}" width="65%" alt="">
+            <div class="mt-4">
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-facebook"></i></a>
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-instagram"></i></a>
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-twitter"></i></a>
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-linkedin"></i></a>
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-youtube"></i></a>
+                <a href="" class="text-reset text-decoration-none text-white"><i class="fa fa-lg me-3 fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4 mb-md-0">
+            <h5 class="mb-3">Quick Links </h5>
+            <ul class="list-group">
+                <li class="list-unstyled mb-2"><a href="{% url 'home' %}" class="text-reset text-decoration-none text-white">Home</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'aboutus' %}" class="text-reset text-decoration-none text-white">About Us</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'services' %" class="text-reset text-decoration-none text-white">Services</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'customers' %}" class="text-reset text-decoration-none text-white">Customers</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'locations' %}" class="text-reset text-decoration-none text-white">Location</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'blogs' %}" class="text-reset text-decoration-none text-white">Blogs</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'contactus' %}" class="text-reset text-decoration-none text-white">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 mb-4 mb-md-0">
+            <h5 class="mb-3">Our Services</h5>
+            <ul class="list-group">
+                <li class="list-unstyled mb-2"><a href="{% url 'personal_tax' %}" class="text-reset text-decoration-none text-white">Personal Tax </a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'corporate_tax' %}" class="text-reset text-decoration-none text-white">Corporate Tax</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'self_employment' %}" class="text-reset text-decoration-none text-white">Self Employment Tax Filing</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'business_incorporation' %}" class="text-reset text-decoration-none text-white">Business Incorporation Services</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'business_advisory' %}" class="text-reset text-decoration-none text-white">Business Advisory Services</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'additional_corporation' %}" class="text-reset text-decoration-none text-white">Additional Corporation Services</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'us_tax' %}" class="text-reset text-decoration-none text-white">US Taxes</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'accounting_bookkeeping' %}" class="text-reset text-decoration-none text-white">Accounting & Bookkeeping</a></li>
+                <li class="list-unstyled mb-2"><a href="{% url 'other_services' %}" class="text-reset text-decoration-none text-white">Other Services</a></li>
+            </ul>
+        </div>        
+        <div class="col-md-3">
+            <h5 class="mb-3">Contact Us</h5>
+            <ul class="list-group">
+                <li class="list-unstyled mb-3"><i class="fa fa-lg fa-phone me-2"></i> Phone - <a href="tel:416-289-2000" class="text-white">416-289-2000</a></li>
+                <li class="list-unstyled mb-3"><i class="fa fa-lg fa-fax me-2"></i> Fax - <a href="fax:416-439-7500" class="text-white">416-439-7500</a></li>
+            </ul>
+            <p class="mb-3"><i class="fa fa-lg fa-map-marker me-2"></i> Our Locations </p>
+            <ul>
+                <li class="list-unstyled mb-2">
+                    <a href="https://g.co/kgs/xcoZhH" target="_blank" class="text-white">Cedarbrae Mall,3495 Lawrence Ave E, Scarborough, ON M1H 1B3, Canada</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12 text-center mt-5 fw-bold">
+            <small>&copy; 2022 by BarosaTax.</small>
+        </div>
+    </div>
+</footer>

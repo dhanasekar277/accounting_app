@@ -1,0 +1,1317 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get-registered!</title>
+  <!-- <link rel="stylesheet" href="D:\registeration form\stylesheet.css" /> -->
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- font awesome css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- data table cdn -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+  {% if request.session.name == 'c_reg' %}
+  <!-- Nav bar -->
+  <div style="background: #e3324a;"
+    class="d-flex px-4 justify-content-between flex-wrap flex-md-nowrap mb-4 align-items-center py-2 border-0">
+    <h1 class="h4 heading mb-0 fw-bold text-white text-uppercase"><span class="agency">MKHM Groups</span> <b
+        class="text-primary fa-24"> </b></h1>
+    <form action="" method="post">
+      {% csrf_token %}
+      <input type="hidden" value="" />
+      <button name="logut_cash" class="btn" type="submit">
+        <i class="fa fa-sign-out fa-lg text-white"></i>
+      </button>
+    </form>
+  </div>
+  <!-- body -->
+  <section>
+    <div class="container-fluid px-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card p-4 shadow border-0">
+            <!-- Calender Search -->
+            <!-- <div class="row mb-4">
+              <div class="col-md-6 ms-auto">
+                <form id="calendersearch" method="POST" action="" novalidate="">
+                  <div class="row">
+                    <div class="col-sm-4 px-2">
+                      <label for="calander_from" class="form-label mb-0">From</label>
+                      <input required="" type="date" class="form-control" name="calander_from" />
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="calander_to" class="form-label mb-0">To</label>
+                      <input required="" type="date" class="form-control" name="calander_to" />
+                    </div>
+                    <div class="col-md-4 mt-auto mb-1">
+                      <button type="submit" class="btn btn-success btn-sm w-100"><i
+                          class="fa fa-search me-2"></i>Search</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div> -->
+
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+                  type="button" role="tab" aria-controls="pills-home" aria-selected="true">PURCHASE</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+                  type="button" role="tab" aria-controls="pills-profile" aria-selected="false">SALES</button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="pills-tabContent">
+              <!-- Purchase -->
+              <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <!-- Search Form -->
+                <div class="row">
+                  <div class="col-12 mb-2">
+                    <button class="btn btn-sm float-end btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#PurchaseModal" id="add-button"><i class="fa fa-plus me-2"></i>Add</button>
+                    <form action="">
+                      <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                        <input name="q" type="text" class="form-control" placeholder="Search Here ..."
+                          aria-label="Search Here ..." aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                            class="fa fa-search"></i></button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table-sm expence-entry-table table table-bordered table-striped">
+                    <thead class="table table-dark">
+                      <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>company</th>
+                        <th>Address</th>
+                        <th>Material</th>
+                        <th>Total Quantity</th>
+                        <th>Round Off</th>
+                        <th>Amount</th>
+                        <th>Voucher</th>
+                        <th>Attachments</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for i in purchase_entry_data %}
+                      <tr class="PurchaseEntry">
+                        <td>{{i.id}}</td>
+                        <td>{{i.date}}</td>
+                        <td>
+                          <div><b class="text-primary">Purchase : </b>{{i.purchase_company}}</div>
+                          <div><b class="text-primary">Sales : </b> {{i.sales_company}}</div>
+                        </td>
+                        <td>
+                          <div><b class="text-primary">Billing : </b>{{i.billing_address}}</div>
+                          <div><b class="text-primary">Delivery : </b> {{i.delivery_address}}</div>
+                        </td>
+
+                        <td>
+                          {% for j in i.material.all %}
+                          <ul>
+                            <li>{{j.material}} <a class="text-danger purchaseentrydelete ms-2" data-id="5" href="/"></a>
+                            </li>
+                          </ul>
+                          <!-- <span class="text-primary">type : </span>
+                            {{j.quantity_type}} | <span class="text-primary">Qut : </span>
+                            {{j.quantity}} |<span class="text-primary">Price : </span>
+                            {{j.price}} -->
+
+
+                          {% endfor %}
+
+                          <a href="" data-id="{{i.id}}"
+                            class="btn btn-sm btn-primary px-1 py-0 fa-12 addmaterialpurchase"><i
+                              class="fa fa-plus"></i>
+                            Materials</a>
+
+                        </td>
+                        <td>{{i.total_quantity}}</td>
+                        <td>{{i.round_off}}</td>
+                        <td>
+                          <div>
+                            <b class="text-primary">Total : </b>{{i.amount}} <br>
+                            <b class="text-primary">Paid : </b>{{i.amount_paid}} <br>
+                            <b class="text-primary">Balance : </b>{{i.amount_balance}}
+                          </div>
+                        </td>
+                        <td>{{i.voucher}}</td>
+                        <td>
+                          {% if i.purchase_bill %}
+                          <a download href="{{i.purchase_bill}}">Purchase Bill</a> <br>
+                          {% elif i.dc_scan_copy %}
+                          <a download href="{{i.dc_scan_copy}}">DC Scan Copy</a>
+                          {% else %}
+                          <div class="text-primary">No <br> Attachments <br> Available</div>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <a class="text-success cash_purchaseview ms-2" data-id="{{i.id}}" href=""><i
+                              class="fa fa-eye"></i></a>
+                          <a class="text-warning purchaseedit ms-2"
+                            href="/cash-register/edit_purchase_entry_form/{{i.id}}" data-id="{{i.id}}"><i
+                              class="fa fa-edit"></i></a>
+                          <a class="text-danger expencedelete ms-2" href="/cash-register/delete_purchase_entry/{{i.id}}"
+                            data-id="{{i.id}}" onclick="deletepurchase('{{i.id}}')"
+                            href="/cash-register/delete_purchase_entry/{{i.id}}"><i class="fa fa-trash"></i></a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Sales -->
+              <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <!-- Search Form -->
+                <div class="row">
+                  <div class="col-12 mb-2">
+                    <button class="btn btn-sm btn-primary float-end" data-bs-toggle="modal"
+                      data-bs-target="#SaleseModal" id="add-button"><i class="fa fa-plus me-2"></i>Add</button>
+
+                    <form action="/">
+                      <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                        <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                          aria-label="Search Here ..." aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                            class="fa fa-search"></i></button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table-sm table table-bordered table-striped">
+                    <thead class="table table-dark">
+                      <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>company</th>
+                        <th>Address</th>
+                        <th>Material</th>
+                        <th>Round Off</th>
+                        <th>Total Quantity</th>
+                        <th>Amount</th>
+                        <th>Invoice</th>
+                        <th>Attachments</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for j in sales_entry_data %}
+                      <tr class="Sales-Entry">
+                        <td>{{j.id}}</td>
+                        <td>{{j.sales_entry_date}}</td>
+                        <td>
+                          <div><b class="text-primary">Purchase : </b>{{j.purchase_company}}</div>
+                          <div><b class="text-primary">Sales : </b> {{j.sales_company}}</div>
+                        </td>
+                        <td>
+                          <div><b class="text-primary">Billing : </b>{{j.billing_address}}</div>
+                          <div><b class="text-primary">Delivery : </b> {{j.delivery_address}}</div>
+                        </td>
+
+                        <td>
+                          {% for k in j.material.all %}
+
+                          <ul>
+                            <!-- {{k.material}} | <span class="text-primary">type : </span>
+                            {{k.quantity_type}} | <span class="text-primary">Qut : </span>
+                            {{k.quantity}} -->
+                            <li>{{k.material}} <a class="text-danger salesentrydelete ms-2" data-id="{{j.id}}"
+                                href="/"></i></a></li>
+                          </ul>
+                          {% endfor %}
+                          <a href="" data-id="{{j.id}}"
+                            class="btn btn-sm btn-primary px-1 py-0 fa-12 addmaterialsales"><i class="fa fa-plus"></i>
+                            Materials</a>
+                        </td>
+
+                        <td>{{j.round_off}}</td>
+                        <td>{{j.total_quantity}}</td>
+                        <td>
+                          <div>
+                            <b class="text-primary">Total : </b>{{j.amount}} <br>
+                            <b class="text-primary">Paid : </b>{{j.amount_paid}} <br>
+                            <b class="text-primary">Balance : </b>{{j.amount_balance}}
+                          </div>
+                        </td>
+                        <td>{{j.invoice}}</td>
+                        <td>
+                          {% if j.dc_scan_copy %}
+                          <a download href="{{j.dc_scan_copy}}">DC Scan Copy</a>
+                          {% else %}
+                          <div class="text-primary">No <br> Attachments <br> Available</div>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <a class="text-success cash_salesview ms-2" data-id="{{j.id}}"><i class="fa fa-eye"></i></a>
+                          <a class="text-warning salesedit ms-2" data-id="{{j.id}}"
+                            href="/cash-register/edit_sale_entry_form/{{j.id}}"><i class="fa fa-edit"></i></a>
+                          <a class="text-danger expencedelete ms-2" href="/cash-register/delete_sale_entry/{{j.id}}"
+                            data-id="{{j.id}}" onclick="deletesales('{{j.id}}')"
+                            href="/cash-register//delete_sale_entry/{{j.id}}"> <i class="fa fa-trash"></i></a>
+
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% else %}
+  <div class="container px-5" id="loginpage">
+    <div class="card mx-5 border-0 shadow-lg">
+      <div class="row mx-0">
+        <div class="col-md-6 p-3">
+
+          <div class="mt-2 fw-bold text-center">
+            <p class="mb-1 text-secondary">Welcome To</p>
+            <h3 class="fw-bold text-uppercase text-primary">MKHM Group</h3>
+            <small class="text-secondary fw-normal">log in to get the moment updates that intrests
+              you</small>
+          </div>
+          <form class="needs-validation w-75 mx-auto" method="post" action="" novalidate>
+            {% csrf_token %}
+            {% if error %}
+            <div class="alert alert-danger py-2 mt-3 alert-dismissible fade show" role="alert">
+              <strong>{{error}}</strong>
+              <button type="button" class="btn-close pt-3 pb-2 small" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+            </div>
+            {% endif %}
+            <div class="form-floating mb-3 mt-4">
+              <input type="text" class="form-control" name="username" id="Email" placeholder="Username" required>
+              <label for="floatingInput">Username</label>
+              <div class="invalid-feedback">
+                Username is required.
+              </div>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+              <label for="floatingPassword">Enter password</label>
+              <div class="invalid-feedback">
+                Password is required.
+              </div>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="Rememberme">
+              <label class="form-check-label" for="Rememberme">Remember me</label>
+            </div>
+            <button type="submit" class="btn btn-danger shadow rounded-pill w-100">SIGN IN</button>
+            <div class="mt-3 mb-2 text-center">
+              <!-- <a class="text-primary fw-bold text-decoration-none" href="{% url 'forgetpassword' %}">Forget Password
+                ?</a> -->
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6 loginimg text-white">
+          <div class="text-center text">
+            <h3 class="fw-bold text-uppercase">MKHM Group</h3>
+            <div class="row ">
+              <div class="col-sm-4">
+                <img src="{% static 'img/hari 1.png' %}" alt="" width="100%">
+              </div>
+
+              <div class="col-sm-4">
+                <img src="{% static 'img/kaviS.png' %}" alt="" width="100%">
+              </div>
+
+              <div class="col-sm-4">
+                <img src="{% static 'img/mathi 1.png' %}" alt="" width="100%">
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <!-- purchase add Modal -->
+  <div class="modal fade" id="PurchaseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Purchase Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="add_purchase_entry_form" method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Entry Date</label>
+                <input type="date" class="form-control" name="purchase_entry_date" placeholder="Purchase Entry"
+                  aria-label="Purchase Entry" required>
+                <div class="invalid-feedback">
+                  Please Enter the Date
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Company</label>
+                <input type="text" class="form-control" name="purchase_company" placeholder="Purchase Company"
+                  aria-label="Purchase Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Company
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Sales Company</label>
+                <input type="text" class="form-control" name="sales_company" placeholder="Purchase Company"
+                  aria-label="Purchase Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Company
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Total Quantity</label>
+                <input type="number" class="form-control" name="total_quantity" placeholder="Total Quantity"
+                  aria-label="Total Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Total Quantity
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Round Off</label>
+                <input type="number" class="form-control" name="round_off" placeholder="Round Off"
+                  aria-label="Round Off" required>
+                <div class="invalid-feedback">
+                  Please Enter the Round Off
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Voucher</label>
+                <input type="number" class="form-control" name="voucher" placeholder="Voucher" aria-label="Voucher"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Voucher
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount</label>
+                <input type="number" class="form-control" name="amount" placeholder="Amount" aria-label="Amount"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount paid</label>
+                <input type="number" class="form-control" name="amount_paid" placeholder="Amount paid"
+                  aria-label="Amount paid" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount paid
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Balance</label>
+                <input type="number" class="form-control" name="amount_balance" placeholder="Amount Balance"
+                  aria-label="Amount Balance" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Balance
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6">
+                <label for="formFileMultiple" class="form-label">Dc Scan Copy</label>
+                <input class="form-control" name="dc_scan_copy" type="file" id="formFileMultiple" multiple required>
+                <div class="invalid-feedback">
+                  Please Enter the Dc Scan Copy
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Purchase Bill</label>
+                <input type="file" class="form-control" name="purchase_bill" placeholder="Purchase-Bill" multiple
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Bill
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Billing Address</label>
+                <textarea class="form-control" name="billing_address" id="exampleFormControlTextarea1"
+                  rows="1"></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Billing Address
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Delivery Address</label>
+                <textarea class="form-control" name="delivery_address" id="exampleFormControlTextarea1"
+                  rows="1"></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Delivery Address
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary float-end">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- purchase edit Modal -->
+  <div class="modal fade" id="editpurchaseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Purchase Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="purchase_entry_edit needs-validation" action="" method="POST" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Entry Date</label>
+                <input type="date" class="form-control purchase_entry_date" name="purchase_entry_date"
+                  placeholder="Purchase Entry" aria-label="Purchase Entry" required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Entry Date
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Company</label>
+                <input type="text" class="form-control purchase_company" name="purchase_company"
+                  placeholder="Purchase Company" aria-label="Purchase Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Company
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <label class="form-check-label" for="exampleCheck1">Sales Company</label>
+                <input type="text" class="form-control sales_company" name="sales_company"
+                  placeholder="Purchase Company" aria-label="Purchase Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Company
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Total Quantity</label>
+                <input type="number" class="form-control total_quantity" name="total_quantity"
+                  placeholder="Total Quantity" aria-label="Total Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Total Quantity
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Round Off</label>
+                <input type="number" class="form-control round_off" name="round_off" placeholder="Round Off"
+                  aria-label="Round Off" required>
+                <div class="invalid-feedback">
+                  Please Enter the Round Off
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Voucher</label>
+                <input type="number" class="form-control voucher" name="voucher" placeholder="Voucher"
+                  aria-label="Voucher" required>
+                <div class="invalid-feedback">
+                  Please Enter the Voucher
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount</label>
+                <input type="number" class="form-control amount" name="amount" placeholder="Amount" aria-label="Amount"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount paid</label>
+                <input type="number" class="form-control amount_paid" name="amount_paid" placeholder="Amount paid"
+                  aria-label="Amount paid" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Paid
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Balance</label>
+                <input type="number" class="form-control amount_balance" name="amount_balance"
+                  placeholder="Amount Balance" aria-label="Amount Balance" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Balance
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6">
+                <label for="formFileMultiple" class="form-label">Dc Scan Copy</label>
+                <input class="form-control dc_scan_copy" name="dc_scan_copy" type="file" id="formFileMultiple" multiple
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Dc Scan Copy
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Purchase Bill</label>
+                <input type="file" class="form-control purchase_bill" name="purchase_bill" placeholder="Purchase-Bill"
+                  multiple required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Bill
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Billing Address</label>
+                <textarea class="form-control" name="billing_address" id="exampleFormControlTextarea1" rows="1"
+                  required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Billing Address
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-check-label" for="exampleCheck1">Delivery Address</label>
+                <textarea class="form-control" name="delivery_address" id="exampleFormControlTextarea1" rows="1"
+                  required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Delivery Address
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary float-end">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--purchase view model-->
+  <div class="modal fade" id="purchaseview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Purchase Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row purchaseview_details">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--purchase_material_add_model-->
+  <!-- Modal -->
+  <div class="modal fade" id="PurchaseMaterialModel" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Purchase Material</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col mb-2">
+                <div class="mb-3 taginputdiv">
+                  <label for="validationTagsNew" class="form-label">Materials</label>
+                  <input class="form-control" type="text" name="material" placeholder="Material Name">
+                  <div class="invalid-feedback">
+                    Please Enter the Materials
+                  </div>
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Quantity Type</label>
+                <select name="quantity_type" class="form-control" id="quantity_type">
+                  <option value="">---</option>
+                  <option value="NO">NO</option>
+                  <option value="MT">MT</option>
+                  <option value="CFT">CFT</option>
+                  <option value="QF">QF</option>
+                  <option value="M3">M3</option>
+                  <option value="QM">QM</option>
+                  <option value="Cage">Cage</option>
+                  <option value="KG">KG</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please choose a Quantity Type
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Quantity</label>
+                <input class="form-control" type="number" name="quantity" placeholder="Quantity">
+                <div class="invalid-feedback">
+                  Please Enter the Quantity
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Price</label>
+                <input class="form-control" type="number" name="price" placeholder="Price">
+                <div class="invalid-feedback">
+                  Please Enter the Price
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- sales add Modal -->
+  <div class="modal fade" id="SaleseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Sales Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="add_sale_entry_form" method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Sales Entry Date</label>
+                <input type="date" class="form-control" name="sales_entry_date" placeholder="Entry Date"
+                  aria-label="Sales Entry Date" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Entry Date
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Company</label>
+                <input type="text" class="form-control" name="purchase_company" placeholder="Company Name"
+                  aria-label="Company Name" required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Company
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Sales Company</label>
+                <input type="text" class="form-control" name="sales_company" placeholder="Sales Company"
+                  aria-label="Sales Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Company
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Billing Address</label>
+                <textarea class="form-control" name="billing_address" id="exampleFormControlTextarea1" rows="1"
+                  required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Billing Address
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Delivery Address</label>
+                <textarea class="form-control" name="delivery_address" id="exampleFormControlTextarea1" rows="1"
+                  required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Delivery Address
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Round off</label>
+                <input type="number" class="form-control" name="round_off" placeholder="Round off"
+                  aria-label="Round off" required>
+                <div class="invalid-feedback">
+                  Please Enter the Round off
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Total Quantity</label>
+                <input type="number" class="form-control" name="total_quantity" placeholder="Total Quantity"
+                  aria-label="Total Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Total Quantity
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount</label>
+                <input type="number" class="form-control" name="amount" placeholder="Amount" aria-label="Amount"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Paid</label>
+                <input type="number" class="form-control" name="amount_paid" placeholder="Amount Paid"
+                  aria-label="Amount paid" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Paid
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Balance</label>
+                <input type="number" class="form-control" name="amount_balance" placeholder="Amount Balance"
+                  aria-label="Amount Balance" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Balance
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Invoice</label>
+                <input type="number" class="form-control" name="invoice" placeholder="Invoice" aria-label="Invoice"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Invoice
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label for="formFileMultiple" class="form-label">Dc Scan Copy</label>
+                <input class="form-control" name="dc_scan_copy" type="file" id="formFileMultiple" multiple required>
+                <div class="invalid-feedback">
+                  Please Enter the Dc Scan Copy
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Sales_material_add_model-->
+  <!-- Modal -->
+  <div class="modal fade" id="SaleMaterialModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Sales Material</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col mb-2">
+                <div class="mb-3 taginputdiv">
+                  <label for="validationTagsNew" class="form-label">Materials</label>
+                  <input class="form-cntrol" type="text" name="material" placeholder="Materials Name" required>
+                  <div class="invalid-feedback">
+                    Please Enter the Materials
+                  </div>
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Quantity Type</label>
+                <select name="quantity_type" class="form-control" id="quantity_type" required>
+                  <option value="">---</option>
+                  <option value="NO">NO</option>
+                  <option value="MT">MT</option>
+                  <option value="CFT">CFT</option>
+                  <option value="QF">QF</option>
+                  <option value="M3">M3</option>
+                  <option value="QM">QM</option>
+                  <option value="Cage">Cage</option>
+                  <option value="KG">KG</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please Choose the Quantity Type
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Quantity</label>
+                <input type="number" class="form-cntrol" name="quantity" placeholder="Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Quantity
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-label" for="exampleCheck1">Price</label>
+                <input type="number" class="form-cntrol" name="price" placeholder="Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Price
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- sales edit Modal -->
+  <div class="modal fade" id="editSaleseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Sales Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="sales_entry_edit needs-validation" action="" method="POST" novalidate>
+            {% csrf_token %}
+
+            <div class="row">
+              <div class="col mb-2">
+
+                <label class="form-check-label" for="exampleCheck1">Sales Entry Date</label>
+                <input type="date" class="form-control sales_entry_date" name="sales_entry_date"
+                  placeholder="Entry Date" aria-label="Sales Entry Dtae" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Entry Date
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Purchase Company</label>
+                <input type="text" class="form-control purchase_company" name="purchase_company"
+                  placeholder="Company Name" aria-label="Company Name" required>
+                <div class="invalid-feedback">
+                  Please Enter the Purchase Company
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Sales Company</label>
+                <input type="text" class="form-control sales_company" name="sales_company" placeholder="Sales Company"
+                  aria-label="Sales Company" required>
+                <div class="invalid-feedback">
+                  Please Enter the Sales Company
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Round off</label>
+                <input type="number" class="form-control round_off" name="round_off" placeholder="Round off"
+                  aria-label="Round off" required>
+                <div class="invalid-feedback">
+                  Please Enter the Round off
+                </div>
+              </div>
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Total Quantity</label>
+                <input type="number" class="form-control total_quantity" name="total_quantity"
+                  placeholder="Total Quantity" aria-label="Total Quantity" required>
+                <div class="invalid-feedback">
+                  Please Enter the Total Quantit
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount</label>
+                <input type="number" class="form-control amount" name="amount" placeholder="Amount" aria-label="Amount"
+                  required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Paid</label>
+                <input type="number" class="form-control amount_paid" name="amount_paid" placeholder="Amount Paid"
+                  aria-label="Amount paid" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Paid
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Amount Balance</label>
+                <input type="number" class="form-control amount_balance" name="amount_balance"
+                  placeholder="Amount Balance" aria-label="Amount Balance" required>
+                <div class="invalid-feedback">
+                  Please Enter the Amount Balance
+                </div>
+              </div>
+
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Invoice</label>
+                <input type="number" class="form-control invoice" name="invoice" placeholder="Invoice"
+                  aria-label="Invoice" required>
+                <div class="invalid-feedback">
+                  Please Enter the Invoice
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Billing Address</label>
+                <textarea class="form-control billing_address" name="billing_address" id="exampleFormControlTextarea1"
+                  rows="1" required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Billing Address
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label class="form-check-label" for="exampleCheck1">Delivery Address</label>
+                <textarea class="form-control delivery_address" name="delivery_address" id="exampleFormControlTextarea1"
+                  rows="1" required></textarea>
+                <div class="invalid-feedback">
+                  Please Enter the Delivery Address
+                </div>
+              </div>
+
+              <div class="col mb-2">
+                <label for="formFileMultiple" class="form-label">Dc Scan Copy</label>
+                <input type="file" class="form-control" name="dc_scan_copy" id="formFileMultiple" multiple required>
+                <div class="invalid-feedback">
+                  Please Enter the Dc Scan Copy
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--sales view model-->
+  <div class="modal fade" id="salesview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" style="color:blue">Sales Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row salesview_details">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $('.purchaseedit').click(function (e) {
+      e.preventDefault();
+      $('#editpurchaseModal').modal('show')
+      let data_id = $(this).attr('data-id')
+      $('.purchase_entry_edit').attr('action', `/cash-register/edit_purchase_entry_form/${data_id}`)
+      $.get(`/cash-register/purchaseapi/${data_id}`, function (data, status) {
+        data = JSON.parse(data)
+        $('.purchase_entry_date').val(data[0].fields.date)
+        $('.purchase_company').val(data[0].fields.purchase_company)
+        $('.sales_company').val(data[0].fields.sales_company)
+        $('.total_quantity').val(data[0].fields.total_quantity)
+        $('.round_off').val(data[0].fields.round_off)
+        $('.voucher').val(data[0].fields.voucher)
+        $('.amount').val(data[0].fields.amount)
+        $('.amount_paid').val(data[0].fields.amount_paid)
+        $('.amount_balance').val(data[0].fields.amount_balance)
+        $('.dc_scan_copy').val(data[0].fields.dc_scan_copy)
+        $('.purchase_bill').val(data[0].fields.purchase_bill)
+        $('.billing_address').val(data[0].fields.billing_address)
+        $('.delivery_address').val(data[0].fields.delivery_address)
+      });
+    });
+
+    // opening model and setting action attr for add materials 
+    $('.addmaterialpurchase').click(function (event) {
+      event.preventDefault();
+      let materialId = $(this).attr('data-id')
+      $('#PurchaseMaterialModel form').attr('action', '/cash-register/purchase_material_add/' + materialId)
+      $('#PurchaseMaterialModel').modal('show')
+    })
+
+    // purchase view
+    $('.cash_purchaseview').click(function (event) {
+      event.preventDefault();
+      let purId = $(this).attr('data-id')
+      $('#purchaseview').modal('show')
+      $.get(`/cash-register/purchaseapi/${purId}`, function (data, status) {
+        data = JSON.parse(data)
+        // console.log(data)
+        $('.purchaseview_details').html(`
+        <div class="col-6">
+          <p class="mb-2"> <b class="me-2">Purchase entry date :</b>${data[0].fields.date}</p>
+          <p class="mb-2"> <b class="me-2">Purchase company :</b>${data[0].fields.purchase_company}</p>
+          <p class="mb-2"> <b class="me-2">Sales company :</b>${data[0].fields.sales_company}</p>
+          <p class="mb-2"> <b class="me-2">Billing company :</b>${data[0].fields.billing_address}</p>
+          <p class="mb-2"> <b class="me-2">Delivery Address :</b>${data[0].fields.delivery_address}</p>
+          <p class="mb-2"> <b class="me-2">Total Quantity :</b>${data[0].fields.total_quantity}</p>
+          <p class="mb-2"> <b class="me-2">Round off :</b>${data[0].fields.round_off}</p>
+          <p class="mb-2"> <b class="me-2">Amount :</b>${data[0].fields.amount}</p>
+          <p class="mb-2"> <b class="me-2">Amount Paid :</b>${data[0].fields.amount_paid}</p>
+          <p class="mb-2"> <b class="me-2">Amount Balance :</b>${data[0].fields.amount_balance}</p>
+          <p class="mb-2"> <b class="me-2">Voucher :</b>${data[0].fields.voucher}</p>
+        </div>
+        <div class="col-6">
+          <h5 class="text-primary">Materials</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Material Name</th>
+                <th>Quantity</th>
+                <th>Quantty type</th>
+                <th>Total Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody class="materialtablebody">
+              
+            </tbody>
+          </table>
+        </div>`)
+        for (i of data[0].fields.material) {
+          $('.materialtablebody').append(`
+          <tr>
+            <td>${i.material}</td>
+            <td>${i.quantity}</td>
+            <td>${i.quantity_type}</td>
+            <td>${i.price}</td>
+            <td>
+              <a href="#" class="text-danger prchasematerialdelete" onclick='deletepurchasematerial(${i.id})' data-id="${i.id}"><i class="fa fa-trash"></i></a>
+            </td>
+          </tr>`)
+        }
+      })
+    })
+
+    // purchase entry Delete
+    function deletepurchase(id) {
+      let person = prompt("Please Enter Your Name ?", "");
+      if (person == '{{request.user.username}}') {
+        alert('Customer Deleted Successfully. !!!')
+        setTimeout(() => {
+          location.replace(`/cash-register/delete_purchase_entry/${id}`)
+        }, 500);
+      } else {
+        event.preventDefault()
+        alert('Invalid Name. !!!')
+      }
+    }
+
+    // purchase materials Delete
+    function deletepurchasematerial(id) {
+      let person = prompt("Please Enter Your Name ?", "");
+      if (person == '{{request.user.username}}') {
+        alert('Customer Deleted Successfully. !!!')
+        setTimeout(() => {
+          location.replace(`/cash-register/delete_purchase_materials/${id}`)
+        }, 500);
+      } else {
+        event.preventDefault()
+        alert('Invalid Name. !!!')
+      }
+    }
+
+
+  </script>
+
+  <!--sales javascript-->
+  <script>
+    $('.salesedit').click(function (e) {
+      e.preventDefault();
+      $('#editSaleseModal').modal('show')
+      let data_id = $(this).attr('data-id')
+      $('.sales_entry_edit').attr('action', `/cash-register/edit_sale_entry_form/${data_id}`)
+      $.get(`/cash-register/salesapi/${data_id}`, function (data, status) {
+        data = JSON.parse(data)
+        $('.sales_entry_date').val(data[0].fields.sales_entry_date)
+        $('.purchase_company').val(data[0].fields.purchase_company)
+        $('.sales_company').val(data[0].fields.sales_company)
+        $('.total_quantity').val(data[0].fields.total_quantity)
+        $('.round_off').val(data[0].fields.round_off)
+        $('.invoice').val(data[0].fields.invoice)
+        $('.amount').val(data[0].fields.amount)
+        $('.amount_paid').val(data[0].fields.amount_paid)
+        $('.amount_balance').val(data[0].fields.amount_balance)
+        $('.dc_scan_copy').val(data[0].fields.dc_scan_copy)
+        $('.billing_address').val(data[0].fields.billing_address)
+        $('.delivery_address').val(data[0].fields.delivery_address)
+      });
+    });
+
+    // opening model and setting action attr for add materials 
+    $('.addmaterialsales').click(function (event) {
+      event.preventDefault();
+      let materialId = $(this).attr('data-id')
+      $('#SaleMaterialModel form').attr('action', '/cash-register/sales_material_add/' + materialId)
+      $('#SaleMaterialModel').modal('show')
+    })
+
+    // sales view
+    $('.cash_salesview').click(function (event) {
+      event.preventDefault();
+      let saleId = $(this).attr('data-id')
+      $('#salesview').modal('show')
+      $.get(`/cash-register/salesapi/${saleId}`, function (data, status) {
+        data = JSON.parse(data)
+        // console.log(data)
+        $('.salesview_details').html(`
+        <div class="col-6">
+          <p class="mb-2"> <b class="me-2">Sales entry date :</b>${data[0].fields.sales_entry_date}</p>
+          <p class="mb-2"> <b class="me-2">Purchase company :</b>${data[0].fields.purchase_company}</p>
+          <p class="mb-2"> <b class="me-2">Sales company :</b>${data[0].fields.sales_company}</p>
+          <p class="mb-2"> <b class="me-2">Billing company :</b>${data[0].fields.billing_address}</p>
+          <p class="mb-2"> <b class="me-2">Delivery Address :</b>${data[0].fields.delivery_address}</p>
+          <p class="mb-2"> <b class="me-2">Total Quantity :</b>${data[0].fields.total_quantity}</p>
+          <p class="mb-2"> <b class="me-2">Round off :</b>${data[0].fields.round_off}</p>
+          <p class="mb-2"> <b class="me-2">Amount :</b>${data[0].fields.amount}</p>
+          <p class="mb-2"> <b class="me-2">Amount Paid :</b>${data[0].fields.amount_paid}</p>
+          <p class="mb-2"> <b class="me-2">Amount Balance :</b>${data[0].fields.amount_balance}</p>
+          <p class="mb-2"> <b class="me-2">Invoice :</b>${data[0].fields.invoice}</p>
+        </div>
+        <div class="col-6">
+          <h5 class="text-primary">Materials</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Material Name</th>
+                <th>Quantity</th>
+                <th>Quantty type</th>
+                <th>Total Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody class="materialtablebodysales">
+              
+            </tbody>
+          </table>
+        </div>`)
+        for (i of data[0].fields.material) {
+          $('.materialtablebodysales').append(`
+          <tr>
+            <td>${i.material}</td>
+            <td>${i.quantity}</td>
+            <td>${i.quantity_type}</td>
+            <td>${i.price}</td>
+            <td>
+              <a href="#" class="text-danger salesmaterialdelete" onclick='deletesalesmaterial(${i.id})' data-id="${i.id}"><i class="fa fa-trash"></i></a>
+            </td>
+          </tr>`)
+        }
+      })
+    })
+
+    // delete entry Delete
+    function deletesales(id) {
+      let person = prompt("Please Enter Your Name ?", "");
+      if (person == '{{request.user.username}}') {
+        alert('Customer Deleted Successfully. !!!')
+        setTimeout(() => {
+          location.replace(`/cash-register/delete_sale_entry/${id}`)
+        }, 500);
+      } else {
+        event.preventDefault()
+        alert('Invalid Name. !!!')
+      }
+    }
+
+    // sales materials Delete
+    function deletesalesmaterial(id) {
+      let person = prompt("Please Enter Your Name ?", "");
+      if (person == '{{request.user.username}}') {
+        alert('Customer Deleted Successfully. !!!')
+        setTimeout(() => {
+          location.replace(`/cash-register/delete_sales_materials/${id}`)
+        }, 500);
+      } else {
+        event.preventDefault()
+        alert('Invalid Name. !!!')
+      }
+    }
+
+
+  </script>
+
+  <!--form validationT-->
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+  </script>
+
+  <style>
+    .nav-pills .active {
+      background-color: #E3324A !important;
+      color: white;
+    }
+  </style>
+</body>
+
+</html>

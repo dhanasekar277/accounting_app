@@ -1,0 +1,453 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-4">
+        <!-- welcome section -->
+        <div class="col-md-12 text-capitalize">
+            <h3 class="fw-bold mb-1">Welcome {{request.user}} !</h3>
+            <p>Dashboard</p>
+        </div>
+        <!-- order counts  -->
+        <div class="col-md-3">
+            <div class="card box-2 p-3">
+                <div class="row">
+                    <div class="col-4">
+                        <span class="dash-widget-icon"><i class="fa fa-cubes"></i></span>
+                    </div>
+                    <div class="col-8 text-end fw-bold ">
+                        <h3 class="mb-1 fw-900 totalorders">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h3>
+                        <span>Daily Orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- purchase counts -->
+        <div class="col-md-3">
+            <div class="card box-2 p-3">
+                <div class="row">
+                    <div class="col-4">
+                        <span class="dash-widget-icon"><i class="fa fa-usd"></i></span>
+                    </div>
+                    <div class="col-8 text-end fw-bold ">
+                        <h3 class="mb-1 fw-900 totalpurchase">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h3>
+                        <span>Total Purchase</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- sales counts -->
+        <div class="col-md-3">
+            <div class="card box-2 p-3">
+                <div class="row">
+                    <div class="col-4">
+                        <span class="dash-widget-icon float-start"><i class="fa fa-diamond"></i></span>
+                    </div>
+                    <div class="col-8 text-end fw-bold ">
+                        <h3 class="mb-1 fw-900 totalsales">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h3>
+                        <span>Sales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- invoices counts -->
+        <div class="col-md-3">
+            <div class="card box-2 p-3">
+                <div class="row">
+                    <div class="col-4">
+                        <span class="dash-widget-icon float-start"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="col-8 text-end fw-bold ">
+                        <h3 class="mb-1 fw-900 totalinvoices">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h3>
+                        <span>Invoices</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+            <div class="row box-2 rounded mx-0">
+                <!-- New Orders Count -->
+                <div class="col px-0">
+                    <div class="card border-0 p-3 rounded-0 border-end">
+                        <h5 class="fw-bold">New Orders</h5>
+                        <h2 class="fw-900 neworders">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h2>
+                        <span>Overall orders <span class="totalorders"></span></span>
+                    </div>
+                </div>
+                <!-- New Sales Count -->
+                <div class="col px-0">
+                    <div class="card border-0 p-3 rounded-0 border-end">
+                        <h5 class="fw-bold">Sales</h5>
+                        <h2 class="fw-900 salescurmonth">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h2>
+                        <span>Previous Month <span class="text-muted salesprevmonth">Rs 1,15,852</span></span>
+                    </div>
+                </div>
+                <!-- New Purchase Count -->
+                <div class="col px-0">
+                    <div class="card border-0 p-3 rounded-0 border-end">
+                        <h5 class="fw-bold">Purchase</h5>
+                        <h2 class="fw-900 purchasecurmonth">
+                            <div class="spinner-border border-4" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </h2>
+                        <span>Previous Month <span class="text-muted purchaseprevmonth">Rs 1,15,852</span></span>
+                    </div>
+                </div>
+                <!-- profit -->
+                <div class="col px-0">
+                    <div class="col px-0">
+                        <div class="card border-0 p-3 ">
+                            <h5 class="fw-bold">Profit</h5>
+                            <h2 class="fw-900 profitcurmonth">
+                                <div class="spinner-border border-4" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </h2>
+                            <span>Previous Month <span class="text-muted profitprevmonth">Rs 1,15,852</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reciveable -->
+                <div class="col px-0">
+                    <div class="col px-0">
+                        <div class="card border-0 p-3 ">
+                            <h5 class="fw-bold">Reciveable</h5>
+                            <h2 class="fw-900 recivecurmonth">
+                                <div class="spinner-border border-4" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </h2>
+                            <span>Payable <span class="text-muted payprevmonth">Rs 1,15,852</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <!-- Revenue Chart -->
+        <div class="col-md-6 mt-4">
+            <div class="card box-2 ps-0 py-3 px-3">
+                <figure class="highcharts-figure mb-0">
+                    <div id="container"></div>
+                    <table id="datatable" class="d-none">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Sales</th>
+                                <th>Purchase</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in chart_data %}
+                            <tr>
+                                {% for j in i|slice:"1" %}
+                                <th>{{j}}</th>
+                                {% endfor %}
+                                {% for j in i|slice:"1:3" %}
+                                {% if j %}<td>{{j}}</td>{% else %}<td>0</td>{% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </figure>
+
+                <script>
+                    Highcharts.chart('container', {
+                        data: {
+                            table: 'datatable'
+                        },
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Total Revenue'
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            title: {
+                                text: 'Price'
+                            }
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                return '<b>' + this.series.name + '</b><br/>' +
+                                    this.point.y + ' ' + this.point.name.toLowerCase();
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+        <!-- Order Table -->
+        <div class="col-6 my-4">
+            <div class="card p-3 box-2 mb-1" style="height: 106%;">
+                <h5 class="fw-bold">Recent Orders<a href="{% url 'orders' %}" class="float-end text-decoration-none"
+                        style="font-size: 12px;position: relative;top: 5px;">View all</a></h5>
+                <table class="table  mb-1 mt-2 ">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sales Company</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td>
+                                <h6 class="mb-0 text-danger fw-bold">{{order.Sales_Company.Founder_Name }}
+                                    ({{order.Sales_Company.Company_Name}})</h6>
+                                <p class=" mb-0 mt-1 text-gray small">
+                                    {% for material in order.Materials.all|slice:"1" %}
+                                    {{material.Material_Name}}
+                                    {% endfor %}
+                                </p>
+                            </td>
+                            <td>
+                                {% if order.Approved == False %}
+                                <span class="badge bg-danger">Not Approved</span>
+                                {% else %}
+                                <span class="badge bg-success">Approved</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Customer Table -->
+        <div class="col-6 my-4">
+            <div class="card p-3 box-2 mb-1">
+                <h5 class="fw-bold">Customers<a href="{% url 'customer' %}" class="float-end text-decoration-none"
+                        style="font-size: 12px;position: relative;top: 5px;">View all</a></h5>
+                <table class="table  mb-1 mt-2 ">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th style="width: 10%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in recent_customers %}
+                        <tr>
+                            <td>
+                                <h6 class="mb-0 text-danger fw-bold">{{i.Founder_Name}}</h6>
+                                <p class="mb-0">{{i.Company_Name}}</p>
+                            </td>
+                            <td>
+                                <i class="fa fa-envelope small text-danger"></i> : <a
+                                    class="mb-0  small text-dark">{{i.Founder_Email}}</a>
+                                <br>
+                                <i class="fa fa-phone text-blue"></i> : <a class="mb-0  small text-dark">
+                                    {% if i.Founder_Phone == 'customers.CustomerPhoneNumber.None' %}
+                                    <span>{{i.Founder_Phone}}</span>
+                                    {% else %}
+                                    <span>None</span>
+                                    {% endif %}</a>
+                            </td>
+                            <td>
+                                {% if i.is_active == True %}
+                                <span class="badge badge-success badge-lg">Active</span>
+                            </td>
+                            {% else %}
+                            <span class="badge badge-warning badge-lg">Inactive</span></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Vendors Table -->
+        <div class="col-6 my-4">
+            <div class="card p-3 box-2 mb-1">
+                <h5 class="fw-bold">Vendors<a href="{% url 'vendors' %}" class="float-end text-decoration-none"
+                        style="font-size: 12px;position: relative;top: 5px;">View all</a></h5>
+                <table class="table  mb-1 mt-2 ">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th style="width: 15%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in recent_vendors %}
+                        <tr>
+                            <td>
+                                <h6 class="mb-0 text-danger fw-bold">{{i.Vendor_Name}}</h6>
+                                <p class="mb-0 text-gray small">{{i.Company_Name}}
+                                    <span class="ms-2"><i class="fa fa-truck"></i> : {{i.No_Of_Trucks}}</span>
+                                </p>
+                            </td>
+                            <td>
+                                <i class="fa fa-envelope small text-danger"></i> : <a
+                                    class="mb-0  small text-dark">{{i.Email}}</a>
+                                <br>
+                                <i class="fa fa-phone text-blue"></i> : <a class="mb-0  small text-dark">{{i.Phone}}</a>
+                            </td>
+                            <td>
+                                {% if i.is_active == True %}
+                                <span class="badge badge-success badge-lg">Active</span>
+                            </td>
+                            {% else %}
+                            <span class="badge badge-warning badge-lg">Inactive</span></td>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Products Table -->
+        <div class="col-6 mb-4">
+            <div class="card p-3 box-2 mb-1">
+                <h5 class="fw-bold">Products <a href="{% url 'products' %}" class="float-end text-decoration-none"
+                        style="font-size: 12px;position: relative;top: 5px;">View all</a></h5>
+                <table class="table  mb-1 mt-2 ">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Mat Type</th>
+                            <th>Vendor</th>
+                            <th>GST</th>
+                            <th>HSN Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in recent_products %}
+                        <tr>
+                            <td class="text-blue">{{i.Product}}</td>
+                            <td class="text-primary">{{i.Material_Type}}</td>
+                            <td>{{i.Vendor}}</td>
+                            <td>{{i.GST}}</td>
+                            <td>{{i.HSNCode}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Invoice Table -->
+        <div class="col-6 mb-4">
+            <div class="card p-3 box-2 mb-1">
+                <h5 class="fw-bold">Invoices <a href="{% url 'sales' %}" class="float-end text-decoration-none"
+                        style="font-size: 12px;position: relative;top: 5px;">View all</a></h5>
+                <table class="table mb-1 mt-2 ">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Destination</th>
+                            <th>Inv Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in recent_invoices %}
+                        <tr>
+                            <td class="text-blue">{{i.InvoiceNo}}</td>
+                            <td class="text-primary">{{i.Destination}}</td>
+                            <td>{{i.InvoiceDate}}</td>
+                            <td>Rs. {{i.saleid.netAmount.WithGSTNetTotalAmount|floatformat:"2"}}</td>
+                            <td>
+                                {% if i.saleid.netAmount.Balance > 1 %}
+                                <span class="badge badge-warning ">Pending</span>
+                                {% else %}
+                                <span class="badge badge-success ">Paid</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.dashboardMenu').addClass('active')
+
+        $.get('/dashboard-details', function (data, status) {
+            // console.log(data)
+            let profitcurmonth = Number(data.purchase.current_month.amount__total_amount__sum).toFixed(0) - Number(data.sales.current_month.saleid__sales__netAmount__WithGSTNetTotalAmount__sum).toFixed(0)
+            let profitprevmonth = Number(data.purchase.previous_month.amount__total_amount__sum).toFixed(0) - Number(data.sales.previous_month.saleid__sales__netAmount__WithGSTNetTotalAmount__sum).toFixed(0)
+            profitcurmonth = profitcurmonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            profitprevmonth = profitprevmonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            $('.totalorders').text(data.totalorders)
+            $('.totalpurchase').text(data.totalpurchase)
+            $('.totalsales').text(data.totalsales)
+            $('.totalinvoices').text(data.totalinvoice)
+            $('.neworders').text(data.neworders)
+            $('.payprevmonth').text(Number(data.totalpayable).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.recivecurmonth').text(Number(data.totalreciveable).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.salescurmonth').text(Number(data.sales.current_month.saleid__sales__netAmount__WithGSTNetTotalAmount__sum).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.salesprevmonth').text(Number(data.sales.previous_month.saleid__sales__netAmount__WithGSTNetTotalAmount__sum).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.purchasecurmonth').text(Number(data.purchase.current_month.amount__total_amount__sum).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.purchaseprevmonth').text(Number(data.purchase.previous_month.amount__total_amount__sum).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0)
+            $('.profitcurmonth').text(profitcurmonth)
+            $('.profitprevmonth').text(profitprevmonth)
+        })
+    });
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.needs-validation')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}

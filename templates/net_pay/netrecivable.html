@@ -1,0 +1,225 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Net Payment Recivable</h5>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3">
+                <a class="btn btn-sm btn-primary float-end " href="" data-bs-toggle="modal"
+                    data-bs-target="#NetpayModal"><i class="fa fa-plus me-1"></i> Add</a>
+                <table id="example" class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col">Vendor Name</th>
+                            <th scope="col">Outstanding</th>
+                            <th scope="col">Remarks</th>
+                            <th scope="col">Set Reminder</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Surendar</td>
+                            <td>Rs.20000</td>
+                            <td>12MM Aggregates</td>
+                            <td>15.12.2021</td>
+                            <td>
+                                <a href="#" class="me-2 text-danger deleteMethod" data-bs-toggle="modal"
+                                    data-bs-target="#deleteMethod" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                                <a href="#" class="me-2 text-warning " data-bs-toggle="modal"
+                                    data-bs-target="#NetpayModal" data-bs-whatever="#"><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="NetpayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content ">
+            <div class="modal-header py-2 border-0">
+                <h5 class="modal-title header" id="exampleModalLabel">Net Payment Recivable</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-1 pb-4">
+                <form class="row agency-validation" novalidate>
+                    <div class="col-12">
+                        <div class="alert alert-success d-none p-2 alert-dismissible fade show" role="alert">
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                <option selected>Select Vendor Name</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="floatingSelect">Vendor Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2 pe-1">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="Outstanding" placeholder="Outstanding" value="">
+                            <label for="Outstanding">Outstanding Amount</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2 ps-1">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="Remarks" placeholder="Remarks" value="">
+                            <label for="Remarks">Remarks</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2 ">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="Reminder" placeholder="Reminder" value="">
+                            <label for="Reminder">Reminder</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <button type="submit" class="btn btn-sm edit btn-primary float-end">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete Modal for admin -->
+<div class="modal fade" id="deleteMethod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2 bg-danger text-white">
+                <h5 class="modal-title fw-bold small" id="exampleModalLabel">DELETE PRODUCT</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure you want to delete ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-col="id" data-url="customers" data-id=""
+                    class="btn btn-danger dlt btn-sm">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.netreciveMenu').addClass('active')
+    })
+</script>
+{% endblock %})

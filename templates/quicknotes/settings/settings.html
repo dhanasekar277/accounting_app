@@ -1,0 +1,245 @@
+{% extends "_base.html" %} {% load static %} {% block content %} {% load mathfilters %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Settings</h5>
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow p-3">
+                        <h6 class="fw-bold mb-3 text-primary">Profile</h6>
+                        <form>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="" placeholder="Username">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="" placeholder="New Password">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" id="" placeholder="Confirm Password">
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-success float-end mt-2">Update Profile</button>
+                        </form>
+                    </div>
+                    <div class="card border-0 shadow p-3 mt-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-sm btn-success float-end mb-4">Add sign</button>
+                                <h6 class="fw-bold text-primary">Signatures</h6>
+
+                                <table class="table table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Signature</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>
+                                                <a href="#" class="me-2 text-warning"><i
+                                                        class="fa fa-edit fa-lg"></i></a>
+                                                <a href="#" class="me-2 text-danger"><i
+                                                        class="fa fa-trash fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow p-3">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> Hari
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Hari</p>
+                                        <p><b>Email : </b>hari123@gmail.com</p>
+                                        <p><b>Password : </b>hari@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i>Partha
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Partha</p>
+                                        <p><b>Email : </b>partha123@gmail.com</p>
+                                        <p><b>Password : </b>partha@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> Surender
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse"
+                                    aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Surender</p>
+                                        <p><b>Email : </b>surender123@gmail.com</p>
+                                        <p><b>Password : </b>surender@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFour" aria-expanded="false"
+                                        aria-controls="collapseFour">
+                                        <i class="fa fa-lg fa-user text-primary me-2"></i> Surender
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse"
+                                    aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <p><b>Username : </b>Surender</p>
+                                        <p><b>Email : </b>surender123@gmail.com</p>
+                                        <p><b>Password : </b>surender@123</p>
+                                        <div class="text-end">
+                                            <a href="#" class="me-2 btn-sm btn-warning">Edit</a>
+                                            <a href="#" class="me-2 btn-sm btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<style>
+    .accordion-button:focus {
+        box-shadow: none;
+        outline: none;
+    }
+</style>
+{% endblock content %} {% block script %}
+<script>
+    $(document).ready(function () {
+        $('.netpurchaseMenu').addClass('active')
+    });
+    // Calander Search Validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+</script>
+{% endblock script %}

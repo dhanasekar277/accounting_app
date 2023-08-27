@@ -1,0 +1,830 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+{% load mathfilters %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold"><a href="{% url 'quotations'%}" class="btn btn-primary me-2 btn-sm"><i
+                        class="fa fa-12 fa-chevron-left"></i> &nbsp;Back</a>Sales Entry</h5>
+        </div>
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <h3 class="text-uppercase fw-bold">
+                    <span id="customer_id"
+                        customer-id="{{order.Sales_Company.id}}">{{order.Sales_Company.Company_Name}}</span>
+                    <span class="order_id d-none">{{order.id}}</span>
+                    {% if order.id %}
+                    <a href="../../invoices/sales-invoice/{{order.id}}" class="btn btn-primary float-end">Invoice</a>
+                    {% else %}
+                    <button disabled class="btn btn-primary float-end">Invoice</button>
+                    {% endif %}
+                </h3>
+                <p>
+                    {% if order.Sales_Company.Company_Email %}
+                    <i class="fa fa-envelope"></i> :
+                    <span>{{order.Sales_Company.Company_Email}}</span>
+                    {% endif %}
+                    <i class="fa fa-phone ms-3"></i> :
+                    {% if order.Sales_Company.Founder_Phone.all %}
+                    <select name="" id="sphone">
+                        {% for i in order.Sales_Company.Founder_Phone.all %}
+                        <option value="{{i.id}}">{{i.Phone_Number}}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="text" id="sphone_new">
+                    {% endif %}
+                </p>
+                <p>
+                    <b>GST NO : </b>
+                    {% if order.Sales_Company.TIN_No.all %}
+                    <select name="" id="sgstno">
+                        {% for i in order.Sales_Company.GST_No.all %}
+                        <option value="{{i.id}}">{{i.GST_No}}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="text" id="sgstno_new">
+                    {% endif %}
+                    <b class="ms-3">PAN NO : </b>
+                    {% if order.Sales_Company.TIN_No.all %}
+                    <select name="" id="spanno">
+                        {% for i in order.Sales_Company.PAN_No.all %}
+                        <option value="{{i.id}}">{{i.PAN_No}}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="text" id="spanno_new">
+                    {% endif %}
+                    <b class="ms-3">TIN NO : </b>
+                    {% if order.Sales_Company.TIN_No.all %}
+                    <select name="" id="stinno">
+                        {% for i in order.Sales_Company.TIN_No.all %}
+                        <option value="{{i.id}}">{{i.TIN_No}}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="text" id="stinno_new">
+                    {% endif %}
+                </p>
+                <p class="text-capitalize">
+                    <b>Delivery Address : </b> <span>{{order.Sales_Delivery_Address}}</span>
+                    <b class="ms-3">Billing Address : </b> <span>{{order.Billing_Address}}</span>
+                </p>
+                <span class="d-none ordercount">{{order.Materials.all.count}}</span>
+
+                <table class="table table-sm table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>S No</th>
+                            <th>Unloading Site</th>
+                            <th>Site</th>
+                            <th>Material</th>
+                            <th>Rate</th>
+                            <th>Type</th>
+                            <th>GST</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in order.Materials.all %}
+
+                        <tr id="mat{{forloop.counter}}">
+                            <td>
+                                <div style="width:30px;">{{forloop.counter}}</div>
+                            </td>
+                            <td>
+                                <div style="width:120px;">{{i.Location_Supply}} </div>
+                            </td>
+                            <td>
+                                <div style="width: 50px;">{{i.Delivery_Site}}</div>
+                            </td>
+                            <td>
+                                <div style="width:140px;">{{i.Material_Name}}</div>
+                            </td>
+                            <td>
+                                <div>{{i.Sale_Price}}</div>
+                            </td>
+                            <td>
+                                <div>{{i.Quantity}}
+                                    {% if i.Mat_PO_ID.Quantity_Type == '0' %}
+                                    NO
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '1' %}
+                                    MT
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '2' %}
+                                    CFT
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '4' %}
+                                    QF
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '5' %}
+                                    M3
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '6' %}
+                                    QM
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '7' %}
+                                    Cage
+                                    {% elif i.Mat_PO_ID.Quantity_Type == '8' %}
+                                    KG
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div>{{i.Product_Name.GST}}</div>
+                            </td>
+                            <td><a href="" data-mat-name="{{i.Material_Name}}" data-rate="{{i.Sale_Price}}"
+                                    data-gst="{{i.Product_Name.GST}}" data-location="{{i.Location_Supply}}"
+                                    data-type="{{i.Mat_PO_ID.Quantity_Type}}" data-id="{{i.id}}"
+                                    class="btn btn-primary btn-sm matid{{i.id}} add_sale py-0"><i
+                                        class="fa fa-plus me-1"></i> Add</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="table-responsive ">
+                    <table class="table table-sm sale_entry d-none table-bordered mt-3">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>S No</th>
+                                <th hidden>mat_id</th>
+                                <th>Purchase Date</th>
+                                <th>Unloading Site</th>
+                                <th>Site</th>
+                                <th>Material</th>
+                                <th>CDC</th>
+                                <th>LDC</th>
+                                <th>Vehicle No</th>
+                                <th>Rate</th>
+                                <th>Type</th>
+                                <th>Formula</th>
+                                <th>Moisture</th>
+                                <th>Calc</th>
+                                <th>Round Off</th>
+                                <th>Total</th>
+                                <th>GST</th>
+                                <th>With GST</th>
+                                <th>Site Supervisior</th>
+                                <th>QC</th>
+                                <th>Security</th>
+                                <th>Engineer</th>
+                                <th>Driver Name</th>
+                                <th>Unloading Supervisior</th>
+                            </tr>
+                        </thead>
+                        <tbody class="saleentry">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-none text-end add_sale_submit my-3">
+                    <button class="btn btn-outline-primary add_sale_submit_btn btn-sm "><i class="fa fa-plus me-1"></i>
+                        Add Sale Entry</button>
+                </div>
+
+                <div class="my-2 is fa-16 fw-bold ses ps-0 d-none text-success"><span class="text-dark">Sale Entry
+                        Section : </span><span class="quantitys float-end fw-bold"></span></div>
+                <table class="table table-sm table-bordered ">
+                    <thead>
+                        <tr>
+                            <th>Material Name</th>
+                            <th>Vehicle No &amp; CDC</th>
+                            <th>Total Amount</th>
+                            <th>Add</th>
+                        </tr>
+                    </thead>
+                    <tbody class="saleEntry">
+
+                    </tbody>
+                </table>
+
+                <form id="remainder_data" class="d-none">
+                    <div class="row mb-2">
+                        <div class="col-lg-12 mt-3">
+                            <h5 class="fw-bold mb-2">Remainder : </h5>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledInvNo" class="small fw-bold">GST Filled Invoice No</label>
+                            <input type="text" placeholder="GST Filled Invoice No" name="GSTFilledInvNo"
+                                id="GSTFilledInvNo" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledScanCopy" class="small fw-bold">GST Filled Scan Copy</label>
+                            <input type="file" placeholder="GST Filled Scan Copy" name="GSTFilledScanCopy"
+                                id="GSTFilledScanCopy" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledInvReceive" class="small fw-bold">GST Filled Inv Receiver Name</label>
+                            <input type="text" placeholder="GST Filled Inv Receive" name="GSTFilledInvReceive"
+                                id="GSTFilledInvReceive" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="GSTFilledFiledCheck" class="small fw-bold">GST Filled Filed Check</label>
+                            <select placeholder="GST Filled Filed Check" name="GSTFilledFiledCheck"
+                                id="GSTFilledFiledCheck" class="form-control form-control-sm">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="row net_data d-none">
+                    <div class="col mb-2">
+                        <label for="cgstop" class="small fw-bold">2.5% CGST Output Tax</label>
+                        <input type="text" id="cgstop" placeholder="2.5% CGST OUTPUT TAX"
+                            class="form-control form-control-sm">
+                    </div>
+                    <div class="col mb-2">
+                        <label for="sgstop" class="small fw-bold">2.5% SGST Output Tax</label>
+                        <input type="text" id="sgstop" placeholder="2.5% SGST OUTPUT TAX"
+                            class="form-control form-control-sm">
+                    </div>
+                    <div class="col">
+                        <label for="" class="small fw-bold">GST Total Amount</label>
+                        <input type="text" id="gsttotalamount" class="form-control form-control-sm"
+                            placeholder="GST Total Amount">
+                    </div>
+                    <div class="col">
+                        <label for="WithoutGSTNetTotalAmount" class="small fw-bold">Without GST NetTotal</label>
+                        <input type="text" placeholder="Without GST Net Total Amount" id="WithoutGSTNetTotalAmount"
+                            class="form-control form-control-sm">
+                    </div>
+                    <div class="col">
+                        <label for="WithoutGSTNetTotalAmount" class="small fw-bold">With GST NetTotal</label>
+                        <input type="text" placeholder="WithGSTNetTotalAmount" id="WithGSTNetTotalAmount"
+                            class="form-control form-control-sm">
+                    </div>
+
+                    <!-- d-none -->
+                    <div class="col-lg-3 mb-2 d-none">
+                        <label for="finaltotal" class="small fw-bold">Total</label>
+                        <input type="text" placeholder="Final Total" id="finaltotal"
+                            class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3 d-none">
+                        <label for="AmountPayyed" class="small fw-bold">Amount Payyed</label>
+                        <input type="text" placeholder="Amount Payyed" id="AmountPayyed"
+                            class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-3 d-none">
+                        <label for="Balance" class="small fw-bold">Balance</label>
+                        <input type="text" placeholder="Balance" id="Balance" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-lg-4 mt-2 d-none">
+                        <label for="" class="small fw-bold">GST Amount Payyed</label>
+                        <input type="text" id="gstamountpayyed" class="form-control gstamountpayyed form-control-sm"
+                            placeholder="GST Amount Payyed">
+                    </div>
+                    <div class="col-lg-4 mt-2 d-none">
+                        <label for="" class="small fw-bold">GST Amount Balance</label>
+                        <input type="text" id="gstbalanceamount" class="form-control form-control-sm"
+                            placeholder="GST Balance">
+                    </div>
+                    <div class="col-lg-3 mb-2 d-none">
+                        <label for="roundedoff" class="small fw-bold">Rounded Off</label>
+                        <input type="text" placeholder="Rounded Off" id="roundedoff"
+                            class="form-control form-control-sm">
+                    </div>
+                </div>
+
+                <div id="addInvoiceSale" class="col-3 d-none addinvoicesale mt-3">
+                    <button class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i> &nbsp;Add Invoice
+                        Sale</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<style type="text/css" media="print">
+    @media print {
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+</style>
+<script src="{% static 'js/sales-entry.js' %}"></script>
+<script>
+    $('.salesMenu').addClass('active')
+    var append_id = 0
+    var order_id = $('.order_id').text()
+    var get_sale_enteries = GetData(`${url}sales-material-info/?orderId=${order_id}`)
+
+
+    if (get_sale_enteries?.count != 0) {
+        var get_sale_materials = GetData(`${base}sales/sale-material/${order_id}`)
+        get_sale_materials = JSON.parse(get_sale_materials)
+
+        var unique_sale_materials = get_sale_materials.map(item => item?.fields?.MatId).filter((value, index, self) => self.indexOf(value) === index)
+        var mat_quantity = []
+        // append material quantity
+        for (var i = 0; i < unique_sale_materials.length; i++) {
+            var sm = get_sale_materials.filter(p => p?.fields?.MatId == unique_sale_materials[i])
+            var quantity = 0
+            for (var j = 0; j < sm.length; j++) {
+                quantity += Number(sm[j]?.fields?.qty)
+            }
+            $(`.matid${unique_sale_materials[i]}`).html(`<i class="fa fa-12 me-1 fa-plus"></i> ${quantity.toFixed(2)} Add`)
+        }
+
+        var se = get_sale_enteries?.results
+        // console.log(se)
+
+        for (var i = 0; i < se.length; i++) {
+            // console.log(se[i])
+
+            var mois_per = se[i]?.Moisture == '' ? `<span class="d-none moistureip${se[i]?.id} ms-2"><input type="number" style="width:50px"><a href="" style="height: 27px;position: relative;top: -1px;" data-qty="${se[i]?.qty}" data-gst="${se[i]?.MatId?.Product_Name?.GST}" data-rate="${se[i]?.MatId?.Final_Offer_Price}" data-id="${se[i]?.id}" class="small submit_moisture btn btn-sm btn-primary rounded-0 py-0"><i class="fa fa-check"></i></a></span><a href="" data-id="${se[i]?.id}" class="small  add_moisture text-success ms-1"><i class="fa fa-plus me-1"></i>Add Moisture</a>` : `<span class="text-danger fw-bold">( Moisture : ${se[i]?.Moisture}% )</span>`
+            var mois_cls = se[i]?.Moisture != '' ? '#1987540d' : `#fff`
+            var igc = se[i]?.ig == false ? 'fa-plus' : `fa-check`
+            var ig = se[i]?.ig == false ? 'add_invoice' : ''
+            var cls = se[i]?.ig == false ? 'btn-danger' : 'btn-success'
+            var gst_per = se[i]?.MatId?.Product_Name?.GST
+            var total = Number(se[i]?.Total)
+            // console.log(gst_per)
+
+            $('.saleEntry').append(`
+                <tr class="inv${i}" style="background:${mois_cls}">
+                    <td >${se[i]?.MatId?.Material_Name}</td>
+                    <td class="text-capitalize">
+                        <b class="ms-2">Vehicle No : </b> ${se[i]?.VehicleNo} 
+                        <b class="ms-2 text-success">CDC : </b> ${se[i]?.CDC}
+                    </td>
+                    <td><b class="ms-2">Total :</b> ${total.toFixed(2)} ${mois_per}</td>
+                    <td><button href="${i}" pk="${se[i]?.MatId?.id}" mat-id="${se[i]?.id}" 
+                        data-quantity="${se[i]?.qty}" 
+                        data-invoice-gst="${se[i]?.WithGST}" 
+                        data-invoice-total="${se[i]?.Total}"
+                        data-gst-percent="${gst_per}" class="btn btn-sm  py-0 ${cls} ${ig} ms-2 " >
+                        <span class="qtyC"></span><i class="fa fa-12 ${igc} me-1 "></i> ${Number(se[i]?.qty).toFixed(2)} 
+                        </button>
+                        <a href="${se[i]?.id}" class="ms-2 deleteMaterial"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>`)
+        }
+        AddInvoice()
+        BalanceCheck()
+        DeleteInvoice()
+        AddMoisture()
+    }
+
+    function DeleteInvoice() {
+        $('.deleteMaterial').click(function (event) {
+            event.preventDefault()
+            let invid = $(this).attr('href')
+            let person = prompt("Please Enter Your Name ?", "");
+            if (person == '{{request.user.username}}') {
+                $.ajax({
+                    type: "DELETE",
+                    url: '/api/sales-material-info/' + invid,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({ 'id': invid }),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (data, status) {
+                        location.reload()
+                    }
+                });
+            } else {
+                alert('Invalid Name. !!!')
+            }
+        })
+    }
+
+    function AddMoisture() {
+        $('.add_moisture').click(function (e) {
+            e.preventDefault()
+            var id = $(this).attr('data-id')
+            $(this).addClass('d-none')
+            $(`.moistureip${id}`).removeClass('d-none')
+            SubmitMoisture()
+        })
+    }
+
+    function SubmitMoisture() {
+        $('.submit_moisture').click(function (e) {
+            e.preventDefault()
+            var id = $(this).attr('data-id')
+            var value = $(`.moistureip${id} input`).val()
+            var qty = $(this).attr('data-qty')
+            var gst = $(this).attr('data-gst')
+            gst = Number(gst.substr(0, gst.length - 1))
+            gst = gst / 100
+            qty = Number(qty)
+
+            var rate = $(this).attr('data-rate')
+            rate = Number(rate)
+            var mois_per = value
+            value = Number(value) / 100
+            var newqty = value * qty
+            newqty = qty - newqty
+            var new_rate = rate * newqty
+
+            var gst_total = gst * newqty
+            gst_total = gst_total * rate
+            // console.log()
+
+            var params = {
+                'Moisture': `${mois_per}`,
+                'qty': newqty,
+                'Total': new_rate,
+                'WithGST': gst_total + new_rate
+            }
+            var sm_url = `${base}post-api/sales-material-info/${id}/`
+            // console.log(params)
+            // console.log(sm_url)
+            PatchMethod(params, sm_url)
+            location.reload()
+        })
+    }
+
+    // add invoice section
+    var m_id = []
+    var temp_total_quantity = 0
+    var temp_total_price = 0
+    var temp_total_gst_price = 0
+    function AddInvoice() {
+        $('.add_invoice').click(function (e) {
+            e.preventDefault()
+            $('#remainder_data')[0].reset()
+            $('.net_remainder #withoutgsttotalamount, .net_remainder #withgsttotalamount, .net_remainder #amountpayyed, .net_remainder #balanceamount').val('')
+
+            var mat_id = $(this).attr('href')
+            var mtotal_gst = $(this).attr('data-invoice-gst')
+            var mtotal = $(this).attr('data-invoice-total')
+            var mquantity = $(this).attr('data-quantity')
+            var gst_percent = $(this).attr('data-gst-percent')
+
+            temp_total_quantity += Number(mquantity)
+            temp_total_gst_price += Number(mtotal_gst)
+            temp_total_price += Number(mtotal)
+
+            // gst_percent = gst_percent.substr(0, gst_per.length - 1)
+            gst_percent = Number(gst_percent) / 2
+            gst_percent = gst_percent / 100
+
+            var cgst = temp_total_gst_price * gst_percent
+            var cgst_sgst = cgst * 2
+            // console.log(cgst_sgst)
+            var cgst_total = temp_total_gst_price + Number(cgst_sgst)
+            cgst_total = String(cgst_total)
+            var cgst_roundoff = cgst_total.substr(cgst_total.indexOf('.'));
+            cgst_roundoff = Number(cgst_roundoff).toFixed(2)
+
+
+
+            m_id.push(mat_id)
+            $(this).html('<i class="fa fa-check"></i>');
+            $(this).prop('disabled', true);
+            let cgstamount = (temp_total_gst_price - temp_total_price) / 2
+            $('.quantitys').text(Number(temp_total_quantity).toFixed(0))
+            $('#WithoutGSTNetTotalAmount').val(temp_total_price).attr('data-original', temp_total_price)
+            $('#WithGSTNetTotalAmount').val(temp_total_gst_price).attr('data-original', temp_total_gst_price)
+            $('#gsttotalamount').val(Number(temp_total_gst_price - temp_total_price).toFixed(2))
+            $(`.net_data, #remainder_data, .ses, .addinvoicesale`).removeClass('d-none')
+            $('#cgstop, #sgstop').val(cgstamount.toFixed(2))
+            $('#roundedoff').val(cgst_roundoff)
+            $('#finaltotal').val(temp_total_gst_price)
+        })
+        AddSaleInvoice()
+
+    }
+
+
+    function AddSaleInvoice() {
+
+        $('.addinvoicesale .btn').click(async function (e) {
+            if (m_id.length != 0) {
+                $(this).prop('disabled',true)
+                let GSTFilledInvNo = $('#GSTFilledInvNo').val()
+                if (GSTFilledInvNo) {
+
+                    var pur_id = []
+
+                    m_id.forEach(p => {
+                        // console.log(p)
+                        var select = `.inv${p} .add_invoice`
+                        // console.log(select)
+                        id = $(select).attr('mat-id')
+                        // console.log(id)
+                        pur_id.push(id)
+                        var params = {
+                            ig: true
+                        }
+                        var sale_url = `${base}post-api/sales-material-info/${id}/`
+                        PatchMethod(params, sale_url)
+                        if (m_id[m_id.length - 1] === p) {
+                            var pk = $(select).attr('pk')
+                            var pk_url = `${base}post-api/material-info/${pk}/`
+                            var pk_param = {
+                                'Sale_Entry': true
+                            }
+                            PatchMethod(pk_param, pk_url)
+                        }
+                    })
+
+                    var net_id
+                    await PostNetData().then((value) => net_id = value)
+                    var total_id
+                    await PostTotalData().then((value) => total_id = value)
+                    var remainder_id
+                    await PostRemainderData().then((value) => remainder_id = value)
+                    var customer_id
+                    await PostCustomerData().then((value) => customer_id = value)
+
+                    var single_sale_param = {
+                        customer: customer_id,
+                        poInfo: pur_id,
+                        remainder: remainder_id,
+                        netAmount: net_id,
+                        orderid: $('.order_id').text(),
+                    }
+                    // // console.log(single_param)
+                    var single_sale_url = `${base}post-api/sales/`
+                    var si_id = await PostData(single_sale_param, single_sale_url)
+
+                    var sale_collection_order_id = $('.order_id').text()
+                    var sale_collection_data = GetData(`${base}post-api/sales-collection/?orderid=${sale_collection_order_id}`)
+                    // console.log(sale_collection_data)
+                    if (sale_collection_data?.count == 0) {
+                        // do post
+                        var sale_collection_params = {
+                            orderid: $('.order_id').text(),
+                            sales: [si_id]
+                        }
+
+                        var sale_collection_url = `${base}post-api/sales-collection/`
+                        await PostData(sale_collection_params, sale_collection_url)
+                        location.reload()
+
+                    } else {
+                        // do patch
+                        // var si_id = 1
+                        var sale_collection_id = sale_collection_data?.results[0]?.id
+                        sale_collection_data = sale_collection_data?.results[0]?.sales
+                        sale_collection_data.push(si_id)
+                        // console.log(sale_collection_data)
+                        var sale_collection_params = {
+                            sales: sale_collection_data
+                        }
+                        // console.log(sale_collection_params)
+                        var sale_collection_url = `${base}post-api/sales-collection/${sale_collection_id}/`
+                        // console.log(sale_collection_url)
+                        await PatchMethod(sale_collection_params, sale_collection_url)
+                        location.reload()
+                    }
+
+
+
+
+                } else {
+                    alert('Invoice No is must. !!!')
+                }
+            } else {
+                alert('Select Material Invoice. !!!')
+            }
+        })
+
+    }
+
+
+    // total function
+    async function PostTotalData() {
+        var total_param = {
+            cgst: $('#cgstop').val(),
+            sgst: $('#sgstop').val(),
+            roundedoff: $('#roundedoff').val(),
+            total: $('#finaltotal').val()
+        }
+        var total_url = base + 'post-api/sales-total/'
+        var total_id = await PostData(total_param, total_url)
+        return total_id
+    }
+
+    // net function
+    async function PostNetData() {
+        var net_param = {
+            WithOutGSTNetTotalAmount: $('#WithoutGSTNetTotalAmount').val(),
+            WithGSTNetTotalAmount: $('#WithGSTNetTotalAmount').val(),
+            AmountPayyed: $('#AmountPayyed').val() || 0,
+            Balance: $('#Balance').val() || $('#WithoutGSTNetTotalAmount').val(),
+            GstTotal: $('#gsttotalamount').val(),
+            GstPayyed: $('#gstamountpayyed').val() || 0,
+            GstBalance: $('#gstbalanceamount').val() || $('#gsttotalamount').val(),
+        }
+        var net_url = base + 'post-api/purchase-net-amount/'
+        var net_id = await PostData(net_param, net_url)
+        return net_id
+    }
+
+    // net function
+    async function PostCustomerData() {
+        var customer_param = {
+            phone: $('#sphone').val(),
+            gst: $('#sgstno').val(),
+            pan: $('#spanno').val(),
+            tin: $('#stinno').val(),
+            customerid: $('#customer_id').attr('customer-id')
+        }
+        var customer_url = base + 'post-api/sales-customer/'
+        var customer_id = await PostData(customer_param, customer_url)
+        return customer_id
+    }
+
+    // remainder Function
+    async function PostRemainderData() {
+        var form = $("#remainder_data");
+        var formData = new FormData(form[0]);
+        var remainder_url = base + 'post-api/purchase-remainder/'
+        var remainder_id = await PostFormSubmit(formData, remainder_url)
+        return remainder_id
+    }
+
+
+    function BalanceCheck() {
+        $('#AmountPayyed').on('input', function (e) {
+            var value = $(this).val()
+            value = Number(value)
+            var gst_total = Number($('#WithGSTNetTotalAmount').attr('data-original'))
+            $('#Balance').val(gst_total - value)
+        })
+    }
+
+    // GST AMOUNT PAID
+    $('.gstamountpayyed').on('input', function (e) {
+
+        var totalamount = $('#gsttotalamount').val()
+        if (!totalamount) {
+            alert('Amount is empty. !!!')
+        } else {
+            var amount_payyed = $(this).val()
+            let balance = Number(totalamount) - Number(amount_payyed)
+            $('#gstbalanceamount').val(balance)
+        }
+    });
+
+    $('.add_sale').click(function (e) {
+        e.preventDefault()
+        append_id += 1
+        $('.sale_entry, .add_sale_submit').removeClass('d-none')
+
+        var rate = $(this).attr('data-rate')
+        var mat_name = $(this).attr('data-mat-name')
+        var gst = $(this).attr('data-gst')
+        var location = $(this).attr('data-location')
+        var mat_type = $(this).attr('data-type')
+        var mat_id = $(this).attr('data-id')
+
+        // console.log(append_id)
+
+        $('.saleentry').append(`
+            <tr class="mat${append_id}" mat-id="${mat_id}">
+                <td>${append_id}</td>
+                <td><input style="width:127px;" type="date" class="purchaseDate"></td>
+                <td><div style="width:120px;">${location}</div></td>
+                <td><div style="width: 50px;">AT SITE</div></td> 
+                <td><div style="width:7rem;">${mat_name}</div></td>
+                <td><input style="width:100px;" class="CDC" placeholder="CDC" type="text"></td>
+                <td><input style="width:100px;" class="LDC" placeholder="LDC" type="text"></td>
+                <td><input style="width:100px;" class="vehicleno" placeholder="Vehicle No" type="text"></td>
+                <td><div id="price" class="rate">${rate}</div></td>
+                <td><div class="qtytype">${Enc_QuantityType(mat_type)}</div></td>
+                <<td><input style="width:90px;" class="formula" data-id="${append_id}" placeholder="Formula" type="text"></td>
+                <td><input style="width:60px;" class="moisture" data-id="${append_id}" placeholder="Moisture" type="number"></td>
+                <td><input style="width:60px;" class="qtycalc" placeholder="Qty Calc" type="text"></td>
+                <td><input style="width:75px;" class="roundoff" placeholder="Round Off" type="text"></td>
+                <td><input style="width:75px;" placeholder="Total" class="total" type="text"></td>
+                <td><div class="gst">${gst}</div></td>
+                <<td><input style="width:75px;" placeholder="With GST" class="withgst" type="text"></td>
+                <td><input style="width:100px;" placeholder="Site Supervisior" class="sitesupervisior" type="text"></td>
+                <td><input style="width:75px;" placeholder="QC" class="qc" type="text"></td>
+                <td><input style="width:75px;" placeholder="Security" class="security" type="text"></td>
+                <td><input style="width:75px;" placeholder="Engineer" class="engineer" type="text"></td>
+                <td><input style="width:100px;" placeholder="Driver Name" class="drivername" type="text"></td>
+                <td><input style="width:100px;" placeholder="Unloading Supervisior" class="unloadingsupervisior" type="text"></td>
+            </tr>
+        `)
+
+        OnChangeCall()
+
+    })
+
+
+    function OnChangeCall() {
+
+        $('.formula').change(function (e) {
+            var value = $(this).val()
+            var id = $(this).attr('data-id')
+            var selector = `.mat${id}`
+            var evaluation = eval(value)
+            // console.log(evaluation)
+
+            var rate = Number($(`${selector} .rate`).text())
+            var total = evaluation * rate
+            // console.log(total)
+
+            var gst = $(`${selector} .gst`).text()
+            var gst_per = gst.replace('%', '')
+            var gst_percentage = Number(gst_per) / 100
+            var with_gst = gst_percentage * total + total
+            // console.log(with_gst)
+
+            if (typeof (evaluation) == 'number') {
+                var d = String(evaluation) + '.00'
+                var strevl = String(d)
+            } else {
+                var strevl = String(evaluation)
+            }
+
+
+            var round_off = strevl.substring(strevl.indexOf('.') + 1);
+            round_off = Number(round_off)
+            // console.log(round_off)
+
+            $(`${selector} .total`).val(Number(total).toFixed(0))
+            $(`${selector} .qtycalc`).val(evaluation.toFixed(2)).attr('data-calc', evaluation.toFixed(2))
+            $(`${selector} .roundoff`).val(round_off)
+            $(`${selector} .withgst`).val(with_gst.toFixed(2))
+
+        })
+
+        $('.moisture').change(function (e) {
+            var mois = $(this).val()
+            mois = Number(mois)
+            mois = mois / 100
+            var id = $(this).attr('data-id')
+            var selector = `.mat${id}`
+
+            var quantity = $(`${selector} .qtycalc`).attr('data-calc')
+            quantity = Number(quantity)
+            var new_per = mois * quantity
+            var new_quantity = quantity - new_per
+            $(`${selector} .qtycalc`).val(new_quantity)
+            var rate = Number($(`${selector} .rate`).text())
+            var ttl = rate * new_quantity
+            $(`${selector} .total`).val(ttl.toFixed(2))
+
+            new_quantity = String(new_quantity)
+            var round_off = new_quantity.substring(new_quantity.indexOf('.') + 1);
+            round_off = Number(round_off)
+            $(`${selector} .roundoff`).val(round_off)
+
+            var gst = $(`${selector} .gst`).text()
+            var gst_per = gst.replace('%', '')
+            var gst_percentage = Number(gst_per) / 100
+            // console.log(gst_percentage)
+            var with_gst = gst_percentage * ttl + ttl
+            $(`${selector} .withgst`).val(with_gst)
+
+        })
+
+    }
+
+
+    $('.add_sale_submit_btn').click(function (e) {
+        $(this).prop('disabled',true)
+        for (var i = 0; i < Number(append_id); i++) {
+            var selector = `.mat${i + 1}`
+            // console.log(selector)
+            var sale_entry_params = {
+                MatId: $(`${selector}`).attr('mat-id'),
+                Date: $(`${selector} .purchaseDate`).val(),
+                CDC: $(`${selector} .CDC`).val(),
+                LDC: $(`${selector} .LDC`).val(),
+                Formula: $(`${selector} .formula`).val(),
+                qty: $(`${selector} .qtycalc`).val(),
+                Moisture: $(`${selector} .moisture`).val(),
+                VehicleNo: $(`${selector} .vehicleno`).val(),
+                RoundOff: $(`${selector} .roundoff`).val(),
+                Total: $(`${selector} .total`).val(),
+                WithGST: $(`${selector} .withgst`).val(),
+                SiteSupervisior: $(`${selector} .sitesupervisior`).val(),
+                QC: $(`${selector} .qc`).val(),
+                Security: $(`${selector} .security`).val(),
+                Engineer: $(`${selector} .engineer`).val(),
+                DriverName: $(`${selector} .drivername`).val(),
+                UnloadingSupervisior: $(`${selector} .unloadingsupervisior`).val(),
+                orderId: $(`.order_id`).text()
+            }
+
+            var sale_entry_url = `${base}post-api/sales-material-info/`
+            PostData(sale_entry_params, sale_entry_url)
+
+            if (i === append_id - 1) {
+                location.reload()
+            }
+        }
+    })
+
+
+</script>
+{% endblock %}

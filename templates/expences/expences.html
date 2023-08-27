@@ -1,0 +1,781 @@
+{% extends "_base.html" %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="fw-bold my-3">Expences</h5>
+            <div class="card border-0 shadow p-3">
+                <!-- Calender Search -->
+                <div class="row mb-4">
+                    <div class="col-md-8 ms-auto">
+                        <form id="calendersearch" method="get" action="" novalidate>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="calander_from" class="form-label mb-0">From</label>
+                                    <input required type="date" class="form-control" name="calander_from">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="calander_to" class="form-label mb-0">To</label>
+                                    <input required type="date" class="form-control" name="calander_to">
+                                </div>
+                                <div class="col-md-4 mt-auto mb-1">
+                                    <button type="submit" class="btn btn-success btn-sm w-100"><i
+                                            class="fa fa-search me-2"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <button class="btn btn-primary btn-sm float-end" data-bs-toggle="modal"
+                            data-bs-target="#ExpenceModal"><i class="fa fa-plus me-2"></i> Add</button>
+                        <button class="btn btn-primary btn-sm me-2 float-end assetsviewbtn"><i
+                                class="fa fa-plus me-2"></i> Add
+                            Assets</button>
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <table class="expence-entry-table table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Exp Name</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Expence Category
+                                <button class="btn btn-sm py-0 px-1 ms-2 btn-success">
+                                    <i class="fa fa-plus" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasRight"></i>
+                                </button>
+                            </th>
+                            <th scope="col">Mode of Payment</th>
+                            <th scope="col">Payment Type</th>
+                            <th width="9%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if expences %}
+                        {% for expence in expences %}
+                        <tr class="expence{{expence.id}}">
+                            <td>{{expence.Expence_Name}}</td>
+                            <td>{{expence.Date}}</td>
+                            <td>Rs.{{expence.Amount}} </td>
+                            <td>{{expence.Expence_Category.Category}}</td>
+                            <td>{{expence.Payment_Mode}}</td>
+                            <td>{{expence.Payment_Type}}</td>
+                            <td>
+                                {% if expence.Bill_Reference %}
+                                <a href="../../media/{{expence.Bill_Reference}}" download class="text-success"><i
+                                        class="fa fa-lg fa-download"></i></a> {% endif %}
+                                <a class="text-warning expenceedit ms-2" data-id="{{expence.id}}" href=""><i
+                                        class="fa fa-lg fa-edit"></i></a>
+                                <a class="text-danger expencedelete ms-2" data-id="{{expence.id}}" href="#"><i
+                                        class="fa fa-lg fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>Grand Total</td>
+                            <td></td>
+                            <td>Rs. {{total}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% else %}
+                    </tbody>
+                </table>
+                <div class="p-5 mt-4 border-0 text-center expencenoneresponse">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                </tbody>
+                </table>
+
+                <!-- pagination -->
+                {% if expences.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if expences.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{expences.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in expences.paginator.page_range %} {% if expences.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if expences.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{expences.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Expence Add Form -->
+<div class="modal fade" id="ExpenceModal" tabindex="-1" aria-labelledby="ExpenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ExpenceModalLabel">Add Expence</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="expenceForm" novalidate>
+                    <div class="mb-2">
+                        <label for="Expence Name" class="form-label">Expence Name</label>
+                        <input required type="text" class="form-control" name="Expence_Name" placeholder="Expence Name">
+                        <input type="hidden" class="form-control" name="Agency" value="{{active_agency.id}}">
+                        <div class="invalid-feedback">
+                            Required Field
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Date" class="form-label">Date</label>
+                                <input required type="date" class="form-control" name="Date" placeholder="Date">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Amount" class="form-label">Amount</label>
+                                <input required type="number" class="form-control" name="Amount" placeholder="Amount">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Payment Type" class="form-label">Payment Type</label>
+                                <select required class="form-select" name="Payment_Type"
+                                    aria-label="Default select example">
+                                    <option selected disabled value="">Select Payment Type</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="In Direct">In Direct</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Expence Category" class="form-label ">Expence
+                                    Category</label>
+                                <select required class="form-select expencecategoryoption" name="Expence_Category"
+                                    aria-label="Default select example">
+                                    <option selected disabled value="">Select Category</option>
+                                    {% for i in expence_categories %}
+                                    <option value="{{i.id}}">{{i.Category}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="mb-2">
+                        <label for="Mode of Payment" class="form-label ">Mode of Payment</label>
+                        <select required class="form-select" name="Payment_Mode" aria-label="Default select example">
+                            <option selected disabled value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="UPI">Net Banking</option>
+                            <option value="UPI">UPI</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Required Field
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="Bill Attachment" class="form-label ">Bill Attachment</label>
+                        <input type="file" class="form-control" name="Bill_Reference" placeholder="Bill Attachment">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 float-end">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Expence Edit Form -->
+<div class="modal fade" id="editExpenceModal" tabindex="-1" aria-labelledby="ExpenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ExpenceModalLabel">Add Expence</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editexpenceForm" novalidate>
+                    <div class="mb-2">
+                        <label for="Expence Name" class="form-label">Expence Name</label>
+                        <input type="hidden" class="form-control" name="Agency" value="{{active_agency.id}}">
+                        <input required type="text" class="form-control" name="Expence_Name" placeholder="Expence Name">
+                        <div class="invalid-feedback">
+                            Required Field
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Date" class="form-label">Date</label>
+                                <input required type="date" class="form-control" name="Date" placeholder="Date">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Amount" class="form-label">Amount</label>
+                                <input required type="number" class="form-control" name="Amount" placeholder="Amount">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Payment Type" class="form-label">Payment Type</label>
+                                <select required class="form-select" name="Payment_Type"
+                                    aria-label="Default select example">
+                                    <option selected disabled value="">Select Payment Type</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="In Direct">In Direct</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Expence Category" class="form-label ">Expence
+                                    Category</label>
+                                <select required class="form-select" name="Expence_Category"
+                                    aria-label="Default select example">
+                                    <option selected disabled value="">Select Category</option>
+                                    {% for i in expence_categories %}
+                                    <option value="{{i.id}}">{{i.Category}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="Mode of Payment" class="form-label ">Mode of Payment</label>
+                        <select required class="form-select" name="Payment_Mode" aria-label="Default select example">
+                            <option selected disabled value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="UPI">UPI</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Required Field
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="Bill Attachment" class="form-label ">Bill Attachment</label>
+                        <input type="file" class="form-control" name="Bill_Reference" placeholder="Bill Attachment">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 float-end">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Expence Add Category Canvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Add New Category</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="addcategoryform">
+            <div class="mb-3">
+                <input type="hidden" class="form-control Agency" name="Agency" value="{{active_agency.id}}">
+                <label class="form-label">Category Name</label>
+                <input type="text" class="form-control categoryvalue" placeholder="Enter Your New Category" required>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+            </div>
+        </form>
+        <hr>
+        <h5 class="fw-bold mb-4">Available Categories</h5>
+        <div class="availablecategories">
+            {% for i in expence_categories %}
+            <p class="expencecategorydelete{{i.id}}">{{i.Category}}
+                <a href="#" class="ms-2 expencecategorydelete" data-id="{{i.id}}"><i
+                        class="fa fa-trash text-danger"></i></a>
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Assets Form -->
+<div class="modal fade" id="AddAssetsModel" tabindex="-1" aria-labelledby="AddAssetsModelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddAssetsModelLabel">Add Assets</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-8">
+                        <table class="table assetstable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Value</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <div class="spinner-border assetsspinner" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <form id="AddAssestForm" novalidate>
+                            <input type="hidden" class="form-control Agency" name="Agency" value="{{active_agency.id}}">
+                            <div class="mb-2">
+                                <label for="Mode of Payment" class="form-label ">Asset Type</label>
+                                <select required class="form-select Asset_Type" name="Payment_Mode"
+                                    aria-label="Default select example">
+                                    <option selected disabled value="">Select Asset Type</option>
+                                    <option value="Current Asset">Current Asset</option>
+                                    <option value="Fixed Asset">Fixed Asset</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="Asset Name" class="form-label">Asset Name</label>
+                                <input required type="text" class="form-control Asset_Name" name="Asset_Name"
+                                    placeholder="Asset Name">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="Asset Value" class="form-label">Asset Value</label>
+                                <input required type="number" class="form-control Asset_Value" name="Asset_Value"
+                                    placeholder="Asset Value">
+                                <div class="invalid-feedback">
+                                    Required Field
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-3 float-end">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+
+<script>
+    $(document).ready(function () {
+        $('.expenceMenu').addClass('active')
+    })
+
+    var csrftoken = $('meta[name="csrf-token"]').attr('content');
+
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#calendersearch')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Add Expence Entry
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#expenceForm')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    if (form.checkValidity()) {
+                        event.preventDefault()
+                        $.ajax({
+                            url: '/api/expences/',
+                            type: 'POST',
+                            data: new FormData(this),
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            headers: {
+                                'X-CSRFToken': csrftoken,
+                            },
+                            success: function (data, status) {
+                                $('#ExpenceModal').modal('hide')
+                                $('#expenceForm').trigger('reset')
+                                $('#expenceForm').removeClass('was-validated')
+                                if (data['Bill_Reference']) {
+                                    var attachmentFile = `<a href="${data['Bill_Reference']}" download class="text-success"><i class="fa fa-lg fa-download"></i></a>`
+                                } else {
+                                    var attachmentFile = ""
+                                }
+                                if ($('.expencenoneresponse')[0]) {
+                                    $('.expencenoneresponse').addClass('d-none')
+                                }
+                                $('.expence-entry-table tbody').prepend(`
+                                <tr class="expence${data['id']}">
+                                    <td>${data['Expence_Name']}</td>
+                                    <td>${data['Date']}</td>
+                                    <td>Rs.${data['Amount']}</td>
+                                    <td>${data['Expence_Category']}</td>
+                                    <td>${data['Payment_Mode']}</td>
+                                    <td>${data['Payment_Type']}</td>
+                                    <td>
+                                    ${attachmentFile}
+                                        <a class="text-warning ms-2 expenceedit" data-id="${data['id']}" href=""><i class="fa fa-lg fa-edit"></i></a>
+                                        <a class="text-danger ms-2 expencedelete" data-id="${data['id']}" href="#"><i class="fa fa-lg fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                `)
+                                DeleteBankEntry()
+                                UpdateExpence()
+                            }
+                        })
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Edit Form Validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('#editexpenceForm')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    if (form.checkValidity()) {
+                        event.preventDefault()
+                        UpdateExpence()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Update Expences
+    function UpdateExpence() {
+        $('.expenceedit').click(function (event) {
+            event.preventDefault()
+            let ExpenceId = $(this).attr('data-id')
+            $('#editExpenceModal').modal('show')
+            $.get('/api/expences/' + ExpenceId + '/', function (data, status) {
+                $('#editexpenceForm input[name=Expence_Name]').val(data['Expence_Name'])
+                $('#editexpenceForm input[name=Date]').val(data['Date'])
+                $('#editexpenceForm input[name=Amount]').val(data['Amount'])
+                $('#editexpenceForm select[name=Payment_Type]').val(data['Payment_Type'])
+                $('#editexpenceForm select[name=Expence_Category]').val(data['Expence_Category'])
+                $('#editexpenceForm select[name=Payment_Mode]').val(data['Payment_Mode'])
+                $('#editexpenceForm input[name=Bill_Reference]').val(data['Bill_Reference'])
+                $('#editexpenceForm').submit(function () {
+                    $.ajax({
+                        url: '/api/expences/' + ExpenceId + '/',
+                        type: 'PUT',
+                        data: new FormData(this),
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                        },
+                        success: function (data, status) {
+                            location.reload()
+                        }
+                    })
+                })
+            })
+        })
+    }
+    UpdateExpence()
+
+    // Delete Expences
+    function DeleteBankEntry() {
+        $('.expencedelete').click(function (event) {
+            event.preventDefault()
+            var expenceid = $(this).attr('data-id')
+            if (confirm("Are You Sure Want to Delete")) {
+                var params = {
+                    'id': expenceid
+                }
+                $.ajax({
+                    url: "/api/expences/" + expenceid,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function (data, status) {
+                        $('.expence' + expenceid).remove()
+                    }
+                })
+            }
+        })
+    }
+    DeleteBankEntry()
+
+    // add category
+    $('#addcategoryform').submit(function (event) {
+        event.preventDefault()
+        $.post('/api/expence-category/', {
+            'Category': $('.categoryvalue').val(),
+            'Agency': $('.Agency').val(),
+            'csrfmiddlewaretoken': csrftoken,
+        }, function (data, status) {
+            $('#addcategoryform').trigger('reset')
+            $('.availablecategories').append(`
+                <p class="expencecategorydelete${data.id}">${data.Category}
+                    <a href="#" class="ms-2 expencecategorydelete" data-id="${data.id}"><i class="fa fa-trash text-danger"></i></a>
+                </p>
+            `)
+            $('.expencecategoryoption').append(`<option class="expencecategoryoption${data.id}" value="${data.id}">${data.Category}</option>`)
+            // location.reload()
+            DeleteCategory()
+        })
+    })
+
+    // delete category
+    function DeleteCategory() {
+        $('.expencecategorydelete').click(function (event) {
+            event.preventDefault()
+            var expenceid = $(this).attr('data-id')
+            if (confirm("Are You Sure Want to Delete")) {
+                var params = {
+                    'id': expenceid
+                }
+                $.ajax({
+                    url: "/api/expence-category/" + expenceid,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function (data, status) {
+                        let removedCategory = $('.expencecategorydelete' + expenceid).text()
+                        $('.expencecategorydelete' + expenceid).remove()
+                        $('.expencecategoryoption' + expenceid).remove()
+                    }
+                })
+            }
+        });
+    }
+    DeleteCategory()
+
+    // Assets View
+    $('.assetsviewbtn').click(function (event) {
+        event.preventDefault()
+        $('#AddAssetsModel').modal('show')
+        $.get('/api/assets/', function (data) {
+            for (i of data.results) {
+                $('.assetstable tbody').append(`
+                <tr class="deleteassets${i.id}">
+                    <td>${i.Asset_Name}</td>
+                    <td>${i.Asset_Type}</td>
+                    <td>${i.Asset_Value}</td>
+                    <td>
+                    <a href="" class="deleteassets" data-id="${i.id}"><i class="fa fa-trash fa-lg text-danger"></i></a>
+                    </td>
+                </tr>
+                `)
+            }
+            $('.assetsspinner').addClass('d-none')
+            DeleteAssets()
+        })
+        var myModalEl = document.getElementById('AddAssetsModel')
+        myModalEl.addEventListener('hidden.bs.modal', function (event) {
+            $('.assetstable tbody').empty()
+        })
+    });
+
+    // Add Assets
+    function addAssets() {
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('#AddAssestForm')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        if (form.checkValidity()) {
+                            event.preventDefault()
+                            $.post('/api/assets/', {
+                                'Agency': $('.Agency').val(),
+                                'Asset_Type': $('.Asset_Type').val(),
+                                'Asset_Name': $('.Asset_Name').val(),
+                                'Asset_Value': $('.Asset_Value').val(),
+                                'csrfmiddlewaretoken': csrftoken,
+                            }, function (data, status) {
+                                // console.log(data)
+                                $('#AddAssestForm').trigger('reset')
+                                $('#AddAssestForm').removeClass('was-validated')
+                                $('.assetstable tbody').prepend(`
+                                <tr class="deleteassets${data.id}">
+                                    <td>${data.Asset_Name}</td>
+                                    <td>${data.Asset_Type}</td>
+                                    <td>${data.Asset_Value}</td>
+                                    <td>
+                                        <a href="" class="deleteassets" data-id="${data.id}"><i class="fa fa-trash fa-lg text-danger"></i></a>
+                                    </td>
+                                </tr>
+                                `)
+                                DeleteAssets()
+                            })
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+    }
+    addAssets()
+
+    // Delete Assets
+    function DeleteAssets() {
+        $('.deleteassets').click(function (event) {
+            event.preventDefault()
+            var assetid = $(this).attr('data-id')
+            if (confirm("Are You Sure Want to Delete")) {
+                var params = {
+                    'id': assetid
+                }
+                $.ajax({
+                    url: "/api/assets/" + assetid,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function (data, status) {
+                        $('.deleteassets' + assetid).remove()
+                    }
+                })
+            }
+        });
+    }
+    DeleteAssets()
+
+</script>
+
+{% endblock script %}

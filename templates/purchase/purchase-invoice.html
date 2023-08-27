@@ -1,0 +1,514 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class=" mt-3">
+        <span class="sip"></span>
+        <span id="ven_quo" class="d-none">{{mat_id}}</span>
+        {% for i in entries %}
+        {% for j in i.entries.all %}
+        <li><a href="{{j.id}}" class="getentries"> {{j.remainder.GSTFilledInvNo}} <span class="text-dark">(
+                    {{j.remainder.GSTFilledInvReceive}} )</span></a> <a href="{{j.id}}"
+                class="text-warning ms-2 add_moisture"><i class="fa fa-edit"></i></a></li>
+        {% endfor %}
+        {% endfor %}
+
+        <div class="mb-5">
+            <a href="" class="btn btn-primary d-none btn-sm generate float-end"><i class="fa fa-print pe-1"></i>
+                Generate</a>
+        </div>
+        <div class="pi d-none purchase_invoice_sec rounded bg-white mt-2 p-1 mb-3">
+
+            <table id="purchaseinvoiceprint" class="table table-bordered table-sm mb-0">
+                <tbody>
+                    <tr>
+                        <td class="w-25"><span class="info_gst"></span>
+                            <div id="gst_no"></div>
+                        </td>
+                        <td class="text-center w-50" colspan="2">
+                            <h4 class="agency_head mb-0 fw-bold"></h4>
+                        </td>
+                        <td><span class="info_phone"></span>
+                            <div id="ph_no"></div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            <div id="agencyInfo"></div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody>
+                    <tr class="text-capitalize">
+                        <td colspan="2" class="w-50">
+                            <div id="companyInfo"></div>
+                        </td>
+                        <td colspan="2" class="w-50">
+                            <div id="poInfo"></div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody>
+                    <tr class="text-capitalize border-bottom-0">
+                        <td colspan="2" class="w-50">
+                            <div id="invoiceNo"></div>
+                        </td>
+                        <td colspan="2" class="w-50"><span class="info_date"></span>
+                            <div id="date"><b>DATE : </b><input type="date" id="idate" /></div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr class="table-dark ">
+                        <th>S.No</th>
+                        <th>DC DATE</th>
+                        <th>DC NO</th>
+                        <th>VEHICLE NO</th>
+                        <th>MATERIAL</th>
+                        <th id="quantityType"></th>
+                        <th>RATE</th>
+                        <th>AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody id="material_append">
+
+                </tbody>
+                <tbody>
+                    <tr class="text-white" style="background:#3b90c4;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>TOTAL</b></td>
+                        <td id="qt_total"></td>
+                        <td><b>AMOUNT</b></td>
+                        <td id="qt_amount"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>CGST <span id="cgst"></span>%</b></td>
+                        <td class="cgst_amount"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>SGST <span id="sgst"></span>%</b></td>
+                        <td class="cgst_amount"></td>
+                    </tr>
+                    <tr class="bg-success text-white">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>TOTAL</b></td>
+                        <td id="total_amount"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <div class="box-1 purchase_edit d-none rounded bg-white mt-2 p-3 mb-4">
+
+            <div class="mb-4">
+                <h4 class="fw-bold title">Update Moisture</h4>
+            </div>
+
+            <table class="table table-bordered table-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>S.No</th>
+                        <th>Material Name</th>
+                        <th>Vehicle Info</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Moisture</th>
+                    </tr>
+                </thead>
+                <tbody class="purchase_tbl">
+
+                </tbody>
+            </table>
+
+            <div>
+                <button class="btn btn-primary" id="update_moisture">Update Moisture</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    $('.purchaseMenu').addClass('active')
+
+    var purchase_data
+    var pur_id
+
+    $('.getentries').click(function (e) {
+        e.preventDefault()
+        $('.purchase_edit').addClass('d-none')
+        var id = $(this).attr('href')
+        var si_url = `${url}single-purchase-entry/${id}/`
+        var si_data = GetData(si_url)
+        console.log("si_data",si_data)
+        var quotation = si_data?.quotation
+        var invoice = si_data?.invoice
+        var remainder = si_data?.remainder
+        var purchase_material = si_data?.purchaseMaterial
+        var sales = quotation?.sales
+        var order = quotation?.order
+        var agency = quotation?.order?.Agency
+
+        console.log(sales)
+        var gst_no = si_data?.vendorId?.GST_No
+        var ph_no = sales?.customer?.Founder_Phone
+        var customer = sales?.customer
+        var po = sales?.po
+
+        if (invoice != null) {
+
+            $('#date').addClass('d-none')
+            $('.info_date').html(`<b>DATE : </b> ${invoice?.date}`)
+            $('.info_phone').html(`<b>PH NO : </b> ${invoice?.phNo}`)
+            $('.info_gst').html(`<b>GST NO : </b> ${invoice?.gstNo}`)
+            $('.generate').addClass(`btn-blue text-white printInvoice generate`).removeClass('btn-primary').html('<i class="fa fa-print me-1"></i> Print')
+            PrintInvoice()
+
+        } else {
+
+            if (gst_no.length > 1) {
+                $('#gst_no').html(`<b>GST NO : </b><select name="" id="gst_number">${GSTOption(gst_no)}</select>`)
+            } else {
+                $('#gst_no').html(`<input type="text" id="gst_number" data-id="${gst_no[0]?.id}" value="${gst_no[0]?.GST_No}">`)
+            }
+            if (ph_no.length > 1) {
+                $('#ph_no').html(`<b>PH NO : </b><select name="" id="ph_number">${PHOption(ph_no)}</select>`)
+            } else {
+                $('#ph_no').html(`<b>PH NO : </b><input type="text" id="ph_number" data-id="${ph_no[0]?.id}" value="${ph_no[0]?.Phone_Number}">`)
+            }
+
+        }
+
+
+
+
+
+        // agenvy info
+        $('#agencyInfo').html(`
+                <div class="fw-bold fa-16">ALL KINDS OF RIVER SAND & TABLE MOULD BRICKS AGRIGATES SUPPLIERS</div>
+                <div>${agency?.Address}, ${agency?.City} - ${agency?.Zip}, ${agency?.Country}</div>
+                <div><b>EMAIL : ${agency?.Email}</b></div>
+            `)
+
+
+        $('#companyInfo').html(`
+                <div class="text-blue fa-16"><b>Company Name : </b>${si_data?.vendorId?.Company_Name}</div>
+                <div ><b>Delivery Address</b> : ${order?.Sales_Delivery_Address}</div>
+            `)
+
+
+        $('#poInfo').html(`
+                <div><b>PO NUMBER : </b>${po?.PO_Number}</div>
+                <hr class="my-1"/>
+                <div><b>PO DATE : </b>${po?.PO_Date}</div>
+            `)
+
+        $('#invoiceNo').html(`<b>PUR GST INV NO </b> : ${remainder?.GSTFilledInvNo}`)
+
+        i = 1
+        $('#quantityType').html(purchase_material[0]?.QuantityType)
+
+        var gst_per = purchase_material[0]?.GST
+        gst_per = gst_per / 2
+        $('#cgst, #sgst').text(gst_per)
+
+        var qttype = 0
+        var qttotal = 0
+        $('#material_append').html('')
+        purchase_material.forEach(p => {
+
+            $('#material_append').append(`
+                    <tr>
+                        <td>${i}</td>
+                        <td>${p?.PurchaseDate}</td>
+                        <td>${p?.CDC}</td>
+                        <td class="text-uppercase">${p?.VehicleNo}</td>
+                        <td>${p?.MaterialName}</td>
+                        <td>${p?.QtyCalc}</td>
+                        <td>${p?.Rate}</td>
+                        <td>${Number(p?.Total).toFixed(2)}</td>
+                    </tr>
+                `)
+            qttype += Number(p?.QtyCalc)
+            qttotal += Number(p?.Total)
+
+            i += 1
+        })
+        $('#qt_total').text(Number(qttype).toFixed(2))
+        $('#qt_amount').text(Number(qttotal).toFixed(2))
+        var cgst_amount = gst_per / 100
+        console.log(cgst_amount)
+        cgst_amount = qttotal * cgst_amount
+        $('.cgst_amount').text(Number(cgst_amount).toFixed(2))
+
+        var total = cgst_amount + cgst_amount + qttotal
+        $('#total_amount').text(total)
+
+        function GSTOption(gst) {
+            var data = ''
+            gst.forEach(p => {
+                data += `<option value="${p?.GST_No}">${p?.GST_No}</option>`
+
+            })
+            return data
+        }
+
+        function PHOption(ph) {
+            var data = ''
+            ph.forEach(p => {
+                data += `<option value="${p?.Phone_Number}">${p?.Phone_Number}</option>`
+            })
+            return data
+        }
+
+        $('.pi, .generate').removeClass('d-none')
+
+
+        if (invoice != null) {
+            $('.printInvoice').removeClass('generate')
+        }
+
+        gennerateInfo(si_data)
+
+    })
+
+    function gennerateInfo(si_data) {
+
+        // generate info
+        $('.generate').click(function (e) {
+            e.preventDefault()
+            let g_no = $('#gst_number').val()
+            let p_no = $('#ph_number').val()
+            let idate = $('#idate').val()
+            if (g_no == '' || p_no == '' || idate.length == 0) {
+                alert('All Fields are required. !!!')
+            } else {
+                var params = {
+                    gstNo: g_no,
+                    phNo: p_no,
+                    date: idate
+                }
+
+                var pi_url = `${base}post-api/purchase-info/`
+                var id = PostData(params, pi_url)
+                var p_params = {
+                    invoice: id
+                }
+                var i_url = `${base}post-api/single-purchase-entry/${si_data?.id}/`
+                PatchMethod(p_params, i_url)
+                $('#ph_no, #gst_no, #date').addClass('d-none')
+                $('.info_date').html(`<b>DATE : </b> ${g_no}`)
+                $('.info_phone').html(`<b>PH NO : </b> ${p_no}`)
+                $('.info_gst').html(`<b>GST NO : </b> ${idate}`)
+                // $('.generate').addClass('btn-blue text-white printInvoice').removeClass('btn-primary generate').html('<i class="fa fa-print me-1"></i> Print')
+                PrintInvoice()
+
+            }
+
+        })
+
+
+    }
+
+
+    function printDiv(divName) {
+        console.log(divName)
+
+        $(`.purchase_invoice_sec`).printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "../css/style.css",
+            pageTitle: false,
+            removeInline: false,
+            printDelay: 200,
+            header: false,
+            formValues: true
+        });
+    }
+
+
+    window.onafterprint = function () {
+        window.location.reload()
+    }
+
+    function PrintInvoice() {
+        $('.printInvoice').click(function (e) {
+            e.preventDefault()
+            printDiv('purchaseinvoiceprint')
+        })
+
+    }
+
+
+    // on edit call
+
+    $('.add_moisture').click(function (e) {
+        e.preventDefault()
+        e.preventDefault()
+
+        var id = $(this).attr('href')
+        pur_id = id
+        var si_url = `${url}single-purchase-entry/${id}/`
+        var si_data = GetData(si_url)
+
+        si_data = si_data?.purchaseMaterial
+        purchase_data = si_data
+        $('.purchase_edit, .add_moisture').removeClass('d-none')
+        $('.purchase_invoice_sec').addClass('d-none')
+        $(this).addClass('d-none')
+
+        $(`.purchase_tbl`).html('')
+
+        for (var i = 0; i < si_data.length; i++) {
+
+            var moisture = si_data[i]?.Moisture ? si_data[i]?.Moisture : ''
+            var moisture_disabled = si_data[i]?.Moisture != '' ? 'disabled="true"' : ''
+            // console.log(moisture_disabled)
+
+            $('.purchase_tbl').append(`
+                    <tr class="pt_${i + 1} " data-id="${si_data[i]?.id}">
+                        <td>${i + 1}</td>
+                        <td>
+                            <div>
+                                <div class="text-blue fw-bold text-capitalize">${si_data[i]?.MaterialName}</div>
+                                <div><b>Date : </b>${si_data[i]?.PurchaseDate}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-capitalize">
+                                <div><b>Vechile No : </b> ${si_data[i]?.VehicleNo}</div>
+                                <div><b>CDC : </b> ${si_data[i]?.CDC} <b class="ms-2">LDC : </b> ${si_data[i]?.LDC}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div><b>Type : </b> ${si_data[i]?.QuantityType}</div>
+                                <div><b>Quantity : </b> <span class="qty">${si_data[i]?.QtyCalc}</span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div><b>Rate : </b> <span class="rate">${si_data[i]?.Rate}</span> <span class="text-danger">( GST : <span class="gst">${si_data[i]?.GST}</span> )</span></div>
+                                <div><b>Total : </b> <span class="total">${si_data[i]?.Total}</span><b class="ms-2">With GST : </b> <span class="withgst">${si_data[i]?.WithGST}</span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="number" data-id="${i + 1}" ${moisture_disabled} value="${moisture}" class="form-control add_moisture_percentage my-2 form-control-sm" placeholder="Add Moisture">
+                        </td>    
+                    </tr>`)
+
+
+            if (i == 0) {
+                if (moisture_disabled != '') {
+                    $('#update_moisture').addClass('d-none')
+                    $('.purchase_edit .title').text('Moisture Added. !!!')
+                } else {
+                    $('#update_moisture').removeClass('d-none')
+                    $('.purchase_edit .title').text('Update Moisture ')
+                }
+            }
+
+        }
+
+
+        AddMoisture()
+
+    })
+
+    function AddMoisture() {
+        $('.add_moisture_percentage').on('input', function (e) {
+            let value = $(this).val()
+            let _id = Number($(this).attr('data-id'))
+            let selector = `.pt_${_id}`
+            $(selector).css('background-color', '#dc35451a')
+
+
+            var current_rate = Number(purchase_data[_id - 1]?.Rate)
+            var current_total = Number(purchase_data[_id - 1]?.Total)
+            var gst_per = purchase_data[_id - 1]?.GST
+            // console.log(gst_per)
+            gst_per = Number(gst_per.substr(0, gst_per.length - 1)) / 100
+
+            // // do the moisture calculation
+            // // DOCalculation()
+            var moisture_per = Number(value) / 100
+            var current_qty = Number(purchase_data[_id - 1]?.QtyCalc)
+            var moisture_qty = current_qty - (current_qty * moisture_per)
+            $(`${selector} .qty`).text(moisture_qty.toFixed(4)).addClass('text-success')
+
+            var new_total = moisture_qty * current_rate
+            $(`${selector} .total`).text(new_total.toFixed(4)).addClass('text-success')
+
+            var gst_total = new_total * gst_per + new_total
+            $(`${selector} .withgst`).text(gst_total.toFixed(4)).addClass('text-success')
+
+
+        })
+
+        UpdateMoisture()
+    }
+
+
+    function UpdateMoisture() {
+        $('#update_moisture').click(function (e) {
+
+            for (var i = 0; i < purchase_data.length; i++) {
+
+                var selector = `.pt_${i + 1}`
+                var _id = $(`${selector}`).attr('data-id')
+                var purchase_param = {
+                    QtyCalc: $(`${selector} .qty`).text(),
+                    Total: $(`${selector} .total`).text(),
+                    WithGST: $(`${selector} .withgst`).text(),
+                    Moisture: $(`${selector} .add_moisture_percentage`).val()
+                }
+                var purchase_url = `${base}post-api/purchase-material-entry/${_id}` + '/'
+                console.log(purchase_param)
+                console.log(purchase_url)
+                PatchMethod(purchase_param, purchase_url)
+
+            }
+            alert('Moisture Updated')
+        })
+    }
+
+
+
+</script>
+{% endblock %})

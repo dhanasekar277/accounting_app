@@ -1,0 +1,649 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <span id="purchaseID" class="d-none">{{purchaseId.id}}</span>
+        <div>
+            <a href="{% url 'purchase' %}" class="btn btn-primary btn-sm"><i class="fa fa-chevron-left fa-12"></i>
+                &nbsp;Back</a>
+            {% if voucher_count != 0 %}
+            <a href="{{all_voucher.id}}" quo_id="{{all_voucher.quotation.id}}"
+                class="btn btn-sm btn-danger delete_all_voucher small ms-2 py-0 px-1"><i class="fa fa-trash "></i>
+                Delete
+                All</a>
+            {% endif %}
+            <span class="count float-end mt-2">
+                <b>Voucher Counts : </b><span>{{voucher_count}}</span>
+            </span>
+        </div>
+
+        <div class="col-md-12">
+            <div class="rounded bg-white mt-2 p-1 mb-3">
+                {% if voucher_count != 0 %}
+                <!-- <a href="">Add New Voucher</a> -->
+                {% for i in voucher %}
+                {% for j in i.amount.all %}
+                <!-- {% if j.bank_entries %}
+                <a href="" class="btn btn-sm btn-outline-primary float-end bankentries mb-2"
+                    vendor-name="{{i.vendorDetail.Name}}" data-id="{{j.id}}" data-bs-toggle="modal"
+                    data-bs-target="#BankEntryModal"><i class="fa fa-plus me-1"></i>Add Bank </a>
+                <a href="" class="btn btn-sm btn-primary viewbankentry float-end mb-2 me-2" data-id="{{j.id}}"
+                    data-bs-toggle="modal" data-bs-target="#ViewBankEntryModal"><i class="fa fa-check me-1"></i>View
+                </a>
+                {% else %}
+                <a href="" class="btn btn-sm btn-outline-primary float-end bankentries mb-2"
+                    vendor-name="{{i.vendorDetail.Name}}" data-id="{{j.id}}" data-bs-toggle="modal"
+                    data-bs-target="#BankEntryModal"><i class="fa fa-plus me-1"></i> Bank Entries</a>
+                {% endif %} -->
+
+                <a href="" data-id="{{i.id}}"
+                    class="btn btn-blue printVocuher text-white btn-sm  float-end mt-1 mb-2"><i class="fa fa-print"></i>
+                    &nbsp;Print</a>
+
+                <table id="voc{{i.id}}" class="table table-bordered table-sm mb-0">
+
+                    <tbody>
+                        <tr class="text-center border-0">
+                            <td colspan="12" class="border-0 h4 fw-bold pb-3">
+                                Payment Voucher
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td colspan="12" class="agency_head h4 fw-bold" data-id="{{j.id}}">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="h6 fw-bold">Name : </td>
+                            <td colspan="3" class="">{{i.vendorDetail.Name}}</td>
+                            <td colspan="3" class="h6 fw-bold">Voucher Date : </td>
+                            <td colspan="3" class="">{{j.Info.VoucherDate}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="h6 fw-bold">A/C No : </td>
+                            <td colspan="3" class="">{{i.vendorDetail.AcNumber}}</td>
+                            <td colspan="3" class="h6 fw-bold">Voucher No : </td>
+                            <td colspan="3" class="">{{j.Info.VoucherNo}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="h6 fw-bold">Bank : </td>
+                            <td colspan="3" class="">{{i.vendorDetail.Bank}}</td>
+                            <td colspan="3" class="h6 fw-bold">Voucher SL No : </td>
+                            <td colspan="3" class="">{{j.Info.VoucherSLNo}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="h6 fw-bold">IFSC : </td>
+                            <td colspan="3" class="">{{i.vendorDetail.IFSC}}</td>
+                            <td colspan="3" class="h6 fw-bold">Purchase Invoice No : </td>
+                            <td colspan="3" class="">{{j.Info.InvoiceNo}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="h6 fw-bold">Mobile : </td>
+                            <td colspan="3" class="">{{i.vendorDetail.Mobile}}</td>
+                            <td colspan="3" class="h6 fw-bold">Debit Voucher No : </td>
+                            <td colspan="3" class="">{{j.Info.DebitVoucherNo}}</td>
+                        </tr>
+                    </tbody>
+
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">SL NO</td>
+                            <td class="fw-bold">Date</td>
+                            <td class="fw-bold">Unloading Site</td>
+                            <td class="fw-bold">Site</td>
+                            <td class="fw-bold">Material</td>
+                            <td class="fw-bold">CDC</td>
+                            <td class="fw-bold">LDC</td>
+                            <td class="fw-bold">Vechile No</td>
+                            <td class="fw-bold">QTY No</td>
+                            <td class="fw-bold">QTY Type</td>
+                            <td class="fw-bold">Rate</td>
+                            <td class="fw-bold">Total</td>
+                        </tr>
+                        {% for k in j.VoucherMaterialInfo.all %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{k.PurchaseDate}}</td>
+                            <td>{{k.UnloadingSite}}</td>
+                            <td>{{k.Site}}</td>
+                            <td>{{k.MaterialName}}</td>
+                            <td>{{k.CDC}}</td>
+                            <td>{{k.LDC}}</td>
+                            <td>{{k.VehicleNo}}</td>
+                            <td>{{k.QtyCalc}}</td>
+                            <td>{{k.QuantityType}}</td>
+                            <td>{{k.Rate|floatformat:"2"}}</td>
+                            <td>{{k.Total|floatformat:"2"}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3"><b>Without GST Total :</b> {{j.total|floatformat:"2"}}</td>
+                            <td colspan="3"><b>CGST (2.5%) :</b> {{j.cgst_amount|floatformat:"2"}}</td>
+                            <td colspan="2"><b>SGST (2.5%) :</b> {{j.sgst_amount|floatformat:"2"}}</td>
+                            <td colspan="3"><b>Total GST :</b> {{j.sgst_amount|mul:'2'|floatformat:"2"}}</td>
+                            <td colspan="3"><b>With GST Total :</b> {{j.total_amount|floatformat:"2"}}</td>
+                        </tr>
+                        <tr class="text-center border-bottom-0">
+                            {% for k in i.signature.all %}
+                            <td colspan="4" class="text-uppercase fw-bold">
+                                {% if k.signature_name == '0' %}
+                                PREPARED BY
+                                {% elif k.signature_name == '1' %}
+                                APPROVED BY
+                                {% elif k.signature_name == '2' %}
+                                PASSED BY
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        <tr class="text-center border-top-0">
+                            {% for k in i.signature.all %}
+                            <td colspan="4"><img src="{{k.signature_id.signature.url}}" width="185px"></td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% endfor %}
+
+                {% endfor %}
+                {% else%}
+                <div class="text-center">
+                    <div>No New Vouchers For This Purchase. !!!</div>
+                    <a href="" class="quotation_views" quotation-id="{{quotation_id}}" mat-data="38"
+                        data-bs-toggle="modal" data-bs-target="#addvoucher">Add New ?</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- sales model -->
+<div class="modal fade" id="addvoucher" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl ">
+        <div class="modal-content">
+            <div class="modal-header py-2 border-0">
+                <h5 class="modal-title" id="exampleModalLabel">Add Voucher For <span id="vendor_name"
+                        class="text-blue"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+
+                <div class="row">
+
+
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-12 mb-1">
+                                <label for="" class="fw-bold">Name</label>
+                                <input type="text" class="form-control form-control-sm" name="voucher_name"
+                                    id="voucher_name">
+                            </div>
+                            <div class="col-6">
+                                <ul class="ms-1 mb-0 ps-3" id="bank_account"></ul>
+                            </div>
+                            <div class="col-6">
+                                <ul class="ms-1 mb-0 ps-3" id="pan_detail"></ul>
+                            </div>
+                            <div class="col-4 pe-0 mb-1">
+                                <label for="" class="fw-bold">Ac Number</label>
+                                <input type="text" class="form-control form-control-sm" id="ac_number" name="ac_number">
+                            </div>
+                            <div class="col-4 pe-0 mb-1">
+                                <label for="" class="fw-bold">Bank</label>
+                                <input type="text" class="form-control form-control-sm" id="bank" name="bank">
+                            </div>
+                            <div class="col-4 mb-1">
+                                <label for="" class="fw-bold">IFSC</label>
+                                <input type="text" class="form-control form-control-sm" id="ifsc" name="ifsc">
+                            </div>
+                            <div class="col-4 mb-1 pe-0">
+                                <label for="" class="fw-bold">Mobile</label>
+                                <input type="text" class="form-control form-control-sm" id="mobile" name="mobile">
+                            </div>
+                            <div class="col-4 mb-1 pe-0">
+                                <label for="" class="fw-bold">GST No</label>
+                                <select class="form-control form-control-sm" name="gst_no" id="gst_no"></select>
+                            </div>
+                            <div class="col-4">
+                                <label for="" class="fw-bold">Pan No</label>
+                                <input type="text" class="form-control form-control-sm" id="pan_no" name="pan_no">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="col-5">
+                        <div class="col-6">
+                            <label for="" class="fw-bold">Vendor Trade Name</label>
+                            <input type="text" class="form-control form-control-sm" id="trade_name" name="trade_name">
+                        </div>
+
+                    </div>
+                    <!--  -->
+                    <div class="table-responsive mt-3">
+                        <table id="voucher_tabel" class="table fa-12 table-sm table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Unloading Site</th>
+                                    <th>Site</th>
+                                    <th>Material</th>
+                                    <th>CDC</th>
+                                    <th>LDC</th>
+                                    <th>Vehicle No</th>
+                                    <th>Qty</th>
+                                    <th>Type</th>
+                                    <th>Round Off</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voucher_tbl">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="voucher_list">
+                    </div>
+                    <div class="col-12 purchase_amounts">
+
+                    </div>
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                            <div class="col-4 pe-0 ">
+                                <label for="" class="fw-bold">Prepared By</label>
+                                <div class="input-group prepared_by_col">
+                                    <input type="date" class="form-control form-control-sm pdate_" id="prepared_by_date"
+                                        name="prepared_by_date">
+                                    <select class="form-control form-control-sm signature_ip pname_"
+                                        id="prepared_by_name" name="prepared_by_name">
+                                        <option value="0">Select Name</option>
+                                    </select>
+                                    <span class="input-group-text bg-success text-white pointer check_signature"
+                                        column="prepared_by_col" date="pdate_" name="pname_"><i
+                                            class="fa fa-check"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-4 pe-0 ">
+                                <label for="" class="fw-bold">Approved By</label>
+                                <div class="input-group approved_by_col">
+                                    <input type="date" class="form-control form-control-sm adate_" id="approved_by_date"
+                                        name="approved_by_date">
+                                    <select class="form-control form-control-sm signature_ip aname_"
+                                        id="approved_by_name" name="approved_by_name">
+                                        <option value="0">Select Name</option>
+                                    </select>
+                                    <span class="input-group-text bg-success text-white pointer check_signature"
+                                        column="approved_by_col" date="adate_" name="aname_"><i
+                                            class="fa fa-check"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-4 ">
+                                <label for="" class="fw-bold">Passed By</label>
+                                <div class="input-group passed_by_col">
+                                    <input type="date" class="form-control form-control-sm pbdate_" id="passed_by_date"
+                                        name="passed_by_date">
+                                    <select class="form-control form-control-sm signature_ip pbname_"
+                                        id="passed_by_name" name="passed_by_name">
+                                        <option value="0">Select Name</option>
+                                    </select>
+                                    <span class="input-group-text bg-success text-white pointer check_signature"
+                                        column="passed_by_col" date="pbdate_" name="pbname_"><i
+                                            class="fa fa-check"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary" id="voucher_entry_btn">Add Voucher</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add Modal -->
+<div class="modal fade" id="BankEntryModal" tabindex="-1" aria-labelledby="BankEntryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="BankEntryModalLabel">Add Bank Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addbankentryform" novalidate>
+                    <div class="row">
+                        <div class="col-lg-4 pe-0">
+                            <input type="text" class="form-control voucher_id" hidden>
+
+                            <div class="mb-2">
+                                <label for="Post Date" class="form-label">Post Date</label>
+                                <input required type="date" class="form-control Post_Date" placeholder="Post Date">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 pe-0">
+                            <div class="mb-2">
+                                <label for="Value Date" class="form-label">Value Date</label>
+                                <input required type="date" class="form-control Value_Date" placeholder="Value Date">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-2">
+                                <label for="Gst Type" class="form-label">Gst Type</label>
+                                <select required class="form-select GST_Type" aria-label="Default select example">
+                                    <option selected disabled value="">Select Type</option>
+                                    <option value="Registerd">Registerd</option>
+                                    <option value="Un Registerd">Un Registerd</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 pe-0">
+                            <div class="mb-2">
+                                <label for="Remitance Branch" class="form-label">Remitance Branch</label>
+                                <input required type="text" class="form-control Remitance_Branch"
+                                    placeholder="Remitance Branch">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <label for="Total Amount" class="form-label">Total Amount</label>
+                                <input required type="number" class="form-control Total_Amount"
+                                    placeholder="Total Amount">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 pe-0">
+                            <div class="mb-2">
+                                <label for="Person Type" class="form-label">Person Type</label>
+                                <select required class="form-select Person_Type" aria-label="Default select example">
+                                    <option value="Vendor">Vendor</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="mb-2">
+                                <label for="Name" class="form-label">Name</label>
+                                <input autocomplete="off" required class="form-control Name" list="datalistOptions"
+                                    placeholder="Name">
+                                <datalist id="datalistOptions">
+                                    {% for name in names %}
+                                    <option value="{{name}}">
+                                        {% endfor %}
+                                </datalist>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="Remarks" class="form-label">Remarks</label>
+                        <input required type="text" class="form-control Remarks" placeholder="Remarks">
+                        <div class="invalid-feedback">
+                            required Field
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 pe-0">
+                            <div class="mb-2">
+                                <label for="Expence Type" class="form-label">Expence Type</label>
+                                <select required class="form-select Expence_Type" aria-label="Default select example">
+                                    <option selected disabled value="">Select Expence Type</option>
+                                    <option value="Personal Expence">Personal Expence</option>
+                                    <option value="Office Expence">Office Expence</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2">
+                                <label for="Cheque No" class="form-label">Cheque No</label>
+                                <input required type="text" class="form-control Cheque_No" id="Cheque No"
+                                    placeholder="Cheque No">
+                                <div class="invalid-feedback">
+                                    required Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-6 pe-0">
+                            <label for="payrecivemode" class="form-label">Transaction</label>
+                            <select required class="form-select payrecivemode" aria-label="Default select example">
+                                <option value="Debit_Amount" default>Debit</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Rrequired Field
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="Amount" class="form-label">GST Amount</label>
+                                <input required type="number" class="form-control payamountinput" placeholder="Amount">
+                                <div class="invalid-feedback">
+                                    Rrequired Field
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label>Description</label>
+                    <textarea class="form-control Description" name="" id="" rows="2"
+                        placeholder="Description"></textarea>
+                    <div class="mt-3 text-end">
+                        <button type="submit" class="btn addbankENtries btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ViewBankEntryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="BankentryViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="BankentryViewModalLabel">Bank Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+<script src="{% static 'js/add-vouchers.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.voucherMenu').addClass('active')
+    })
+
+    $('.printVocuher').click(function (e) {
+        e.preventDefault()
+        let id = $(this).attr('data-id')
+        let selector_id = `#voc${id}`
+        // console.log(selector_id)
+        $(selector_id).printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "../css/style.css",
+            pageTitle: false,
+            removeInline: false,
+            printDelay: 200,
+            header: false,
+            formValues: true
+        });
+    })
+
+    $('.bankentries').click(function (e) {
+        var data_id = $(this).attr('data-id')
+        var vendor_name = $(this).attr('vendor-name')
+        // console.log(data_id)
+        $('.voucher_id').val(data_id)
+        $('.Name').val(vendor_name)
+    })
+
+
+    $('.addbankENtries').click(function (e) {
+        e.preventDefault()
+
+        var vouher_id = $('.voucher_id').val()
+
+        var params = {
+            'Transaction_Amount': $('.payamountinput').val(),
+            'Post_Date': $('.Post_Date').val(),
+            'Value_Date': $('.Value_Date').val(),
+            'GST_Type': $('.GST_Type').val(),
+            'Remitance_Branch': $('.Remitance_Branch').val(),
+            'Total_Amount': $('.Total_Amount').val(),
+            'Person_Type': $('.Person_Type').val(),
+            'Name': $('.Name').val(),
+            'Remarks': $('.Remarks').val(),
+            'Expence_Type': $('.Expence_Type').val(),
+            'Cheque_No': $('.Cheque_No').val(),
+            'Description': $('.Description').val(),
+            'Transaction_Type': $('.payrecivemode').val(),
+            'voucherId': $('.voucher_id').val()
+        }
+        // console.log(params)
+        // console.log(params)
+        var bank_entries_params = {
+            'bank_entries': true
+        }
+        var bank_amount_url = `${base}post-api/voucher-amount/${vouher_id}/`
+        PatchMethod(bank_entries_params, bank_amount_url)
+
+
+
+        var bank_entries_url = `${base}post-api/bank-entries/`
+        // console.log(bank_entries_url)
+        PostData(params, bank_entries_url)
+        location.reload()
+
+    })
+
+
+    $('.viewbankentry').click(function (e) {
+        e.preventDefault()
+        var voucher_id = $(this).attr('data-id')
+
+        var bank_entry_data = GetData(`${base}post-api/bank-entries/?voucherId=${voucher_id}`)
+
+        if (bank_entry_data.count != 0) {
+            var b_r = bank_entry_data?.results
+            b_r.forEach((el) => {
+                $('#ViewBankEntryModal .modal-body').append(`
+                <div class="row mb-2">
+                    <div class="col-3"><b>Value Date : </b>` + el?.Value_Date + `</div>
+                    <div class="col-3"><b>Post Date : </b>` + el?.Post_Date + `</div>
+                    <div class="col-6"><b>Remitance Branch : </b>` + el?.Remitance_Branch + `</div>
+                </div>
+                <div class="row mb-0">
+                    <div class="col-5">
+                        <div class="mb-2"><b>Type : </b>` + el?.GST_Type + `</div>
+                        <div class="mb-2"><b>Expence Type : </b>` + el?.Expence_Type + `</div>
+                        <div class="mb-2"><b>Person : </b>` + el?.Person_Type + `</div>
+                        <div class="mb-2"><b>Name : </b>` + el?.Name + `</div>
+                    </div>
+                    <div class="col-7">
+                        <table class="table table-sm table-bordered emitable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Debit Amount<i class="fa fa-long-arrow-up ms-2 text-danger"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${el?.Date}</td>
+                                    <td>${el?.Transaction_Amount}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-0">
+                            <b>Total Amount : </b>Rs.${el?.Total_Amount}
+                            <b class="ms-2">Description : </b>` + el?.Description + `
+                        </p>
+                    </div>
+                </div>
+                <hr class="my-1">
+            `)
+            })
+
+        }
+    })
+
+    $('.delete_all_voucher').click(function (e) {
+        e.preventDefault()
+        var voucher_id = $(this).attr('href')
+        // let _url = `${base}post-api/voucher/${voucher_id}/`
+        // DeleteWithOutValidation(voucher_id, _url)
+        var quo_id = $(this).attr('quo_id')
+        let voucher_detial_url = `${url}vouchers/?quotation=${quo_id}`
+        var v_data = GetData(voucher_detial_url)
+        let all_voucher_id = v_data?.results[0]?.voucher
+        all_voucher_id = all_voucher_id.map(p => p.id)
+        // delete all single voucher
+        all_voucher_id.forEach(id => {
+            let single_id = {
+                'id': id
+            }
+            let single_url = `${base}post-api/voucher-detail/${id}/`
+            DeleteWithOutValidation(single_id, single_url)
+        })
+        location.reload()
+    })
+
+</script>
+<style type="text/css" media="print">
+    @media print {
+        @page {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        body {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+</style>
+{% endblock %}

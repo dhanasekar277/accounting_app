@@ -1,0 +1,566 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12 text-capitalize">
+            <h5 class="fw-bold">Purchases Entry
+
+            </h5>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box-1 rounded bg-white mt-2 p-3 mb-4">
+                <!-- Search Form -->
+                <div class="row ">
+                    <div class="col-12 mb-2 ">
+                        <form action="">
+                            <div class="input-group me-2 input-group-sm mb-2 w-25 float-end">
+                                <input name="search" type="text" class="form-control" placeholder="Search Here ..."
+                                    aria-label="Search Here ..." aria-describedby="button-addon2">
+                                <button class="btn btn-primary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if purchase %}
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark text-capitalize">
+                        <tr>
+                            <th scope="col" style="width: 30% !important;">Sales Name</th>
+                            <th scope="col" style="width: 30% !important;">Purchase Name</th>
+                            <th scope="col" style="width: 22% !important;">PO Details</th>
+                            <th scope="col">Purchase Entries</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in purchase %}
+                        <tr>
+                            <td>
+                                <!-- {{i.order}} -->
+                                <div>
+                                    <h6 class="fw-bold mb-1  customer_ph text-blue pointer"
+                                        cu-id="{{i.quotation.sales.customer.id}}">
+                                        <span class="text-capitalize">{{i.quotation.sales.customer.Company_Name}}</span>
+                                        <a href="mailto:{{i.quotation.sales.customer.Founder_Email}}" class="ms-2"><i
+                                                class="fa fa-envelope"></i></a>
+                                    </h6>
+                                    <i class="fa fa-map-marker fw-bold text-success "></i> <b>Billing</b> : <span
+                                        class="text-capitalize">{{i.quotation.order.Billing_Address}}</span>
+                                    <p class="mb-0"><i class="fa fa-map-marker fw-bold text-success "></i>
+                                        <b>Delivery</b> : <span
+                                            class="text-capitalize">{{i.quotation.order.Sales_Delivery_Address}}</span>
+                                    </p>
+                                    {% if i.quotation.sales.customer.PAN_No.all %}
+                                    <div><b>PAN NO : </b>
+                                        {% for k in i.quotation.sales.customer.PAN_No.all %}
+                                        <span>{{k.PAN_No}}</span>{{ forloop.last|yesno:",&#44;"|safe }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if i.quotation.sales.customer.GST_No.all %}
+                                    <div><b>GST NO : </b>
+                                        {% for k in i.quotation.sales.customer.GST_No.all %}
+                                        <span>{{k.GST_No}}</span>{{ forloop.last|yesno:",&#44;"|safe }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if i.quotation.sales.customer.Approved == true %}
+                                    <span class="badge badge-success">Approved</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">Not Approved</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <h6 class="fw-bold mb-1  customer_ph text-blue pointer"
+                                        cu-id="{{i.vendorId.id}}">
+                                        <span class="text-capitalize">{{i.vendorId.Company_Name}}</span>
+                                        <a href="mailto:{{i.vendorId.sales.customer.Founder_Email}}" class="ms-2"><i
+                                                class="fa fa-envelope"></i></a>
+                                    </h6>
+                                    {% if i.vendorId.Vendor_Type == '0' %}
+                                    <div>GST User</div>
+                                    {% else %}
+                                    <div>Unregistered User</div>
+                                    {% endif %}
+                                    <b class="small">Name : </b>{{i.vendorId.Vendor_Name}} <a href="tel:{{i.vendorId.Phone}}"
+                                        class="ms-2 text-success"><i class="fa fa-phone"></i></a><a
+                                        href="mailto:{{i.vendorId.Email}}" class="text-danger ms-2"><i
+                                            class="fa fa-envelope"></i></a><br>
+                                    <b class="small">Address : </b>{{i.vendorId.Address}}, {{i.vendorId.City}}-{{i.vendorId.Zip}}, {{i.vendorId.State}}
+
+                                    <div><i class="fa fa-truck"></i> : {{i.vendorId.No_Of_Trucks}}</div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if i.quotation.order.PO_Number.PO_Type == "PA" %}
+                                <span class="badge bg-primary">PO Applicable</span>
+                                <div>
+                                    <b>PO DATE : </b> <span>{{i.quotation.order.PO_Number.PO_Date}}</span>
+                                </div>
+                                <div>
+                                    <b>PO No : </b> <span><a
+                                            href="{{i.quotation.order.PO_Number.Scan_Copy}}">{{i.quotation.order.PO_Number.PO_Number}}</a></span><br>
+                                    <b>Expected Date : </b>
+                                    <span>{{i.quotation.order.PO_Number.Order_Expected_Date}}</span>
+                                </div>
+                                {% else %}
+                                <span class="badge bg-danger">PO Not Applicable</span>
+                                <div>
+                                    <b>Recieved : </b> <span>{{i.quotation.order.PO_Number.Order_Recieved_Date}}</span>
+                                </div>
+                                <div>
+                                    <b>Expected : </b> <span>{{i.quotation.order.PO_Number.Order_Expected_Date}}</span>
+                                </div>
+                                {% endif %}
+                                <div class="card px-2 py-1">
+                                    <div id="carouselExample{{i.id}}" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            {% for k in i.quotation.order.PO_Number.PO_Material_Info.all %}
+                                            {% if forloop.counter == 1 %}
+                                            <div class="carousel-item active">
+                                                {% else %}
+                                                <div class="carousel-item">
+                                                    {% endif %}
+                                                    <div class="text-primary text-capitalize">{{k.Material_Name}}</div>
+                                                    <div>
+                                                        <b>Qty : </b>{{k.Quantity}}{{k.Quantity_Type}}
+                                                        <b class="ms-2">Load : </b>{{k.Load}}
+                                                        <b class="ms-2">Rate : </b>{{k.PO_Rate}}
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% if i.quotation.order.PO_Number.PO_Material_Info.all|length > 1 %}
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#carouselExample{{i.id}}" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                data-bs-target="#carouselExample{{i.id}}" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                            </td>
+                            <td>
+                                <ul class="ps-3">
+                                    {% for k in i.entries.all %}
+                                    <!-- {% for j in k.purchaseMaterial.all|slice:":1" %} -->
+                                    <li class="mb-1">
+                                        <a href="./invoice/{{k.quotation.id}}/{{k.vendorId.id}}"
+                                            class="text-capitalize">{{k.remainder.GSTFilledInvNo}} <span
+                                                class="text-capitalize text-dark">( {{k.remainder.GSTFilledInvReceive}}
+                                                )</span></a>
+                                        <!--  -->
+                                    </li>
+                                    <!-- {% endfor %} -->
+                                    {% endfor %}
+                                    <!-- {% for k in i.entries.all %}
+                                    {% for j in autoVoucherNo %}
+                                        {% if j.purchase__quotation__order__id == k.quotation.order.id %}
+                                        {% if forloop.counter == forloop.parentloop.counter %}
+                                        <li class="mb-1">
+                                            <a href="./invoice/{{k.quotation.id}}/{{k.vendorId.id}}"
+                                                class="text-capitalize">{{j.voucher__amount__Info__VoucherNo}} 
+                                                <span class="text-capitalize text-dark">
+                                                    ({{k.remainder.GSTFilledInvReceive}})
+                                                </span>
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endfor %} -->
+                                </ul>
+                                <a href="../vouchers/view/{{i.quotation.id}}/{{i.vendorId.id}}"
+                                    class="text-capitalize fa-12 btn btn-outline-danger btn-sm py-0"><i
+                                        class="fa fa-plus fa-12 me-1"></i>Voucher</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-5 mt-4 border-0 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="96" height="96" viewBox="0 0 172 172"
+                        style=" fill:#000000;">
+                        <g fill="none" fill-rule="none" stroke="none" stroke-width="1" stroke-linecap="butt"
+                            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+                            font-family="none" font-weight="none" font-size="none" text-anchor="none"
+                            style="mix-blend-mode: normal">
+                            <path d="M0,172v-172h172v172z" fill="none" fill-rule="nonzero"></path>
+                            <g>
+                                <path d="M104.44659,114.55238l10.13249,-10.13284l43.08294,43.08144l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,14.26167c-31.66433,0 -57.33333,25.66901 -57.33333,57.33333c0,31.66433 25.66901,57.33333 57.33333,57.33333c31.66433,0 57.33333,-25.66901 57.33333,-57.33333c0,-31.66433 -25.66901,-57.33333 -57.33333,-57.33333z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path d="M116.1861,126.56761l10.13249,-10.13284l31.16374,31.16265l-10.13249,10.13284z"
+                                    fill="#333333" fill-rule="nonzero"></path>
+                                <path
+                                    d="M71.55558,25.01167c-25.72726,0 -46.58333,20.85607 -46.58333,46.58333c0,25.72726 20.85607,46.58333 46.58333,46.58333c25.72726,0 46.58333,-20.85607 46.58333,-46.58333c0,-25.72726 -20.85607,-46.58333 -46.58333,-46.58333z"
+                                    fill="#e74c3c" fill-rule="nonzero"></path>
+                                <path
+                                    d="M95.90433,90.60817c-5.96267,-7.36017 -14.73825,-11.77483 -24.21258,-11.77483c-9.47433,0 -18.24633,4.41467 -24.21258,11.77483c-1.41183,1.47992 -1.05708,4.05633 0.344,5.16c1.41183,1.46917 3.86283,1.09292 4.91992,-0.37267c4.90558,-5.89817 11.49533,-9.3525 18.87342,-9.3525c7.37808,0 14.11117,3.45433 19.02033,9.3525c0.71308,0.731 2.86308,2.18583 4.9235,0.731c1.6555,-1.161 1.40108,-4.03483 0.344,-5.51833z"
+                                    fill="#f5f5f5" fill-rule="nonzero"></path>
+                                <path
+                                    d="M51.95833,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375zM91.375,53.75c-2.96853,0 -5.375,2.40647 -5.375,5.375c0,2.96853 2.40647,5.375 5.375,5.375c2.96853,0 5.375,-2.40647 5.375,-5.375c0,-2.96853 -2.40647,-5.375 -5.375,-5.375z"
+                                    fill="#f5f5f5" fill-rule="evenodd"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    <h5 class="fw-bold mt-3">No Details Available</h5>
+                </div>
+                {% endif %}
+                <!-- pagination -->
+                {% if purchase.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if purchase.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{purchase.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %} {% for i in purchase.paginator.page_range %}
+                        {% if purchase.number == i %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                        {% endif %} {% endfor %} {% if purchase.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{purchase.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Purchase modal  -->
+<div class="modal fade" id="viewPurchase" tabindex="-1" aria-labelledby="viewPurchaseLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <div class="row" id="quotations">
+                    <div class="col-12">
+                        <table class="table mb-0 table-bordered">
+                            <tbody>
+                                <tr class="border-bottom-0">
+                                    <td style="width: 55.1%;">
+                                        <h6 class="fw-bold">SUKRA CONCRETE PRIVATE LIMITED</h6>
+                                        <p class="mb-0"><b>Address : </b>1st Street, RNC Nagar, Cheyyur, Tamilnadu</p>
+                                        <b>Email : </b> <a href="">sukra@gmail.com</a>
+                                        <div>
+                                            <b>PAN NO : </b> <span>ASB324234</span>
+                                        </div>
+                                        <div>
+                                            <b>GST NO : </b> <span>234ASB324234</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <img src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/e66c5128469685.55c1b16d6c0b2.png"
+                                            alt="" class="w-50">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12">
+                        <table class="table mb-0 table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div class="fw-bold text-center">
+                                            PURCHASE ORDER
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-bottom-0">
+                                    <td style="width: 55.1%;">
+                                        <div>To, ( Vendor )</div>
+                                        <div class="border-bottom mb-1 pb-2">
+                                            <h6 class="fw-bold mb-0">Mathi Agency</h6>
+                                            <span>Aggregates Supplier</span>
+                                        </div>
+                                        <div>
+                                            <b>Kind Attn :</b> <span>Mr.Mathi</span>
+                                            <div>
+                                                <b>Email : </b> <a href="">mathiagency27@gmail.com</a>
+                                                <b class="ms-2">Phone : </b> <a href="">8798768768</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="border-bottom mb-1"><b>PO Date : </b><span>28/12/2021</span></div>
+                                        <div class="border-bottom mb-1"><b>PO No : </b><span>SUKRA/21-22/162</span>
+                                        </div>
+                                        <div class="border-bottom mb-1"><b>Validity Of PO : </b><span>1 week</span>
+                                        </div>
+                                        <div class="border-bottom mb-1"><b>Vendor GST PO : </b><span>33324SDF2341</span>
+                                        </div>
+                                        <div><b>Vendor PAN PO : </b><span>HJAS343244324</span></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12">
+                        <table class="table mb-0 table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>S. No</th>
+                                    <th>Perticulars</th>
+                                    <th>Quantity (MT)</th>
+                                    <th>Unit Rate (Rs.)</th>
+                                    <th>Amount (Rs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>20 MM Aggregates</td>
+                                    <td>75.0</td>
+                                    <td>1,250.00</td>
+                                    <td>93,750.00</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>12 MM Aggregates</td>
+                                    <td>75.0</td>
+                                    <td>1,250.00</td>
+                                    <td>93,750.00</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>MSand</td>
+                                    <td>75.0</td>
+                                    <td>1,250.00</td>
+                                    <td>93,750.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>Delivery Site</b>
+                                    </td>
+                                    <td colspan="2">
+                                        <b>Total Value (Rs.) </b>
+                                    </td>
+                                    <td>
+                                        200,250.00
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <h6 class="fw-bold">SUKRA CONCRETE PRIVATE LIMITED</h6>
+                                        <p class="mb-0"><b>Address : </b>1st Street, RNC Nagar, Cheyyur, Tamilnadu</p>
+                                    </td>
+                                    <td colspan="3">
+                                        <div class="border-bottom mb-1">
+                                            <span>GST @ 28.0%</span>
+                                            <span class="float-end">82,950.00</span>
+                                        </div>
+                                        <div class="border-bottom mb-1">
+                                            <span>CGST 14.0%</span>
+                                            <span class="float-end">41,950.00</span>
+                                        </div>
+                                        <div class="border-bottom mb-1">
+                                            <span>SGST 28.0%</span>
+                                            <span class="float-end">41,950.00</span>
+                                        </div>
+                                        <div class="border-bottom mb-1">
+                                            <span>Round Off</span>
+                                            <span class="float-end"></span>
+                                        </div>
+                                        <div>
+                                            <b>Total (Rs)</b>
+                                            <span class="float-end">379,200.00</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"><b>Total (Rs)</b></td>
+                                    <td><span class="float-end">379,200.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5"><b>Amount Word : </b> <span>Three lakh seventy nine thousand two
+                                            hundred.</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div>
+                                            <b>Payment Terms : </b><br>
+                                            <span>1 days against Supply of Material and Plant</span>
+                                        </div>
+                                    </td>
+                                    <td colspan="3">
+                                        <div><b>Delivery Period : </b><span>Immediate</span></div>
+                                        <div><b>Mode of Transport : </b><span>Road</span></div>
+                    </div>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <div>
+                                <b>Other Terms : </b>
+                                <ol class="mb-0">
+                                    <li>The above value are inclusive of all taxes.</li>
+                                    <li>Rate mentioned is on for Basis.</li>
+                                    <li>Transportation and toll charges included in above value.</li>
+                                </ol>
+                            </div>
+                        </td>
+                        <td colspan="3">
+                            <h6 class="fw-bold text-center ">FOR SUKRA CONCRETE PRIVATE LIMITED.</h6>
+                            <div class="small text-center mt-5">Authorized Signatory</div>
+                </div>
+                </tr>
+                </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    <div class="modal-footer py-2">
+        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i></button>
+        <button type="button" class="btn btn-blue btn-sm float-start text-white" id="print"><i
+                class="fa fa-print me-2"></i> PRINT</button>
+
+
+    </div>
+</div>
+</div>
+
+<!-- delete Modal for admin -->
+<div class="modal fade" id="deleteMethod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2 bg-danger text-white">
+                <h5 class="modal-title fw-bold small" id="exampleModalLabel">DELETE PRODUCT</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure you want to delete ?</h5>
+            </div>
+            <div class="modal-footer border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-col="id" data-url="vendors" data-id=""
+                    class="btn btn-danger dlt btn-sm">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+
+        $('.purchaseMenu').addClass('active')
+        var base = 'http://127.0.0.1:8000/'
+        var url = 'http://127.0.0.1:8000/api/'
+        var csrftoken = $('meta[name="csrf-token"]').attr('content')
+        var userid = $('#user-id').attr('data-id')
+        var agencyid = $('#user-id').attr('data-id')
+
+        // print option using quotations
+        $('#print').click(function () {
+            $("#quotations").printThis({
+                debug: false,
+                importCSS: true,
+                importStyle: true,
+                printContainer: true,
+                loadCSS: "../css/style.css",
+                pageTitle: false,
+                removeInline: false,
+                printDelay: 200,
+                header: false,
+                formValues: true
+            });
+        })
+
+
+
+        // delete method
+        var deleteProduct = document.getElementById('deleteMethod')
+        deleteProduct.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var id = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            $('#deleteMethod .dlt').attr('data-id', id)
+            DELETEMethod()
+        })
+
+        function DELETEMethod() {
+            $('#deleteMethod .dlt').click(function () {
+                var customurl = $(this).attr('data-url')
+                var key = $(this).attr('data-col')
+                var value = $(this).attr('data-id')
+                var baseurl = url + customurl + '/' + value
+                var params = { [key]: value };
+                $.ajax({
+                    type: "DELETE",
+                    url: baseurl,
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                });
+                $('.row_' + value).remove()
+                $('#deleteMethod').modal('toggle');
+            })
+        }
+
+
+        $('.deleteForUser').click(function (e) {
+            e.preventDefault()
+            if (confirm('Are you sure you want to delete?')) {
+
+                var _obj = JSON.stringify({ 'id': $(this).attr('href'), 'model': $(this).attr('data-url') });
+                var params = {
+                    "Notifications": _obj,
+                    'csrfmiddlewaretoken': csrftoken,
+                    'Types': $(this).attr('data-method'),
+                    'User': $('#userid').html()
+                }
+                // console.log(params)
+                $.post(base + 'post-api/notifications/', params, function (req, res) {
+                    console.log(req)
+                    console.log(res)
+                })
+
+            }
+        })
+
+    })
+</script>
+{% endblock %})
